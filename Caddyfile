@@ -1,0 +1,18 @@
+http://, https:// {
+    handle / {
+        root * /var/www/frontend/out
+        try_files {path} /_next/static/index.html
+        file_server
+    }
+
+    handle /api/* {
+        reverse_proxy api:3001 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+        }
+    }
+
+    tls internal {
+        on_demand
+    }
+}
