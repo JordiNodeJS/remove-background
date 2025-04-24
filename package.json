@@ -10,6 +10,7 @@
   "scripts": {
     "dev": "bun run --parallel --filter=* dev",
     "dev:frontend": "bun run --filter=@remove-background/frontend dev",
+    "dev:backend": "bun run --filter=@remove-background/api dev",
     "build": "bun run --parallel --filter=* build",
     "start": "bun run --parallel --filter=* start"
   },
