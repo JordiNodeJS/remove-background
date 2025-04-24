@@ -230,6 +230,9 @@ bunx --yes tsc --noEmit                           # Verificar tipos
 - En PowerShell, se usa `Set-Location` en lugar de `cd` y `New-Item` en lugar de `mkdir`
 - Para rutas en PowerShell, se pueden usar tanto barras normales (`/`) como invertidas (`\`)
 
-Los servicios usan puertos fijos:
-- Frontend: 3000
-- Backend: 3001
+Los servicios usan puertos reservados con limpieza automática:
+- Frontend: 3000 (se libera el puerto automáticamente antes de iniciar)
+- Backend: 3001 (fijo)
+
+El script de desarrollo ahora incluye:
+`bunx kill-port 3000` para liberar el puerto antes de iniciar Next.js
