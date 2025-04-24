@@ -33,6 +33,12 @@ remove-background/
 
 ## Instalación
 
+### Requisitos previos
+- Bun 1.0.0 o superior
+- Node.js 18.0.0 o superior
+
+### Instalación global
+
 ```bash
 # Clonar el repositorio
 git clone https://github.com/tu-usuario/remove-background.git
@@ -40,6 +46,27 @@ cd remove-background
 
 # Instalar dependencias con Bun
 bun install
+```
+
+### Instalación por aplicación
+
+#### Frontend (Next.js)
+```bash
+cd apps/frontend
+bun install
+```
+
+#### Backend (Express)
+```bash
+cd apps/api
+bun install
+```
+
+### Instalación en desarrollo
+Para instalar todas las dependencias y ejecutar ambos servicios:
+```bash
+bun install
+bun dev
 ```
 
 ## Desarrollo
