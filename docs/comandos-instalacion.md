@@ -33,6 +33,34 @@ bunx --yes create-next-app@latest frontend --ts --tailwind --eslint --app --src-
 cd ..
 ```
 
+### Gestión de Dependencias con Bun
+Bun utiliza una estructura de node_modules centralizada en workspaces:
+
+```bash
+# Estructura de directorios
+tree -L 3 node_modules
+# node_modules/
+# ├── .bin
+# ├── .cache
+# └── (dependencias compartidas)
+
+# Instalación local en workspace
+bun add -D eslint @types/node --workspace=frontend
+```
+
+```powershell
+# Ver dependencias instaladas
+bun pm ls --all
+
+# Actualizar dependencias específicas
+bun update next typescript --workspace=frontend
+```
+
+Esta configuración optimiza:
+- Espacio en disco mediante dependencias compartidas
+- Velocidad de instalación con caché global
+- Consistencia entre entornos con bun.lockb
+
 ### Configuración del Backend (Express)
 
 ```bash

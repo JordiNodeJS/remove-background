@@ -9,6 +9,7 @@
   ],
   "scripts": {
     "dev": "bun run --parallel --filter=* dev",
+    "dev:frontend": "bun run --filter=@remove-background/frontend dev",
     "build": "bun run --parallel --filter=* build",
     "start": "bun run --parallel --filter=* start"
   },
