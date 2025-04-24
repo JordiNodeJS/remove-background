@@ -1,48 +1,24 @@
-# Documentación del Backend
-
-## Configuración de Express con Bun
-
-### Requisitos previos
-- Bun versión 1.x
-- Node.js 18+
-
-### Estructura de directorios
-```
-apps/api/
-├── src/
-│   ├── controllers/    # Controladores de endpoints
-│   ├── middleware/     # Middlewares personalizados
-│   ├── routes/         # Definiciones de rutas
-│   └── utils/          # Utilidades compartidas
-├── tsconfig.json       # Configuración TypeScript
-└── package.json        # Dependencias y scripts
-```
-
-## Configuración TypeScript
-La configuración del compilador se encuentra en <mcfile name="tsconfig.json" path="apps/api/tsconfig.json"></mcfile>.
-
-Principales opciones:
-- Target: ESNext
-- Módulos ESM
-- Strict type checking
-- Compatibilidad con Bun
-
-## Comandos clave
+## Comandos Backend (Express 5)
 
 ```bash
-# Ejecutar en modo desarrollo
-bun run dev
+# Iniciar servidor en desarrollo (modo workspace)
+bun run dev:all
 
-# Construir para producción
-bun run build
+# Alternativa específica para backend
+bun run --filter=@remove-background/api dev
 
-# Ejecutar tests
-bun test
+# Ejecutar directamente
+bun --filter=@remove-background/api run src/index.ts
 ```
 
-## Despliegue
-Recomendado usar:
-- Docker con imagen oficial de Bun
-- Plataformas como Railway o Render
+Configuración clave:
+- Runtime Bun para TypeScript nativo
+- Express 5 con sistema de módulos ESM
+- Configuración de seguridad con Helmet
+- Soporte para CORS y middlewares modernos
 
-[Ver instrucciones completas de Copilot](../../.github/copilot-instructions.md)
+Dependencias principales:
+- `express@5.1.0`
+- `helmet@8.1.0`
+- `cors@2.8.5`
+- `typescript@5.8.3`

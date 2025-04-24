@@ -63,6 +63,7 @@ Edita el archivo `package.json` en la raíz para incluir la configuración de wo
     "packages/*"
   ],
   "scripts": {
+    "dev:all": "bun run --parallel --filter=@remove-background/frontend dev --filter=@remove-background/api dev",
     "dev": "bun run --parallel --filter=* dev",
     "build": "bun run --parallel --filter=* build",
     "start": "bun run --parallel --filter=* start"

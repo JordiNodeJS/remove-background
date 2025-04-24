@@ -13,6 +13,13 @@ app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok' });
 });
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`Servidor backend ejecutándose en http://localhost:${port}`);
+});
+
+process.on('SIGINT', () => {
+  server.close(() => {
+    console.log('Servidor cerrado por interrupción (SIGINT)');
+    process.exit(0);
+  });
 });

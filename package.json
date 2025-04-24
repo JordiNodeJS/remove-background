@@ -4,15 +4,15 @@
   "description": "Aplicación web para eliminar fondos de imágenes automáticamente",
   "private": true,
   "workspaces": [
-    "apps/*",
-    "packages/*"
+    "apps/*"
   ],
   "scripts": {
-    "dev": "bun run --parallel --filter=* dev",
+    "dev:all": "bun run --parallel --signal --filter=@remove-background/frontend --filter=@remove-background/api dev",
+    "dev": "bun run --parallel --filter=@remove-background/frontend --filter=@remove-background/api dev",
     "dev:frontend": "bun run --filter=@remove-background/frontend dev",
     "dev:backend": "bun run --filter=@remove-background/api dev",
-    "build": "bun run --parallel --filter=* build",
-    "start": "bun run --parallel --filter=* start"
+    "build": "bun run --parallel --filter=@remove-background/* build",
+    "start": "bun run --parallel --filter=@remove-background/* start"
   },
   "engines": {
     "node": ">=18.0.0",
