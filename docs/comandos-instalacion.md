@@ -63,6 +63,8 @@ Esta configuración optimiza:
 
 ### Configuración del Backend (Express)
 
+🔗 Ver documentación completa: [Guía del Backend](../comandos-backend.md)
+
 ```bash
 # Navegar a la carpeta de aplicaciones
 cd apps
@@ -152,6 +154,8 @@ Set-Location -Path ..
 ```
 
 ### Configuración del Backend (Express)
+
+🔗 Ver documentación completa: [Guía del Backend](../comandos-backend.md)
 
 ```powershell
 # Navegar a la carpeta de aplicaciones
