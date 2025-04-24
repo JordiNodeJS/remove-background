@@ -69,4 +69,14 @@ Puedes definir un script raíz para ambos:
 
 ---
 
-Esta guía ayuda a Copilot a sugerir cambios y nuevas rutas conforme a la arquitectura monorepo con Bun, Next.js 15 y Express.````
+Esta guía ayuda a Copilot a sugerir cambios y nuevas rutas conforme a la arquitectura monorepo con Bun, Next.js 15 y Express.
+
+---
+
+## Referencias para tareas específicas de backend
+
+Para implementar funcionalidades de procesamiento de imágenes o eliminación de fondo en el backend (Express), consulta el prompt detallado en:
+
+- `.github/prompts/background-removal-node.promt.md`
+
+Este documento contiene instrucciones precisas sobre el uso de la librería `@imgly/background-removal-node` y las mejores prácticas para su integración en el backend del monorepo.
