@@ -1,0 +1,21 @@
+{
+  "name": "remove-background",
+  "version": "1.0.0",
+  "description": "Aplicación web para eliminar fondos de imágenes automáticamente",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "bun run --parallel --filter=* dev",
+    "build": "bun run --parallel --filter=* build",
+    "start": "bun run --parallel --filter=* start"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "bun": ">=1.0.0"
+  },
+  "author": "",
+  "license": "MIT"
+}

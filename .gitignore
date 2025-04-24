@@ -1,0 +1,38 @@
+# Dependencias
+node_modules/
+.bun/
+
+# Entornos de desarrollo
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Archivos de Bun
+bun.lockb
+
+# Next.js
+.next/
+out/
+
+# Sistemas operativos
+.DS_Store
+
+# Editor/IDE
+.vscode/
+.idea/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Testing
+coverage/
+
+# Misc
+*.swp
+*.swo
+*~
