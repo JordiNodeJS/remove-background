@@ -229,3 +229,7 @@ bunx --yes tsc --noEmit                           # Verificar tipos
 - La principal diferencia está en los comandos para crear directorios y navegar entre ellos
 - En PowerShell, se usa `Set-Location` en lugar de `cd` y `New-Item` en lugar de `mkdir`
 - Para rutas en PowerShell, se pueden usar tanto barras normales (`/`) como invertidas (`\`)
+
+Los servicios usan puertos fijos:
+- Frontend: 3000
+- Backend: 3001

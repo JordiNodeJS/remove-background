@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 
-const port = process.env.PORT || 3001;
+const port = 3001; // Fuerza puerto 3001
 const app = express();
 
 app.use(cors());
