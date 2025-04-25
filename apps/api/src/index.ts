@@ -13,6 +13,10 @@ app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok' });
 });
 
+app.get('/', (req, res) => {
+  res.send('Servidor backend ejecutándose');
+});
+
 const server = app.listen(port, () => {
   console.log(`Servidor backend ejecutándose en http://localhost:${port}`);
 });
