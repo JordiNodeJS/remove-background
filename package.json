@@ -13,7 +13,8 @@
     "dev:frontend": "bun run --filter=@remove-background/frontend dev",
     "dev:backend": "bun run --filter=@remove-background/api dev",
     "build": "bun run --parallel --filter=@remove-background/* build",
-    "start": "bun run --parallel --filter=@remove-background/* start"
+    "start": "bun run --parallel --filter=@remove-background/* start",
+    "remove": "bun run apps/api/src/remove.ts"
   },
   "engines": {
     "node": ">=18.0.0",
