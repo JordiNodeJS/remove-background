@@ -65,8 +65,8 @@ async function removeImageBackground() {
       output: { format: "image/png" },
     };
     // Garantiza que config.output.format siempre tenga valor
-    if (!config.output) config.output = { format: "image/png" };
-    if (!config.output.format) config.output.format = "image/png";
+    config.output ??= { format: "image/png" };
+    config.output.format ??= "image/png";
 
     const outputBlob = await removeBackground(inputBlob, config);
     const outputBuffer = Buffer.from(await outputBlob.arrayBuffer());
