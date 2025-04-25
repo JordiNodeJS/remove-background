@@ -63,6 +63,9 @@ async function removeImageBackground() {
       debug: true,
       model: "medium",
       output: { format: "image/png" },
+      progress: (key, current, total) => {
+        console.log(`Downloading ${key}: ${current} of ${total}`);
+      }
     };
     // Garantiza que config.output.format siempre tenga valor
     config.output ??= { format: "image/png" };
