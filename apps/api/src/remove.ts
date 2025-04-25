@@ -1,10 +1,10 @@
-import { removeBackground } from "@imgly/background-removal-node";
+import { removeBackground, type Config } from "@imgly/background-removal-node";
 import { readFile, writeFile, stat } from "fs/promises";
 import { extname } from "path";
 
 // Rutas relativas para las imágenes de entrada y salida
 const inputFile = "./input-01.jpg";
-const outputFile = "./output-01.jpg";
+const outputFile = "./output-01";
 
 // Construcción de URLs absolutas relativas a este módulo (recomendado para ESM y multiplataforma)
 // Usar objetos URL directamente con fs/promises evita problemas de rutas en Windows y es seguro en cualquier sistema operativo.
@@ -47,11 +47,34 @@ async function removeImageBackground() {
 
   // Procesa la imagen para eliminar el fondo
   try {
-    const config = { debug: true };
+    const config: Config = {
+      debug: true,
+      model: "medium",
+      output: {
+        format: "image/png"
+      }
+    };
+    
+    // Asignar valor predeterminado si output no está definido
+    if (!config.output) {
+      config.output = { format: "image/png" };
+    }
     const outputBlob = await removeBackground(inputBlob, config);
     // Buffer.from convierte el resultado (Blob) en un Buffer compatible con Node.js
     const outputBuffer = Buffer.from(await outputBlob.arrayBuffer());
-    await writeFile(outputUrl, outputBuffer);
+    // Determinar extensión de salida según el tipo MIME del resultado
+    const outputMime = config.output?.format || 'image/png';
+    const outputExtMap = {
+      "image/png": ".png",
+      "image/jpeg": ".jpg",
+      "image/x-alpha8": ".png",
+      "image/x-rgba8": ".png",
+      "image/webp": ".webp"
+    };
+    const outputExt = outputExtMap[outputMime] || ".bin";
+    const outputFileWithExt = outputFile + outputExt;
+    const outputUrlWithExt = new URL(outputFileWithExt, import.meta.url);
+    await writeFile(outputUrlWithExt, outputBuffer);
     console.log("¡Fondo eliminado correctamente!");
   } catch (err) {
     console.error("[ERROR] removeBackground falló:", err instanceof Error ? err.message : String(err));
