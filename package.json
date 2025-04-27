@@ -11,7 +11,7 @@
     "dev": "bun run --parallel --filter=@remove-background/frontend --filter=@remove-background/api dev",
     "kill": "kill-port 3000",
     "dev:frontend": "bun run --filter=@remove-background/frontend dev",
-    "dev:backend": "bun run --filter=@remove-background/api dev",
+    "dev:backend": "bun run --watch --filter=@remove-background/api dev",
     "build": "bun run --parallel --filter=@remove-background/* build",
     "start": "bun run --parallel --filter=@remove-background/* start",
     "remove": "bun run apps/api/src/remove.ts"

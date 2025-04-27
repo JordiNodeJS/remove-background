@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
+import removeBackgroundRouter from "./routes/remove-background";
 
 const port = 3001; // Fuerza puerto 3001
 const app = express();
@@ -8,6 +9,7 @@ const app = express();
 app.use(cors());
 app.use(helmet());
 app.use(express.json());
+app.use(removeBackgroundRouter);
 
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok' });
