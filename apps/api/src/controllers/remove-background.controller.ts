@@ -5,13 +5,21 @@ import {
   serverErrorResponse,
   successResponse,
 } from "../utilities/apiResponse";
+import path from "path";
+import fs from "fs";
 
 export const removeBackgroundController: RequestHandler = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
+    const outputDir = path.resolve(__dirname, "../../images-output");
+    if (!fs.existsSync(outputDir)) {
+      fs.mkdirSync(outputDir, { recursive: true });
+    }
+
     const file = req.file;
+    console.log("Received file:", file); // Log para depuración
     if (!file) {
       res
         .status(400)
@@ -24,8 +32,13 @@ export const removeBackgroundController: RequestHandler = async (
       return;
     }
 
-    // Aquí se asume que removeBackgroundFromImage acepta un buffer o path temporal
-    const result = await removeBackgroundFromImage(file.path);
+    const outputPath = path.join(
+      outputDir,
+      `output-${path.basename(file.path)}`
+    );
+
+    // Pasa el objeto file completo al servicio
+    const result = await removeBackgroundFromImage(file);
     res
       .status(200)
       .json(successResponse(result, "Fondo eliminado exitosamente"));

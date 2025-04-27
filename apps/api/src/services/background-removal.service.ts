@@ -2,16 +2,24 @@ import fs from "fs";
 import path from "path";
 
 export const removeBackgroundFromImage = async (
-  imagePath: string
+  file: Express.Multer.File
 ): Promise<string> => {
   try {
-    // Simulación de procesamiento de eliminación de fondo
+    // Log para depuración
+    console.log("[DEBUG] file recibido:", file);
+    if (!file || !file.path) throw new Error("No se recibió archivo válido");
+    // Asegura que la carpeta de salida sea siempre apps/api/images-output
+    const outputDir = path.resolve(__dirname, "../../images-output");
+    if (!fs.existsSync(outputDir)) {
+      fs.mkdirSync(outputDir, { recursive: true });
+    }
+    // Obtiene la extensión original
+    const ext = path.extname(file.originalname) || "";
     const outputPath = path.join(
-      __dirname,
-      "../images-output",
-      `output-${path.basename(imagePath)}`
+      outputDir,
+      `output-${path.basename(file.filename)}${ext}`
     );
-    fs.copyFileSync(imagePath, outputPath); // Simula la salida
+    fs.copyFileSync(file.path, outputPath); // Simula la salida
     return outputPath;
   } catch (error) {
     console.error("Error al eliminar el fondo de la imagen:", error);

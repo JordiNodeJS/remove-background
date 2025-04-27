@@ -165,17 +165,14 @@ La API incluye una ruta POST en `/remove-background` que permite eliminar el fon
 ### Ejemplo de Solicitud con `curl`
 
 ```bash
-curl -X POST http://localhost:3001/remove-background \
--H "Content-Type: application/json" \
--d '{"imagePath": "ruta/a/tu/imagen.jpg"}'
+curl -X POST http://localhost:3001/remove-background -H "Content-Type: multipart/form-data" -F "image=@input-01.png"
+
 ```
 
 ### Explicación:
 
 1. **`-X POST`**: Indica que es una solicitud POST.
 2. **`http://localhost:3001/remove-background`**: URL de la ruta (ajusta el puerto si es diferente).
-3. **`-H "Content-Type: application/json"`**: Especifica que el cuerpo de la solicitud está en formato JSON.
-4. **`-d '{"imagePath": "ruta/a/tu/imagen.jpg"}'`**: Datos enviados en el cuerpo de la solicitud (en este caso, el campo `imagePath`).
 
 ### Respuesta Esperada
 
