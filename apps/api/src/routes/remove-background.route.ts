@@ -12,7 +12,19 @@ if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
   console.log("[INFO] Carpeta 'uploads' creada en:", uploadDir);
 }
-const upload = multer({ dest: uploadDir });
+
+// Configuración de multer para conservar la extensión original
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, uploadDir);
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
+    cb(null, uniqueName);
+  },
+});
+const upload = multer({ storage });
 
 // Middleware de logging para depuración
 router.post(

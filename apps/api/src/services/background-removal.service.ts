@@ -15,10 +15,12 @@ export const removeBackgroundFromImage = async (
     }
     // Obtiene la extensión original
     const ext = path.extname(file.originalname) || "";
-    const outputPath = path.join(
-      outputDir,
-      `output-${path.basename(file.filename)}${ext}`
-    );
+    // Elimina la extensión si ya está incluida en file.filename
+    let baseName = file.filename;
+    if (baseName.endsWith(ext)) {
+      baseName = baseName.slice(0, -ext.length);
+    }
+    const outputPath = path.join(outputDir, `output-${baseName}${ext}`);
     fs.copyFileSync(file.path, outputPath); // Simula la salida
     return outputPath;
   } catch (error) {
