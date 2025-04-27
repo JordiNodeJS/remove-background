@@ -4,7 +4,16 @@
   "description": "Backend para el servicio de eliminación de fondos",
   "main": "src/index.ts",
   "scripts": {
-    "dev": "bun src/index.ts"
+    "dev": "bun src/index.ts",
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "roots": [
+      "<rootDir>/tests"
+    ]
   },
   "type": "module",
   "private": true,
@@ -12,6 +21,10 @@
     "@types/bun": "latest",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.1",
+    "@types/jest": "^29.5.14",
+    "@types/supertest": "^6.0.3",
+    "supertest": "^7.1.0",
+    "ts-jest": "^29.1.1",
     "ts-node": "^10.9.2"
   },
   "peerDependencies": {

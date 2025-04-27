@@ -14,7 +14,8 @@
     "dev:backend": "bun run --watch --filter=@remove-background/api dev",
     "build": "bun run --parallel --filter=@remove-background/* build",
     "start": "bun run --parallel --filter=@remove-background/* start",
-    "remove": "bun run apps/api/src/remove.ts"
+    "remove": "bun run apps/api/src/remove.ts",
+    "test": "bun test apps/api/src/__tests__/remove-background.test.ts"
   },
   "engines": {
     "node": ">=18.0.0",
@@ -24,6 +25,8 @@
   "license": "MIT",
   "dependencies": {
     "@imgly/background-removal-node": "^1.4.5",
-    "kill-port": "^2.0.1"
+    "@types/multer": "^1.4.12",
+    "kill-port": "^2.0.1",
+    "multer": "^1.4.5-lts.2"
   }
 }

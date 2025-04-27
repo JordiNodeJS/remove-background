@@ -1,6 +1,7 @@
 # Guía de Despliegue en Producción
 
 ## 1. Build Optimizado con Bun
+
 ```bash
 # Build frontend (Next.js 15)
 bun run --filter=@remove-background/frontend build
@@ -10,7 +11,9 @@ bun run --filter=@remove-background/api build
 ```
 
 ## 2. Variables de Entorno
+
 Crear archivo `.env.production` en raíz:
+
 ```env
 NODE_ENV=production
 API_PORT=3001
@@ -19,6 +22,7 @@ API_URL=https://api.tudominio.com
 ```
 
 ## 3. Configuración Web Server (Caddy)
+
 ```caddy
 # Configuración básica con HTTPS automático (Windows/Git Bash)
 http://, https:// {
@@ -45,6 +49,7 @@ http://, https:// {
 ```
 
 ### Opción 1: Docker (Recomendado)
+
 ```dockerfile
 # Dockerfile para Caddy
 FROM caddy:2.8-alpine
@@ -56,6 +61,7 @@ CMD ["caddy", "run", "--config", "/etc/caddy/Caddyfile"]
 ```
 
 **Comandos Docker para Windows:**
+
 ```powershell
 #!/bin/bash
 # Verificar requisitos previos
@@ -89,6 +95,7 @@ echo "Contenedor desplegado exitosamente. Verifique con 'docker ps'"
 ```
 
 ### Opción 2: Instalación Manual
+
 ```powershell
 # Instalar Caddy usando Chocolatey
 choco install caddy -y
@@ -97,17 +104,19 @@ choco install caddy -y
 Start-Process caddy -ArgumentList "start --config C:\ruta\al\Caddyfile" -Verb RunAs
 
 # Configurar auto-arranque
-Register-ScheduledTask -TaskName "CaddyService" 
-  -Trigger (New-ScheduledTaskTrigger -AtStartup) 
+Register-ScheduledTask -TaskName "CaddyService"
+  -Trigger (New-ScheduledTaskTrigger -AtStartup)
   -Action (New-ScheduledTaskAction -Execute "caddy" -Argument "run --config C:\ruta\al\Caddyfile")
 ```
 
 **Optimizaciones específicas:**
+
 - Timeouts ajustados para entornos Windows
 - Buffer sizes optimizados para Git Bash
 - Logging en formato JSON para integración con PowerShell
 
 ## 4. Implementación con PM2
+
 ```bash
 # Instalar PM2 globalmente
 bun add -g pm2
@@ -137,6 +146,7 @@ module.exports = {
 ```
 
 ## 5. Health Checks y Monitoreo
+
 ```bash
 # Health Check Endpoint (API)
 curl http://localhost:3001/health
@@ -148,8 +158,31 @@ pm2 monit
 pm2 logs
 ```
 
+## 6. Uso de la Ruta `/remove-background`
+
+La API incluye una ruta POST en `/remove-background` que permite eliminar el fondo de una imagen. A continuación, se detalla cómo probar esta funcionalidad:
+
+### Ejemplo de Solicitud con `curl`
+
+```bash
+curl -X POST http://localhost:3001/remove-background \
+-H "Content-Type: application/json" \
+-d '{"imagePath": "ruta/a/tu/imagen.jpg"}'
+```
+
+### Explicación:
+
+1. **`-X POST`**: Indica que es una solicitud POST.
+2. **`http://localhost:3001/remove-background`**: URL de la ruta (ajusta el puerto si es diferente).
+3. **`-H "Content-Type: application/json"`**: Especifica que el cuerpo de la solicitud está en formato JSON.
+4. **`-d '{"imagePath": "ruta/a/tu/imagen.jpg"}'`**: Datos enviados en el cuerpo de la solicitud (en este caso, el campo `imagePath`).
+
+### Respuesta Esperada
+
+Si la solicitud es exitosa, recibirás un JSON con el resultado del procesamiento de la imagen. En caso de error, se devolverá un mensaje con el código de estado correspondiente.
 
 ## Referencias del Proyecto
+
 - [Configuración Next.js](./comandos-frontend.md)
 - [Instalación Inicial](./comandos-instalacion.md)
 - [Gestión de Entornos](../.gitignore#L5-L8)

@@ -1,31 +1,8 @@
-import express from 'express';
-import cors from 'cors';
-import helmet from 'helmet';
-import removeBackgroundRouter from "./routes/remove-background";
+import { createApp } from "./app";
 
-const port = 3001; // Fuerza puerto 3001
-const app = express();
+const app = createApp();
+const port = process.env.PORT || 3001;
 
-app.use(cors());
-app.use(helmet());
-app.use(express.json());
-app.use(removeBackgroundRouter);
-
-app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'ok' });
-});
-
-app.get('/', (req, res) => {
-  res.send('Servidor backend ejecutándose');
-});
-
-const server = app.listen(port, () => {
-  console.log(`Servidor backend ejecutándose en http://localhost:${port}`);
-});
-
-process.on('SIGINT', () => {
-  server.close(() => {
-    console.log('Servidor cerrado por interrupción (SIGINT)');
-    process.exit(0);
-  });
+app.listen(port, () => {
+  console.log(`Servidor Express ejecutándose en el puerto ${port}`);
 });
