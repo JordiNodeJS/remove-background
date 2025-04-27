@@ -14,7 +14,7 @@
     "dev:backend": "bun run --watch --filter=@remove-background/api dev",
     "build": "bun run --parallel --filter=@remove-background/* build",
     "start": "bun run --parallel --filter=@remove-background/* start",
-    "remove": "bun run apps/api/src/remove.ts",
+    "remove": "bun run apps/api/src/utilities/remove.ts",
     "test": "bun test apps/api/src/__tests__/remove-background.test.ts"
   },
   "engines": {
