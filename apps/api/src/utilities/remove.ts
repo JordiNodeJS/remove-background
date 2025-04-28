@@ -3,8 +3,8 @@ import { readFile, writeFile, stat } from "fs/promises";
 import { extname } from "path";
 
 // Configuración y constantes
-const inputFile = "./input-01.jpg";
-const outputFile = "../images-output/output-01";
+const inputFile = "../../../../input-01.png";
+const outputFile = "../../images-output/output-01";
 const supportedFormats = [".jpg", ".jpeg", ".png"];
 const mimeTypes = {
   ".jpg": "image/jpeg",
