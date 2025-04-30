@@ -10,11 +10,11 @@
     "dev:all": "bun run --parallel --signal --filter=@remove-background/frontend --filter=@remove-background/api dev",
     "dev": "bun run --parallel --filter=@remove-background/frontend --filter=@remove-background/api dev",
     "kill": "kill-port 3000",
-    "dev:frontend": "bun run --filter=@remove-background/frontend dev",
-    "dev:backend": "bun run --watch --filter=@remove-background/api dev",
+    "frontend": "bun run --filter=@remove-background/frontend dev",
+    "backend": "bun run --filter=@remove-background/api dev --watch",
     "build": "bun run --parallel --filter=@remove-background/* build",
     "start": "bun run --parallel --filter=@remove-background/* start",
-    "remove": "bun run apps/api/src/utilities/remove.ts",
+    "rm": "bun run apps/api/src/utilities/remove.ts",
     "test": "bun test apps/api/src/__tests__/remove-background.test.ts"
   },
   "engines": {
