@@ -19,7 +19,7 @@ export const removeBackgroundController: RequestHandler = async (
     }
 
     const file = req.file;
-    console.log("Received file:", file); // Log para depuración
+    console.log("Received file:", file?.filename); // Log para depuración
     if (!file) {
       res
         .status(400)

@@ -19,18 +19,35 @@ const outputExtMap = {
   "image/webp": ".webp",
 };
 
-// Construcción de URLs absolutas relativas a este módulo
-const inputUrl = new URL(inputFile, import.meta.url);
-const outputUrl = new URL(outputFile, import.meta.url);
+export default async function removeImageBackground(
+  filePath: string
+): Promise<Buffer> | never {
+  if (filePath === undefined) {
+    throw new Error("El archivo de entrada no puede ser undefined");
+  }
+  if (filePath === null) {
+    throw new Error("El archivo de entrada no puede ser null");
+  }
+  if (filePath === "") {
+    throw new Error("El archivo de entrada no puede ser una cadena vacía");
+  }
 
-async function removeImageBackground() {
+  // Verifica que el archivo existe y no está vacío
+  console.log("[DEBUG] filePath:", filePath);
+  console.log("[DEBUG] __dirname:", __dirname);
+  console.log("[DEBUG] __filename:", __filename);
+  console.log("[DEBUG] import.meta.url:", import.meta.url);
+  console.log("[DEBUG] process.cwd():", process.cwd());
+
+  const inputUrl = new URL(filePath, import.meta.url);
+
   // 1. Verifica que el archivo existe y no está vacío
-  const stats = await stat(inputUrl);
+  const stats = await stat(filePath);
   if (stats.size === 0)
     throw new Error("El archivo de entrada está vacío o corrupto");
 
   // 2. Comprobación de extensión soportada
-  const ext = extname(inputFile).toLowerCase();
+  const ext = extname(filePath).toLowerCase();
   if (!supportedFormats.includes(ext)) {
     throw new Error(
       `Extensión no soportada: ${ext}. Solo se permiten: ${supportedFormats.join(
@@ -40,7 +57,7 @@ async function removeImageBackground() {
   }
 
   // 3. Leer el archivo de entrada
-  const inputBuffer = await readFile(inputUrl);
+  const inputBuffer = await readFile(filePath);
   // Debug opcional
   // console.log("[DEBUG] inputBuffer length:", inputBuffer.length);
   // console.log("[DEBUG] inputBuffer type:", Object.prototype.toString.call(inputBuffer));
@@ -73,12 +90,14 @@ async function removeImageBackground() {
 
     const outputBlob = await removeBackground(inputBlob, config);
     const outputBuffer = Buffer.from(await outputBlob.arrayBuffer());
-    const outputMime = config.output.format;
-    const outputExt = outputExtMap[outputMime] || ".bin";
-    const outputFileWithExt = outputFile + outputExt;
-    const outputUrlWithExt = new URL(outputFileWithExt, import.meta.url);
-    await writeFile(outputUrlWithExt, outputBuffer);
-    console.log("¡Fondo eliminado correctamente!");
+
+    return outputBuffer; // Retorna el buffer procesado
+    // const outputMime = config.output.format;
+    // const outputExt = outputExtMap[outputMime] || ".bin";
+    // const outputFileWithExt = outputFile + outputExt;
+    // const outputUrlWithExt = new URL(outputFileWithExt, import.meta.url);
+    // await writeFile(outputUrlWithExt, outputBuffer);
+    // console.log("¡Fondo eliminado correctamente!");
   } catch (err) {
     console.error(
       "[ERROR] removeBackground falló:",
@@ -88,10 +107,10 @@ async function removeImageBackground() {
   }
 }
 
-removeImageBackground().catch((error) => {
-  console.error("Error al eliminar el fondo:", error.message || error);
-  process.exit(1);
-});
+// removeImageBackground().catch((error) => {
+//   console.error("Error al eliminar el fondo:", error.message || error);
+//   process.exit(1);
+// });
 
 // Notas sobre el uso de objetos URL con fs/promises:
 // - Es multiplataforma y evita problemas de rutas (especialmente en Windows)

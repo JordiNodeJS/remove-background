@@ -1,9 +1,10 @@
 import fs from "fs/promises";
 import path from "path";
+import removeImageBackground from "../utilities/remove";
 
 export const removeBackgroundFromImage = async (
   file: Express.Multer.File
-): Promise<string> => {
+): Promise<string | undefined> => {
   try {
     // Log para depuración
     console.log("[DEBUG] file recibido:", file);
@@ -20,17 +21,20 @@ export const removeBackgroundFromImage = async (
     const outputPath = path.join(outputDir, `output-${file.filename}`);
 
     // Leer el contenido binario del archivo original
-    const fileContent = await fs.readFile(file.path);
+    // const fileContent = await fs.readFile(file.path);
 
+    const fileBuffer = await removeImageBackground(file.path); // Aquí se llamaría a la función de eliminación de fondo real
+
+    console.log("[DEBUG] fileBuffer length:", fileBuffer.length);
     // Escribir el contenido binario en la nueva ubicación
-    await fs.writeFile(outputPath, fileContent);
+    await fs.writeFile(outputPath, fileBuffer);
 
     // Eliminar el archivo original de uploads
-    await fs.unlink(file.path);
+    // await fs.unlink(file.path);
 
     return outputPath;
   } catch (error) {
     console.error("Error al eliminar el fondo de la imagen:", error);
-    throw new Error("Error al procesar la imagen");
+    // throw new Error("Error al procesar la imagen", error as Error);
   }
 };
