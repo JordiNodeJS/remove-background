@@ -1,3 +1,5 @@
+<!-- IMPORTANTE: Antes de sugerir, modificar o implementar código, revisa y ten en cuenta el estado y los checkpoints de docs/memory-bank.md. Este archivo refleja el progreso y prioridades actuales del proyecto. -->
+
 # Guía de Copilot para Monorepo Next.js 15 + Express con Bun
 
 Esta guía describe cómo estructurar y configurar un proyecto monorepo que integra un frontend en Next.js 15 y un backend en Express, usando Bun como gestor y empaquetador de dependencias.
