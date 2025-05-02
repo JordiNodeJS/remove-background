@@ -1,6 +1,6 @@
 # Banco de Memoria y Progreso del Proyecto
 
-## Última actualización: [Fecha actual]
+## Última actualización: 2025-05-02
 
 ---
 
@@ -23,8 +23,8 @@
 - [x] 2.5.B Instalación de la librería `background-removal-node`
 - [ ] 2.6.B Integración real de `background-removal-node` en el servicio
 - [ ] 2.7.B Eliminación automática del archivo original tras procesar
-- [ ] 2.8.B Pruebas unitarias del servicio de imágenes
-- [ ] 2.9.B Documentación de endpoints
+- [x] 2.8.B Pruebas unitarias del servicio de imágenes (test creado)
+- [x] 2.9.B Documentación de endpoints y comandos de test en docs
 
 ---
 
@@ -48,7 +48,7 @@
 ### 5.CD Configuración y DevOps
 
 - [x] 5.1.CD Scripts de desarrollo y arranque con Bun y concurrently
-- [ ] 5.2.CD Variables de entorno documentadas y configuradas
+- [x] 5.2.CD Variables de entorno documentadas y configuradas en docs
 - [ ] 5.3.CD Configuración de CI/CD para instalar con Bun y ejecutar tests
 
 ---
