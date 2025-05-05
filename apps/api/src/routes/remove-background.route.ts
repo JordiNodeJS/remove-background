@@ -22,6 +22,7 @@ import multer from "multer";
 import fs from "fs";
 import path from "path";
 import { removeBackgroundController } from "../controllers/remove-background.controller";
+import { removeBackgroundLinkController } from "../controllers/remove-background-link.controller";
 
 const router = express.Router();
 
@@ -57,7 +58,7 @@ const upload = multer({ storage });
 
 // Middleware de logging para depuración
 router.post(
-  "/",
+  "/image-buffer",
   (req, res, next) => {
     console.log("[DEBUG] Content-Type:", req.headers["content-type"]);
     next();
@@ -65,5 +66,8 @@ router.post(
   upload.single("image"),
   removeBackgroundController
 );
+
+// Ruta para obtener la URL de la imagen procesada
+router.post("/link", upload.single("image"), removeBackgroundLinkController);
 
 export default router;

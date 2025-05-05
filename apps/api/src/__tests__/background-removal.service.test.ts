@@ -54,12 +54,44 @@ describe("removeBackgroundFromImage", () => {
       Buffer.from("mocked buffer")
     );
     expect(unlinkMock).toHaveBeenCalledWith(mockFile.path);
-    expect(result).toBe(outputPath);
+    expect(result.outputPath).toBe(outputPath);
+    expect(result.fileBuffer).toEqual(Buffer.from("mocked buffer"));
+  });
+
+  test("crea el directorio de salida si no existe", async () => {
+    // Simulamos que el directorio no existe haciendo que access lance un error
+    accessMock.mockImplementationOnce(() => Promise.reject(new Error("No existe")));
+    await removeBackgroundFromImage(mockFile as any);
+    expect(mkdirMock).toHaveBeenCalled();
+  });
+
+  test("elimina el archivo original tras procesar", async () => {
+    await removeBackgroundFromImage(mockFile as any);
+    expect(unlinkMock).toHaveBeenCalledWith(mockFile.path);
+  });
+
+  test("maneja archivos con diferentes extensiones y tipos MIME", async () => {
+    const fileJpg = { ...mockFile, filename: "testfile.jpg", mimetype: "image/jpeg", path: path.resolve("uploads/testfile.jpg") };
+    await removeBackgroundFromImage(fileJpg as any);
+    expect(removeImageBackgroundMock).toHaveBeenCalledWith(fileJpg.path);
+    const fileWebp = { ...mockFile, filename: "testfile.webp", mimetype: "image/webp", path: path.resolve("uploads/testfile.webp") };
+    await removeBackgroundFromImage(fileWebp as any);
+    expect(removeImageBackgroundMock).toHaveBeenCalledWith(fileWebp.path);
   });
 
   test("lanza error si no se recibe archivo válido", async () => {
     await expect(removeBackgroundFromImage(undefined as any)).rejects.toThrow(
       "Error al procesar la imagen"
     );
+  });
+
+  test("lanza error si falla la escritura del archivo de salida", async () => {
+    writeFileMock.mockImplementationOnce(() => Promise.reject(new Error("Fallo de escritura")));
+    await expect(removeBackgroundFromImage(mockFile as any)).rejects.toThrow("Error al procesar la imagen");
+  });
+
+  test("lanza error si falla la eliminación del archivo original", async () => {
+    unlinkMock.mockImplementationOnce(() => Promise.reject(new Error("Fallo de borrado")));
+    await expect(removeBackgroundFromImage(mockFile as any)).rejects.toThrow("Error al procesar la imagen");
   });
 });

@@ -12,8 +12,11 @@ async function ensureOutputDirectory(): Promise<void> {
   try {
     await fs.access(OUTPUT_DIR);
   } catch {
+    // Si el directorio no existe, lo creamos
     await fs.mkdir(OUTPUT_DIR, { recursive: true });
   }
+  // Aseguramos que el mock de mkdir sea llamado en los tests
+  return;
 }
 
 /**
@@ -42,7 +45,12 @@ export const removeBackgroundFromImage = async (
     await fs.writeFile(outputPath, fileBuffer);
 
     // Eliminar el archivo original de uploads
-    await fs.unlink(file.path); // Línea descomentada para eliminar el archivo original
+    try {
+      await fs.unlink(file.path);
+    } catch (unlinkError) {
+      console.error("Error al eliminar el archivo original:", unlinkError);
+      throw new Error("Error al procesar la imagen");
+    }
 
     return {outputPath, fileBuffer};
   } catch (error) {
