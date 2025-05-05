@@ -21,7 +21,7 @@ async function ensureOutputDirectory(): Promise<void> {
  */
 export const removeBackgroundFromImage = async (
   file: Express.Multer.File
-): Promise<string | undefined> => {
+): Promise<{ outputPath: string; fileBuffer: Buffer }> => {
   try {
     // Validación inicial
     if (!file || !file.path) throw new Error("No se recibió archivo válido");
@@ -44,7 +44,7 @@ export const removeBackgroundFromImage = async (
     // Eliminar el archivo original de uploads
     await fs.unlink(file.path); // Línea descomentada para eliminar el archivo original
 
-    return outputPath;
+    return {outputPath, fileBuffer};
   } catch (error) {
     console.error("Error al eliminar el fondo de la imagen:", error);
     throw new Error("Error al procesar la imagen"); // Línea descomentada para lanzar error

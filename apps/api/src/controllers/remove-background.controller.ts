@@ -32,16 +32,12 @@ export const removeBackgroundController: RequestHandler = async (
       return;
     }
 
-    const outputPath = path.join(
-      outputDir,
-      `output-${path.basename(file.path)}`
-    );
+    // Procesa la imagen y obtiene el buffer
+    const { fileBuffer } = await removeBackgroundFromImage(file);
 
-    // Pasa el objeto file completo al servicio
-    const result = await removeBackgroundFromImage(file);
-    res
-      .status(200)
-      .json(successResponse(result, "Fondo eliminado exitosamente"));
+    // Configura la cabecera Content-Type para image/png
+    res.setHeader("Content-Type", "image/png");
+    res.status(200).send(fileBuffer);
   } catch (error) {
     console.error("Error al procesar la imagen:", error);
     res.status(500).json(serverErrorResponse(error as Error));
