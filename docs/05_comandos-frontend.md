@@ -1,4 +1,6 @@
-## Comandos Frontend (Next.js 15)
+# 6. Comandos Frontend (Next.js 15)
+
+Esta guía recopila los comandos y configuraciones clave para desarrollar y ejecutar el frontend Next.js 15 del monorepo Remove Background usando Bun. Incluye alternativas y características principales del entorno frontend.
 
 ```bash
 # Desarrollo

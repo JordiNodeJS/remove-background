@@ -1,6 +1,6 @@
-# 📜 Leer archivos en Node.js con ES Modules: ¿Por qué es mejor `URL()` que `path.resolve()`?
+# 3. Leer archivos en Node.js con ES Modules: ¿Por qué es mejor `URL()` que `path.resolve()`?
 
-Cuando trabajas con Node.js en modo **ES Modules** (`import`/`export`), la forma recomendada de construir rutas absolutas a archivos es usando `new URL()` en vez de `path.resolve()`. Aquí te explico por qué:
+Esta guía explica la forma recomendada y más portable de construir rutas de archivos en Node.js usando ES Modules, alineada con las mejores prácticas del monorepo. Aquí aprenderás por qué `new URL()` es preferible a `path.resolve()` y cómo aplicarlo en tus scripts y utilidades.
 
 ## 🟢 Ventajas de `new URL()` sobre `path.resolve()`
 

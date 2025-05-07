@@ -1,4 +1,6 @@
-# Comparativa Técnica: npm vs Bun
+# 7. Comparativa Técnica: npm vs Bun
+
+Esta guía presenta una comparativa técnica entre npm y Bun en el contexto del monorepo Remove Background, resaltando ventajas, diferencias y beneficios para el stack Next.js 15 + Express + Bun.
 
 **Diferencias clave en el contexto del monorepo:**
 

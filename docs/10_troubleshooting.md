@@ -1,4 +1,6 @@
-# Troubleshooting: Enlaces simbólicos (symlinks) en monorepos Bun
+# 10. Troubleshooting: Enlaces simbólicos (symlinks) en monorepos Bun
+
+Esta guía documenta problemas comunes y soluciones relacionadas con enlaces simbólicos (symlinks) en monorepos gestionados con Bun, especialmente al usar dependencias que requieren recursos internos en subpaquetes.
 
 ## ¿Por qué ocurre este problema?
 

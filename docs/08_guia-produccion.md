@@ -1,4 +1,6 @@
-# Guía de Despliegue en Producción
+# 8. Guía de Despliegue en Producción
+
+Esta guía describe los pasos y configuraciones recomendadas para desplegar el monorepo Remove Background en producción, incluyendo build optimizado, variables de entorno, configuración de servidores y pruebas de endpoints clave.
 
 ## 1. Build Optimizado con Bun
 

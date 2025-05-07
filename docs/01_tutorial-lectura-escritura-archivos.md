@@ -1,6 +1,6 @@
-# Tutorial básico: Lectura y escritura de archivos en Node.js con fs/promises
+# 2. Tutorial básico: Lectura y escritura de archivos en Node.js con fs/promises
 
-Este tutorial te guiará paso a paso sobre cómo leer, escribir y eliminar archivos (imágenes u otros tipos) en Node.js utilizando el módulo `fs/promises`, tomando como referencia el código real del proyecto.
+Este tutorial es el punto de partida práctico para trabajar con archivos en Node.js dentro del monorepo. Aquí aprenderás a leer, escribir y eliminar archivos (por ejemplo, imágenes) usando fs/promises, siguiendo las mejores prácticas del proyecto.
 
 ## 1. Importar el módulo necesario
 

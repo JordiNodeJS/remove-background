@@ -1,6 +1,6 @@
-# Convenciones y Buenas Prácticas para Mensajes de Commit
+# 11. Convenciones y Buenas Prácticas para Mensajes de Commit
 
-Para mantener la coherencia y claridad en el historial del proyecto, es fundamental seguir una convención estándar al escribir los mensajes de commit. Esto facilita la colaboración, la revisión de cambios y la automatización de procesos.
+Esta guía define las reglas y ejemplos recomendados para escribir mensajes de commit claros y consistentes en el monorepo Remove Background. Sigue estas convenciones para facilitar la colaboración y la trazabilidad de cambios.
 
 ---
 

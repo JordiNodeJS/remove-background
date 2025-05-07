@@ -1,4 +1,6 @@
-# Banco de Memoria y Progreso del Proyecto
+# 9. Banco de Memoria y Progreso del Proyecto
+
+Este documento centraliza el estado, los checkpoints y las prioridades actuales del monorepo Remove Background. Úsalo como referencia rápida para saber qué está hecho, qué falta y cuáles son los próximos pasos.
 
 ## Última actualización: 2025-05-02
 

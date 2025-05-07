@@ -1,6 +1,6 @@
-# Comandos de Instalación para Remove Background
+# 4. Comandos de Instalación para Remove Background
 
-Este documento detalla los comandos utilizados para la instalación del proyecto Remove Background, tanto para bash como para PowerShell.
+Esta guía recopila los comandos esenciales para instalar, configurar y arrancar el monorepo Remove Background, tanto en Bash como en PowerShell. Incluye pasos para frontend (Next.js 15), backend (Express) y paquetes compartidos, siguiendo la arquitectura recomendada del proyecto.
 
 ## Estructura del Proyecto
 
