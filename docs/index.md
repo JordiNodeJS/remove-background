@@ -44,9 +44,19 @@ Bienvenido a la documentación del proyecto **Remove Background**. Aquí encontr
    - Última actualización
    - Checkpoints y progreso
 10. [Troubleshooting: Enlaces simbólicos (symlinks) en monorepos Bun](./10_troubleshooting.md)
-   - Problemas comunes y soluciones
+
+- Problemas comunes y soluciones
+
 11. [Convenciones y Buenas Prácticas para Mensajes de Commit](./11_convenciones-mensajes-commit.md)
-   - Reglas, ejemplos y recursos
+
+- Reglas, ejemplos y recursos
+
+12. [Guía: Persistencia en el backend con SQLite, better-sqlite3 y Prisma](./12_sqlite-prisma-backend.md)
+
+- Instalación de dependencias
+- Ejemplo con better-sqlite3
+- Ejemplo con Prisma
+- Buenas prácticas y recomendaciones
 
 ---
 
