@@ -45,6 +45,8 @@ Bienvenido a la documentación del proyecto **Remove Background**. Aquí encontr
    - Checkpoints y progreso
 10. [Troubleshooting: Enlaces simbólicos (symlinks) en monorepos Bun](./10_troubleshooting.md)
    - Problemas comunes y soluciones
+11. [Convenciones y Buenas Prácticas para Mensajes de Commit](./11_convenciones-mensajes-commit.md)
+   - Reglas, ejemplos y recursos
 
 ---
 
