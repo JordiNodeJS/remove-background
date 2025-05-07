@@ -1,6 +1,6 @@
 import { removeBackground, type Config } from "@imgly/background-removal-node";
-import { readFile, writeFile, stat } from "fs/promises";
-import { extname } from "path";
+import { readFile, writeFile, stat, mkdir, access } from "fs/promises";
+import { extname, resolve } from "path";
 
 // Configuración y constantes
 const inputFile = "../../../../input-01.png";
@@ -18,6 +18,17 @@ const outputExtMap = {
   "image/x-rgba8": ".png",
   "image/webp": ".webp",
 };
+
+// Ruta personalizada para los modelos
+const modelDir = resolve(__dirname, "../bg-removal-models");
+
+async function ensureModelDirExists() {
+  try {
+    await access(modelDir);
+  } catch {
+    await mkdir(modelDir, { recursive: true });
+  }
+}
 
 export default async function removeImageBackground(
   filePath: string
@@ -39,7 +50,8 @@ export default async function removeImageBackground(
   console.log("[DEBUG] import.meta.url:", import.meta.url);
   console.log("[DEBUG] process.cwd():", process.cwd());
 
-  const inputUrl = new URL(filePath, import.meta.url);
+  // Asegura que el directorio de modelos existe
+  await ensureModelDirExists();
 
   // 1. Verifica que el archivo existe y no está vacío
   const stats = await stat(filePath);
@@ -50,18 +62,12 @@ export default async function removeImageBackground(
   const ext = extname(filePath).toLowerCase();
   if (!supportedFormats.includes(ext)) {
     throw new Error(
-      `Extensión no soportada: ${ext}. Solo se permiten: ${supportedFormats.join(
-        ", "
-      )}`
+      `Extensión no soportada: ${ext}. Solo se permiten: ${supportedFormats.join(", ")}`
     );
   }
 
   // 3. Leer el archivo de entrada
   const inputBuffer = await readFile(filePath);
-  // Debug opcional
-  // console.log("[DEBUG] inputBuffer length:", inputBuffer.length);
-  // console.log("[DEBUG] inputBuffer type:", Object.prototype.toString.call(inputBuffer));
-  // console.log("[DEBUG] inputBuffer slice (primeros 16 bytes):", inputBuffer.subarray(0, 16));
 
   // 4. Determinar el tipo MIME
   const mimeType = mimeTypes[ext as keyof typeof mimeTypes];
@@ -82,22 +88,15 @@ export default async function removeImageBackground(
       output: { format: "image/png" },
       progress: (key, current, total) => {
         console.log(`Downloading ${key}: ${current} of ${total}`);
-      },
+      }
     };
-    // Garantiza que config.output.format siempre tenga valor
     config.output ??= { format: "image/png" };
     config.output.format ??= "image/png";
 
     const outputBlob = await removeBackground(inputBlob, config);
     const outputBuffer = Buffer.from(await outputBlob.arrayBuffer());
 
-    return outputBuffer; // Retorna el buffer procesado
-    // const outputMime = config.output.format;
-    // const outputExt = outputExtMap[outputMime] || ".bin";
-    // const outputFileWithExt = outputFile + outputExt;
-    // const outputUrlWithExt = new URL(outputFileWithExt, import.meta.url);
-    // await writeFile(outputUrlWithExt, outputBuffer);
-    // console.log("¡Fondo eliminado correctamente!");
+    return outputBuffer;
   } catch (err) {
     console.error(
       "[ERROR] removeBackground falló:",
@@ -106,11 +105,6 @@ export default async function removeImageBackground(
     throw err;
   }
 }
-
-// removeImageBackground().catch((error) => {
-//   console.error("Error al eliminar el fondo:", error.message || error);
-//   process.exit(1);
-// });
 
 // Notas sobre el uso de objetos URL con fs/promises:
 // - Es multiplataforma y evita problemas de rutas (especialmente en Windows)
