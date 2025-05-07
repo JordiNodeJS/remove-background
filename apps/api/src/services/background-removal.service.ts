@@ -32,7 +32,7 @@ export const removeBackgroundFromImage = async (
     // Asegurar directorio de salida
     await ensureOutputDirectory();
 
-    // Construir ruta de salida
+    // Construimos la ruta de salida
     const outputPath = path.join(OUTPUT_DIR, `output-${file.filename}`);
 
     // Procesa imagen
@@ -44,14 +44,13 @@ export const removeBackgroundFromImage = async (
     // Escribir resultado
     await fs.writeFile(outputPath, fileBuffer);
 
-    // Eliminar el archivo original de uploads
+    // Elimina el archivo original de uploads
     try {
       await fs.unlink(file.path);
     } catch (unlinkError) {
       console.error("Error al eliminar el archivo original:", unlinkError);
       throw new Error("Error al procesar la imagen");
     }
-
     return {outputPath, fileBuffer};
   } catch (error) {
     console.error("Error al eliminar el fondo de la imagen:", error);
