@@ -67,20 +67,23 @@ processImage().catch(console.error);
 ## ⚠️ Problemas al usar .pathname con new URL()
 
 1. **Incompatibilidad en Windows**:
+
    - `.pathname` devuelve rutas con `/` que no funcionan bien con `fs` en Windows
    - Ejemplo: `file:///C:/path` → `/C:/path` (inválido para Node.js)
 
 2. **Pérdida de funcionalidad**:
+
    - Los métodos `fs/promises` aceptan objetos URL directamente
    - Convertir a pathname obliga a usar `path` para normalizar
 
 3. **Solución recomendada**:
+
 ```javascript
 // Correcto (funciona en todos los sistemas):
-await readFile(new URL('./file.txt', import.meta.url));
+await readFile(new URL("./file.txt", import.meta.url));
 
 // Problemático (especialmente en Windows):
-await readFile(new URL('./file.txt', import.meta.url).pathname);
+await readFile(new URL("./file.txt", import.meta.url).pathname);
 ```
 
 4. **Consistencia con estándares**:

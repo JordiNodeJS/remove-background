@@ -24,6 +24,7 @@ Esta guía define las reglas y ejemplos recomendados para escribir mensajes de c
 ```
 
 ### Tipos sugeridos
+
 - feat: Nueva funcionalidad
 - fix: Corrección de errores
 - docs: Cambios en la documentación
@@ -45,6 +46,7 @@ Esta guía define las reglas y ejemplos recomendados para escribir mensajes de c
 ---
 
 ## Recursos
+
 - [Conventional Commits](https://www.conventionalcommits.org/es/v1.0.0/)
 - [Guía de mensajes de commit en español](https://carlosazaustre.es/como-escribir-buenos-commits/)
 

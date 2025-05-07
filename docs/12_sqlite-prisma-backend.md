@@ -27,6 +27,8 @@ Si usas TypeScript:
 bun add -d @types/better-sqlite3 --workspace=apps/api
 ```
 
+> **Recomendación:** La base de datos debe guardarse fuera del código fuente, por ejemplo en `apps/api/data/images.db`. Si la carpeta `data` no existe, créala manualmente.
+
 ### Opción B: Prisma + SQLite
 
 ```sh
@@ -44,13 +46,17 @@ bunx prisma init --datasource-provider sqlite
 
 ## 2. Ejemplo de uso con better-sqlite3
 
-Crea `src/services/db.service.ts`:
+Crea el servicio en `apps/api/src/services/db.service.ts`:
 
 ```typescript
 import Database from "better-sqlite3";
 import path from "path";
+import fs from "fs";
 
-const dbPath = path.resolve(__dirname, "../../data/images.db");
+// Ruta recomendada para la base de datos
+const dbDir = path.resolve(__dirname, "../../data");
+const dbPath = path.join(dbDir, "images.db");
+if (!fs.existsSync(dbDir)) fs.mkdirSync(dbDir);
 const db = new Database(dbPath);
 
 db.exec(`
@@ -70,6 +76,24 @@ export function getProcessedImages() {
   return db
     .prepare("SELECT * FROM processed_images ORDER BY processed_at DESC")
     .all();
+}
+```
+
+### Ejemplo de uso en un controlador
+
+Supón que tienes un controlador en `apps/api/src/controllers/remove-background.controller.ts`:
+
+```typescript
+import { saveProcessedImage, getProcessedImages } from "../services/db.service";
+
+// Guardar un archivo procesado
+default async function handleProcessedFile(filename: string) {
+  saveProcessedImage(filename);
+}
+
+// Obtener archivos procesados
+default async function listProcessedFiles() {
+  return getProcessedImages();
 }
 ```
 
@@ -124,8 +148,10 @@ export async function getProcessedImages() {
 
 - Usa better-sqlite3 para operaciones simples y alto rendimiento sin ORM.
 - Usa Prisma si prefieres tipado fuerte, migraciones y relaciones complejas.
-- Mantén la base de datos fuera de la carpeta de código fuente (por ejemplo, en `/data`).
-- No subas archivos `.db` a git; usa `.gitignore`.
+- Mantén la base de datos fuera de la carpeta de código fuente (por ejemplo, en `/data` o `apps/api/data`).
+- **Agrega `/data/*.db` y/o `apps/api/data/*.db` a tu `.gitignore` para evitar subir archivos de base de datos.**
+- En desarrollo, puedes usar rutas relativas; en producción, asegúrate de tener backups y rutas absolutas si es necesario.
+- Para probar la integración, crea un test en `apps/api/src/__tests__/db.service.test.ts` que verifique la inserción y consulta de registros.
 
 ---
 

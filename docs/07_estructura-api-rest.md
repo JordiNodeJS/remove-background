@@ -43,13 +43,13 @@ src/routes/
 Cada archivo de rutas importa su controlador correspondiente y define los endpoints:
 
 ```typescript
-import { Router } from 'express';
-import { getUsers, createUser } from '../controllers/users';
+import { Router } from "express";
+import { getUsers, createUser } from "../controllers/users";
 
 const router = Router();
 
-router.get('/', getUsers);
-router.post('/', createUser);
+router.get("/", getUsers);
+router.post("/", createUser);
 
 export default router;
 ```

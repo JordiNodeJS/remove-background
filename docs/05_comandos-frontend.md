@@ -14,6 +14,7 @@ bun run --filter=@remove-background/frontend dev
 ```
 
 Características clave:
+
 - Configuración TurboPack integrada
 - Soporte para React 19
 - Sistema de compilación optimizado con Bun
