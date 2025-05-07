@@ -6,7 +6,7 @@ Bienvenido a la documentación del proyecto **Remove Background**. Aquí encontr
 
 ## Tabla de Contenido
 
-1. [Tutorial básico: Lectura y escritura de archivos en Node.js con fs/promises](./tutorial-lectura-escritura-archivos.md)
+1. [Tutorial básico: Lectura y escritura de archivos en Node.js con fs/promises](./01_tutorial-lectura-escritura-archivos.md)
    - 1. Importar el módulo necesario
    - 2. Asegurar la existencia de un directorio
    - 3. Leer un archivo (por ejemplo, una imagen)
@@ -16,34 +16,34 @@ Bienvenido a la documentación del proyecto **Remove Background**. Aquí encontr
    - 7. Buenas prácticas y advertencias
    - 8. Manejo de rutas de archivos de forma portable
    - 9. Recursos adicionales
-2. [📜 Leer archivos en Node.js con ES Modules: ¿Por qué es mejor `URL()` que `path.resolve()`?](./abosolute-paths.md)
+2. [📜 Leer archivos en Node.js con ES Modules: ¿Por qué es mejor `URL()` que `path.resolve()`?](./02_abosolute-paths.md)
    - Ventajas de `new URL()` sobre `path.resolve()`
    - Requisitos
    - Ejemplo recomendado
-3. [Comandos de Instalación para Remove Background](./comandos-instalacion.md)
+3. [Comandos de Instalación para Remove Background](./03_comandos-instalacion.md)
    - Estructura del Proyecto
    - Comandos para Bash y PowerShell
    - Instalación de dependencias y scripts útiles
-4. [Comandos Backend (Express 5)](./comandos-backend.md)
+4. [Comandos Backend (Express 5)](./04_comandos-backend.md)
    - Iniciar servidor en desarrollo
    - Configuración clave
-5. [Comandos Frontend (Next.js 15)](./comandos-frontend.md)
+5. [Comandos Frontend (Next.js 15)](./05_comandos-frontend.md)
    - Desarrollo y alternativas
    - Características clave
-6. [Comparativa Técnica: npm vs Bun](./comparativa-npm-bun.md)
+6. [Comparativa Técnica: npm vs Bun](./06_comparativa-npm-bun.md)
    - Diferencias clave en el contexto del monorepo
    - Tabla comparativa
-7. [Estructura recomendada para una API REST en el monorepo](./estructura-api-rest.md)
+7. [Estructura recomendada para una API REST en el monorepo](./07_estructura-api-rest.md)
    - Organización de carpetas y archivos
    - Buenas prácticas
-8. [Guía de Despliegue en Producción](./guia-produccion.md)
+8. [Guía de Despliegue en Producción](./08_guia-produccion.md)
    - Build optimizado
    - Variables de entorno
    - Configuración de servidores
-9. [Banco de Memoria y Progreso del Proyecto](./memory-bank.md)
+9. [Banco de Memoria y Progreso del Proyecto](./09_memory-bank.md)
    - Última actualización
    - Checkpoints y progreso
-10. [Troubleshooting: Enlaces simbólicos (symlinks) en monorepos Bun](./troubleshooting.md)
+10. [Troubleshooting: Enlaces simbólicos (symlinks) en monorepos Bun](./10_troubleshooting.md)
    - Problemas comunes y soluciones
 
 ---

@@ -180,6 +180,6 @@ Si la solicitud es exitosa, recibirás un JSON con el resultado del procesamient
 
 ## Referencias del Proyecto
 
-- [Configuración Next.js](./comandos-frontend.md)
-- [Instalación Inicial](./comandos-instalacion.md)
+- [Configuración Next.js](./05_comandos-frontend.md)
+- [Instalación Inicial](./03_comandos-instalacion.md)
 - [Gestión de Entornos](../.gitignore#L5-L8)
