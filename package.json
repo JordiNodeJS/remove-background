@@ -16,7 +16,8 @@
     "start": "bun run --parallel --filter=@remove-background/* start",
     "rm": "bun run apps/api/src/utilities/remove-copy.ts",
     "test": "bun test apps/api/src/__tests__/remove-background.test.ts",
-    "start:prod:full": "bun run build:all && bash ./start-prod.sh"
+    "start:prod:full": "bun run build:all && bash ./start-prod.sh",
+    "start:all": "bun run build:all && bunx kill-port 3000 3001 && bun run --parallel --filter=@remove-background/frontend --filter=@remove-background/api start"
   },
   "engines": {
     "node": ">=18.0.0",
