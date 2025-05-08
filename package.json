@@ -13,11 +13,12 @@
     "frontend": "bun run --filter=@remove-background/frontend dev",
     "backend": "bun run --filter=@remove-background/api dev --watch",
     "build:all": "bun run --parallel --signal --filter=@remove-background/frontend --filter=@remove-background/api build",
-    "start": "bun run --parallel --filter=@remove-background/* start",
+    "start": "bunx kill-port 3000 3001 && bun run --parallel --filter=@remove-background/frontend --filter=@remove-background/api start",
     "rm": "bun run apps/api/src/utilities/remove-copy.ts",
     "test": "bun test apps/api/src/__tests__/remove-background.test.ts",
     "start:prod:full": "bun run build:all && bash ./start-prod.sh",
-    "start:all": "bun run build:all && bunx kill-port 3000 3001 && bun run --parallel --filter=@remove-background/frontend --filter=@remove-background/api start"
+    "start:all": "bun run build:all && bunx kill-port 3000 3001 && bun run --parallel --filter=@remove-background/frontend --filter=@remove-background/api start",
+    "stop:all": "bunx kill-port 3000 3001"
   },
   "engines": {
     "node": ">=18.0.0",
