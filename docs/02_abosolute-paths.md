@@ -1,6 +1,6 @@
-# 3. Leer archivos en Node.js con ES Modules: ¿Por qué es mejor `URL()` que `path.resolve()`?
+# 📜 Leer archivos en Node.js con ES Modules: ¿Por qué es mejor `URL()` que `path.resolve()`?
 
-Esta guía explica la forma recomendada y más portable de construir rutas de archivos en Node.js usando ES Modules, alineada con las mejores prácticas del monorepo. Aquí aprenderás por qué `new URL()` es preferible a `path.resolve()` y cómo aplicarlo en tus scripts y utilidades.
+Cuando trabajas con Node.js en modo **ES Modules** (`import`/`export`), la forma recomendada de construir rutas absolutas a archivos es usando `new URL()` en vez de `path.resolve()`. Aquí te explico por qué:
 
 ## 🟢 Ventajas de `new URL()` sobre `path.resolve()`
 
@@ -67,23 +67,20 @@ processImage().catch(console.error);
 ## ⚠️ Problemas al usar .pathname con new URL()
 
 1. **Incompatibilidad en Windows**:
-
    - `.pathname` devuelve rutas con `/` que no funcionan bien con `fs` en Windows
    - Ejemplo: `file:///C:/path` → `/C:/path` (inválido para Node.js)
 
 2. **Pérdida de funcionalidad**:
-
    - Los métodos `fs/promises` aceptan objetos URL directamente
    - Convertir a pathname obliga a usar `path` para normalizar
 
 3. **Solución recomendada**:
-
 ```javascript
 // Correcto (funciona en todos los sistemas):
-await readFile(new URL("./file.txt", import.meta.url));
+await readFile(new URL('./file.txt', import.meta.url));
 
 // Problemático (especialmente en Windows):
-await readFile(new URL("./file.txt", import.meta.url).pathname);
+await readFile(new URL('./file.txt', import.meta.url).pathname);
 ```
 
 4. **Consistencia con estándares**:

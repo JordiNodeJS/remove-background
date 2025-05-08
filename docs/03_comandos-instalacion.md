@@ -1,11 +1,10 @@
-# 4. Comandos de Instalación para Remove Background
+# Comandos de Instalación para Remove Background
 
-Esta guía recopila los comandos esenciales para instalar, configurar y arrancar el monorepo Remove Background, tanto en Bash como en PowerShell. Incluye pasos para frontend (Next.js 15), backend (Express) y paquetes compartidos, siguiendo la arquitectura recomendada del proyecto.
+Este documento detalla los comandos utilizados para la instalación del proyecto Remove Background, tanto para bash como para PowerShell.
 
 ## Estructura del Proyecto
 
 El proyecto es un monorepo que integra:
-
 - Frontend con Next.js 15
 - Backend con Express
 - Bun como gestor de paquetes y entorno de ejecución
@@ -35,7 +34,6 @@ cd ..
 ```
 
 ### Gestión de Dependencias con Bun
-
 Bun utiliza una estructura de node_modules centralizada en workspaces:
 
 ```bash
@@ -59,7 +57,6 @@ bun update next typescript --workspace=frontend
 ```
 
 Esta configuración optimiza:
-
 - Espacio en disco mediante dependencias compartidas
 - Velocidad de instalación con caché global
 - Consistencia entre entornos con bun.lockb
@@ -234,7 +231,6 @@ bunx --yes tsc --noEmit                           # Verificar tipos
 - Para rutas en PowerShell, se pueden usar tanto barras normales (`/`) como invertidas (`\`)
 
 Los servicios usan puertos reservados con limpieza automática:
-
 - Frontend: 3000 (se libera el puerto automáticamente antes de iniciar)
 - Backend: 3001 (fijo)
 

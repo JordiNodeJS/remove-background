@@ -1,6 +1,6 @@
-# 1. Estructura recomendada para una API REST en el monorepo
+# Estructura recomendada para una API REST en el monorepo
 
-Esta es la guía principal de arquitectura para el backend Express en el monorepo Next.js 15 + Express + Bun. Aquí se describe cómo organizar carpetas, archivos y responsabilidades para construir una API RESTful escalable y mantenible, siguiendo las mejores prácticas del proyecto.
+Esta guía detalla la organización sugerida para construir una API RESTful en el backend Express de este monorepo, siguiendo las mejores prácticas y la arquitectura definida para proyectos Next.js 15 + Express + Bun.
 
 ## apps/api: organización del backend
 
@@ -43,13 +43,13 @@ src/routes/
 Cada archivo de rutas importa su controlador correspondiente y define los endpoints:
 
 ```typescript
-import { Router } from "express";
-import { getUsers, createUser } from "../controllers/users";
+import { Router } from 'express';
+import { getUsers, createUser } from '../controllers/users';
 
 const router = Router();
 
-router.get("/", getUsers);
-router.post("/", createUser);
+router.get('/', getUsers);
+router.post('/', createUser);
 
 export default router;
 ```

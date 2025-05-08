@@ -1,6 +1,6 @@
-# 2. Tutorial básico: Lectura y escritura de archivos en Node.js con fs/promises
+# Tutorial básico: Lectura y escritura de archivos en Node.js con fs/promises
 
-Este tutorial es el punto de partida práctico para trabajar con archivos en Node.js dentro del monorepo. Aquí aprenderás a leer, escribir y eliminar archivos (por ejemplo, imágenes) usando fs/promises, siguiendo las mejores prácticas del proyecto.
+Este tutorial te guiará paso a paso sobre cómo leer, escribir y eliminar archivos (imágenes u otros tipos) en Node.js utilizando el módulo `fs/promises`, tomando como referencia el código real del proyecto.
 
 ## 1. Importar el módulo necesario
 
@@ -10,7 +10,6 @@ import path from "path";
 ```
 
 ## 2. Asegurar la existencia de un directorio
-
 Antes de escribir un archivo, es recomendable asegurarse de que el directorio de destino exista. Si no existe, lo creamos:
 
 ```js
@@ -58,7 +57,6 @@ async function procesarImagen(filePath, outputDir) {
 ```
 
 ## 7. Buenas prácticas y advertencias
-
 - **Manejo de errores:** Siempre utiliza bloques `try/catch` para capturar errores y evitar que tu aplicación se caiga inesperadamente.
 - **Rutas en Windows:** Usa siempre `path.resolve` o `path.join` para construir rutas, evitando problemas con las barras invertidas (`\`) y directas (`/`).
 - **Buffer:** Para archivos binarios (imágenes, PDFs, etc.), trabaja siempre con objetos `Buffer`.
@@ -69,12 +67,10 @@ async function procesarImagen(filePath, outputDir) {
 Trabajar con rutas de archivos de manera portable es fundamental para que tu código funcione correctamente en diferentes sistemas operativos (Windows, Linux, macOS). Aquí te explico los conceptos clave y las mejores prácticas:
 
 ### Diferencia entre rutas absolutas y relativas
-
 - **Ruta absoluta:** Especifica la ubicación completa de un archivo o directorio desde la raíz del sistema de archivos. Ejemplo en Windows: `C:\Users\usuario\proyecto\archivo.txt`.
 - **Ruta relativa:** Especifica la ubicación en relación al directorio actual (`process.cwd()` o `__dirname`). Ejemplo: `./datos/archivo.txt`.
 
 ### ¿Cuándo usar cada una?
-
 - Usa rutas relativas cuando trabajes con archivos dentro de tu proyecto, para facilitar la portabilidad.
 - Usa rutas absolutas solo cuando sea imprescindible (por ejemplo, rutas de configuración externas).
 
@@ -103,13 +99,11 @@ const ruta = path.join(__dirname, "archivo.txt");
 ```
 
 ### ¿Por qué es importante?
-
 - Las rutas hardcodeadas pueden fallar en otros sistemas operativos o cuando cambias la estructura del proyecto.
 - `path.join` y `path.resolve` gestionan automáticamente las barras y las diferencias entre sistemas.
 - Usar `__dirname` asegura que la ruta sea relativa al archivo actual, no al directorio de ejecución.
 
 ### Resumen de mejores prácticas
-
 - Siempre usa `path.join` o `path.resolve` para construir rutas.
 - Evita concatenar rutas manualmente con `+` o usando barras (`/` o `\`).
 - Prefiere rutas relativas dentro del proyecto.
@@ -129,7 +123,6 @@ Al trabajar con rutas en Node.js y entornos modernos de JavaScript, es fundament
 La construcción dinámica de rutas usando `path.join`, `path.resolve`, `__dirname` o `import.meta.url` garantiza que el código sea portable entre sistemas operativos (Windows, Linux, macOS) y entornos de ejecución. Así se evitan errores por diferencias en separadores de rutas (`/` vs `\`) y se facilita el mantenimiento del proyecto.
 
 #### Resumen
-
 - Usa siempre rutas relativas al archivo fuente (`__dirname` o `import.meta.url`) para acceder a recursos internos del proyecto.
 - Prefiere `path.join` y `path.resolve` para construir rutas de forma segura.
 - Evita `process.cwd()` salvo que realmente necesites la ubicación desde donde se lanzó el proceso (casos muy específicos).
@@ -137,7 +130,6 @@ La construcción dinámica de rutas usando `path.join`, `path.resolve`, `__dirna
 - Revisa la documentación oficial de [path](https://nodejs.org/api/path.html) para más detalles.
 
 ## 8. Recursos adicionales
-
 - [Documentación oficial de fs/promises](https://nodejs.org/api/fs.html#fspromisesapi)
 - [Documentación de path](https://nodejs.org/api/path.html)
 

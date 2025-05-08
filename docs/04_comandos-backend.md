@@ -1,6 +1,4 @@
-# 5. Comandos Backend (Express 5)
-
-Esta guía recopila los comandos y configuraciones clave para desarrollar, ejecutar y testear el backend Express del monorepo Remove Background usando Bun. Incluye ejemplos para desarrollo, ejecución directa y pruebas automatizadas.
+## Comandos Backend (Express 5)
 
 ```bash
 # Iniciar servidor en desarrollo (modo workspace)
