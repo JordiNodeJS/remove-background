@@ -2,22 +2,30 @@
 
 Esta guía describe los pasos y configuraciones recomendadas para desplegar el monorepo Remove Background en producción, incluyendo build optimizado, variables de entorno, configuración de servidores y pruebas de endpoints clave.
 
-## 1. Compilación de Proyectos
+## 1. Compilación y Arranque de Proyectos
 
-### Build Paralelo con Bun
+La forma más sencilla de compilar y arrancar ambos proyectos (frontend y API) en modo producción es utilizando el script `start:prod:full` desde la raíz del monorepo. Este comando se encarga de compilar ambos proyectos y luego iniciarlos.
+
 ```bash
-# Compilar ambos proyectos desde la raíz (usando workspaces)
-bun run build:all
+# Compilar y arrancar ambos proyectos desde la raíz
+bun run start:prod:full
 ```
 
-### Build Individual
+Este comando ejecuta internamente `bun run build:all` seguido de los comandos de inicio para cada aplicación.
+
+### Build Individual (Alternativo)
+
+Si necesitas compilar los proyectos de forma individual, puedes usar los siguientes comandos:
+
 ```bash
-# Frontend (Next.js 15)
+# Build Frontend (Next.js 15)
 bun run --filter=@remove-background/frontend build
 
-# API (Express)
+# Build API (Express)
 bun run --filter=@remove-background/api build
 ```
+
+Después de la compilación individual, necesitarás iniciar los servicios por separado (ver sección de Arranque Automatizado).
 
 ### Verificación Post-Compilación
 ```bash
@@ -41,23 +49,30 @@ Asegurar que ambos proyectos tienen en su tsconfig.json:
 
 ## 2. Arranque Automatizado en Producción
 
-Tras construir ambos servicios, puedes iniciar tanto el frontend como el backend en modo producción desde la raíz del monorepo. Debido a que la sintaxis de filtro de Bun (--filter=@remove-background/*) puede no funcionar correctamente en Bash de Git en Windows, se recomienda usar un script Bash para ejecutar ambos servicios en paralelo:
+Como se mencionó en la sección anterior, la forma recomendada para compilar e iniciar ambos servicios en producción es con el comando:
 
 ```bash
-# Script para Bash de Git en Windows (guardar como start-prod.sh en la raíz)
-#!/bin/bash
-cd apps/frontend && bun run start &
-cd ../api && bun run start &
-wait
+# Compilar y arrancar ambos proyectos desde la raíz
+bun run start:prod:full
 ```
 
-Luego, desde la raíz del proyecto, ejecuta:
+Este comando simplifica el proceso, ya que maneja tanto la compilación como el inicio de los servicios.
 
+Si has compilado los proyectos individualmente (ver "Build Individual (Alternativo)"), puedes iniciar los servicios manualmente o utilizando un script. Para un inicio concurrente después de un build individual, puedes seguir usando un script similar al `start-prod.sh` si lo prefieres, o iniciar cada servicio en terminales separadas:
+
+En una terminal (desde la raíz del proyecto):
 ```bash
-bash ./start-prod.sh
+cd apps/frontend
+bun run start
 ```
 
-Este método asegura que ambos servicios se inicien en paralelo y de forma compatible con tu entorno.
+En otra terminal (desde la raíz del proyecto):
+```bash
+cd apps/api
+bun run start
+```
+
+Sin embargo, el uso de `bun run start:prod:full` es preferible para la mayoría de los casos de despliegue en producción.
 
 ## 3. Variables de Entorno
 

@@ -15,7 +15,8 @@
     "build:all": "bun run --parallel --signal --filter=@remove-background/frontend --filter=@remove-background/api build",
     "start": "bun run --parallel --filter=@remove-background/* start",
     "rm": "bun run apps/api/src/utilities/remove-copy.ts",
-    "test": "bun test apps/api/src/__tests__/remove-background.test.ts"
+    "test": "bun test apps/api/src/__tests__/remove-background.test.ts",
+    "start:prod:full": "bun run build:all && bash ./start-prod.sh"
   },
   "engines": {
     "node": ">=18.0.0",
