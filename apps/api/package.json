@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "bun src/index.ts",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "start": "bun run dist/index.js",
+    "build": "tsc"
   },
   "jest": {
     "preset": "ts-jest",

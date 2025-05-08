@@ -2,17 +2,64 @@
 
 Esta guía describe los pasos y configuraciones recomendadas para desplegar el monorepo Remove Background en producción, incluyendo build optimizado, variables de entorno, configuración de servidores y pruebas de endpoints clave.
 
-## 1. Build Optimizado con Bun
+## 1. Compilación de Proyectos
 
+### Build Paralelo con Bun
 ```bash
-# Build frontend (Next.js 15)
+# Compilar ambos proyectos desde la raíz (usando workspaces)
+bun run build:all
+```
+
+### Build Individual
+```bash
+# Frontend (Next.js 15)
 bun run --filter=@remove-background/frontend build
 
-# Build API (Express)
+# API (Express)
 bun run --filter=@remove-background/api build
 ```
 
-## 2. Variables de Entorno
+### Verificación Post-Compilación
+```bash
+# Verificar estructura de carpetas generadas
+ls -l apps/frontend/.next/static && ls -l apps/api/dist
+
+# Prueba rápida del backend
+curl http://localhost:3001/health
+```
+
+### Configuración Requerida
+Asegurar que ambos proyectos tienen en su tsconfig.json:
+```json
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    "moduleResolution": "bundler"
+  }
+}
+```
+
+## 2. Arranque Automatizado en Producción
+
+Tras construir ambos servicios, puedes iniciar tanto el frontend como el backend en modo producción desde la raíz del monorepo. Debido a que la sintaxis de filtro de Bun (--filter=@remove-background/*) puede no funcionar correctamente en Bash de Git en Windows, se recomienda usar un script Bash para ejecutar ambos servicios en paralelo:
+
+```bash
+# Script para Bash de Git en Windows (guardar como start-prod.sh en la raíz)
+#!/bin/bash
+cd apps/frontend && bun run start &
+cd ../api && bun run start &
+wait
+```
+
+Luego, desde la raíz del proyecto, ejecuta:
+
+```bash
+bash ./start-prod.sh
+```
+
+Este método asegura que ambos servicios se inicien en paralelo y de forma compatible con tu entorno.
+
+## 3. Variables de Entorno
 
 Crear archivo `.env.production` en raíz:
 
@@ -23,7 +70,7 @@ FRONTEND_URL=https://tudominio.com
 API_URL=https://api.tudominio.com
 ```
 
-## 3. Configuración Web Server (Caddy)
+## 4. Configuración Web Server (Caddy)
 
 ```caddy
 # Configuración básica con HTTPS automático (Windows/Git Bash)
