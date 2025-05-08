@@ -1,6 +1,9 @@
 # dependencies (bun install)
 node_modules
 
+# database
+apps/api/data/*.db
+
 # output
 out
 dist
