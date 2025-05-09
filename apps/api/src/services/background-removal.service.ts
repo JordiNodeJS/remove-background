@@ -51,10 +51,19 @@ export const removeBackgroundFromImage = async (
     // Construimos la ruta de salida
     const outputPath = path.join(OUTPUT_DIR, `output-${file.filename}`);
 
-    // Procesa imagen
-    const fileBuffer = await removeImageBackground(file.path);
-
-    // Registrar información de depuración
+    // Log antes de procesar la imagen
+    console.log("[DEBUG] Llamando a removeImageBackground con:", file.path);
+    let fileBuffer: Buffer;
+    try {
+      fileBuffer = await removeImageBackground(file.path);
+    } catch (removeErr) {
+      console.error("[ERROR] removeImageBackground falló:", removeErr);
+      if (removeErr instanceof Error) {
+        console.error("[ERROR] stack:", removeErr.stack);
+      }
+      throw removeErr;
+    }
+    // Log después de procesar la imagen
     console.log("[DEBUG] fileBuffer length:", fileBuffer.length);
 
     // Escribir resultado
@@ -67,9 +76,12 @@ export const removeBackgroundFromImage = async (
       console.error("Error al eliminar el archivo original:", unlinkError);
       throw new Error("Error al procesar la imagen");
     }
-    return {outputPath, fileBuffer};
+    return { outputPath, fileBuffer };
   } catch (error) {
-    console.error("Error al eliminar el fondo de la imagen:", error);
-    throw new Error("Error al procesar la imagen");
+    console.error("[CATCH] Error al eliminar el fondo de la imagen:", error);
+    if (error instanceof Error) {
+      console.error("[CATCH] stack:", error.stack);
+    }
+    throw new Error(error instanceof Error ? error.message : String(error));
   }
 };
