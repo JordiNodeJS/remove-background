@@ -281,3 +281,130 @@ Si la solicitud es exitosa, recibirás un JSON con el resultado del procesamient
 - [Configuración Next.js](./05_comandos-frontend.md)
 - [Instalación Inicial](./03_comandos-instalacion.md)
 - [Gestión de Entornos](../.gitignore#L5-L8)
+
+Aquí tienes una guía en formato **Markdown** para configurar la memoria **swap** en un sistema Linux:
+
+---
+
+# 🛠️ Configurar Memoria Swap en Linux
+
+## 1. Verificar si ya existe swap activo
+
+Ejecuta el siguiente comando para comprobar el estado actual:
+
+```bash
+free -m
+```
+
+Si no hay swap activo, procede a crearlo .
+
+---
+
+## 2. Crear un archivo de swap
+
+Por ejemplo, para generar un archivo de **2 GB**:
+
+```bash
+sudo fallocate -l 2G /swapfile
+```
+
+Si `fallocate` no está disponible, usa `dd`:
+
+```bash
+sudo dd if=/dev/zero of=/swapfile bs=1M count=2048
+```
+
+Esto asigna espacio en disco para swap .
+
+---
+
+## 3. Configurar permisos seguros
+
+Evita accesos no autorizados:
+
+```bash
+sudo chmod 600 /swapfile
+```
+
+---
+
+## 4. Formatear el archivo como swap
+
+Ejecuta:
+
+```bash
+sudo mkswap /swapfile
+```
+
+Este paso prepara el archivo para su uso como espacio de intercambio .
+
+---
+
+## 5. Activar el swap
+
+Habilita el archivo con:
+
+```bash
+sudo swapon /swapfile
+```
+
+Verifica que esté activo con `free -m` .
+
+---
+
+## 6. Hacerlo persistente tras reinicios
+
+Edita el archivo `/etc/fstab` y agrega esta línea:
+
+```
+/swapfile none swap sw 0 0
+```
+
+Esto asegura que el swap se active automáticamente al reiniciar .
+
+---
+
+## 7. Ajustar el parámetro _swappiness_
+
+El _swappiness_ controla cuánto prioriza el sistema el uso de swap. Para ajustarlo temporalmente:
+
+```bash
+sysctl vm.swappiness=10
+```
+
+Para hacerlo permanente, edita `/etc/sysctl.conf` y agrega:
+
+```
+vm.swappiness=10
+```
+
+Valores bajos (0-10) reducen el uso de swap, mientras que valores altos (100) lo incrementan .
+
+---
+
+## 8. Verificar el uso de swap
+
+- **Uso general**:
+  ```bash
+  free -m
+  ```
+- **Detalles de swap activo**:
+  ```bash
+  swapon --show
+  ```
+- **Procesos que usan swap**:
+  ```bash
+  grep Swap /proc/<PID>/smaps
+  ```
+  Donde `<PID>` es el ID del proceso .
+
+---
+
+## Consideraciones importantes
+
+- **Rendimiento**: Usar swap en discos HDD o EBS puede generar latencia. Es preferible optimizar aplicaciones o escalar recursos .
+- **Monitoreo**: Usa herramientas como `htop`, `vmstat` o `swapon --show` para verificar el uso de swap en tiempo real .
+- **Redimensionar**: Si necesitas cambiar el tamaño del swap, desactívalo primero con `swapoff`, ajusta el archivo y vuelve a activarlo .
+- **Alternativas**: En algunos casos, se puede usar una partición dedicada para swap (recomendado para servidores críticos) .
+
+---
