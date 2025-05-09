@@ -28,6 +28,7 @@ bun run --filter=@remove-background/api build
 Después de la compilación individual, necesitarás iniciar los servicios por separado (ver sección de Arranque Automatizado).
 
 ### Verificación Post-Compilación
+
 ```bash
 # Verificar estructura de carpetas generadas
 ls -l apps/frontend/.next/static && ls -l apps/api/dist
@@ -37,37 +38,42 @@ curl http://localhost:3001/health
 ```
 
 ### Configuración Requerida
+
 Asegurar que ambos proyectos tienen en su tsconfig.json:
+
 ```json
 {
   "compilerOptions": {
-    "outDir": "./dist",    // Directorio de salida para los archivos compilados
-    "moduleResolution": "bundler"  // Estrategia de resolución de módulos para Bun
+    "outDir": "./dist", // Directorio de salida para los archivos compilados
+    "moduleResolution": "bundler" // Estrategia de resolución de módulos para Bun
   }
 }
 ```
 
 **Explicación técnica:**
+
 - `outDir`: Especifica el directorio donde TypeScript colocará los archivos JavaScript compilados. Esto debe coincidir con la configuración de build de cada proyecto.
 - `moduleResolution`: La opción "bundler" es necesaria para la compatibilidad con Bun, permitiendo la resolución de módulos similar a los empaquetadores modernos.
 
 Esta configuración en tsconfig.json es crucial porque:
 
 1. `outDir: "./dist"`
+
 - Define dónde se generarán los archivos compilados (JS)
 - Mantiene estructura limpia separando código fuente (TS) de compilados
 - Esencial para despliegues ya que Node.js ejecuta JS, no TS directamente
+
 2. `moduleResolution: "bundler"`
+
 - Optimiza resolución de módulos para Bun/Webpack/Vite
 - Permite imports sin extensiones y alias de rutas
 - Mejora compatibilidad con ES Modules y CommonJS
-Juntos garantizan:
+  Juntos garantizan:
 
 - Builds consistentes entre entornos
 - Resolución correcta de dependencias
 - Compatibilidad con herramientas modernas como Bun
 - Configuración unificada para todo el monorepo
-
 
 ## 2. Arranque Automatizado en Producción
 
@@ -83,12 +89,14 @@ Este comando simplifica el proceso, ya que maneja tanto la compilación como el 
 Si has compilado los proyectos individualmente (ver "Build Individual (Alternativo)"), puedes iniciar los servicios manualmente o utilizando un script. Para un inicio concurrente después de un build individual, puedes seguir usando un script similar al `start-prod.sh` si lo prefieres, o iniciar cada servicio en terminales separadas:
 
 En una terminal (desde la raíz del proyecto):
+
 ```bash
 cd apps/frontend
 bun run start
 ```
 
 En otra terminal (desde la raíz del proyecto):
+
 ```bash
 cd apps/api
 bun run start
@@ -253,6 +261,10 @@ La API incluye una ruta POST en `/remove-background` que permite eliminar el fon
 ```bash
 curl -X POST http://localhost:3001/remove-background -H "Content-Type: multipart/form-data" -F "image=@input-01.png"
 
+```
+
+```bash
+curl -X POST  http://ec2-34-254-248-103.eu-west-1.compute.amazonaws.com:3001/remove-background -H "Content-Type: multipart/form-data" -F "image=@input-01.png"
 ```
 
 ### Explicación:
