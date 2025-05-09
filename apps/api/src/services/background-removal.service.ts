@@ -29,6 +29,22 @@ export const removeBackgroundFromImage = async (
     // Validación inicial
     if (!file || !file.path) throw new Error("No se recibió archivo válido");
 
+    // Debug extra: información del archivo recibido
+    console.log("[DEBUG] file info:", {
+      originalname: file.originalname,
+      filename: file.filename,
+      path: file.path,
+      size: file.size,
+      mimetype: file.mimetype,
+    });
+    // Verifica que el archivo existe en disco
+    try {
+      const stat = await fs.stat(file.path);
+      console.log("[DEBUG] fs.stat result:", stat);
+    } catch (statErr) {
+      console.error("[DEBUG] fs.stat error:", statErr);
+    }
+
     // Asegurar directorio de salida
     await ensureOutputDirectory();
 
@@ -54,6 +70,6 @@ export const removeBackgroundFromImage = async (
     return {outputPath, fileBuffer};
   } catch (error) {
     console.error("Error al eliminar el fondo de la imagen:", error);
-    throw new Error("Error al procesar la imagen"); // Línea descomentada para lanzar error
+    throw new Error("Error al procesar la imagen");
   }
 };
