@@ -61,7 +61,7 @@ async function removeImageBackground() {
   try {
     const config: Config = {
       debug: true,
-      model: "small",
+      model: "medium",
       output: { format: "image/png" },
       progress: (key, current, total) => {
         console.log(`Downloading ${key}: ${current} of ${total}`);
