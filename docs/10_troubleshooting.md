@@ -12,9 +12,27 @@ ENOENT: no such file or directory, open '.../apps/api/node_modules/@imgly/backgr
 
 ## ¿Cómo se soluciona?
 
-### 1. Crear enlaces simbólicos manualmente
+### 1. Usar el script automatizado (Recomendado)
 
-Debes crear un symlink desde el `node_modules` local del subpaquete hacia el paquete real en la raíz. Por ejemplo, para `apps/api`:
+Se ha creado un script en la raíz del proyecto llamado `create_symlinks.sh` que automatiza este proceso.
+
+Para ejecutarlo:
+
+1.  Abre una terminal en la raíz de tu proyecto.
+2.  Asegúrate de que el script tenga permisos de ejecución:
+    ```sh
+    chmod +x create_symlinks.sh
+    ```
+3.  Ejecuta el script:
+    ```sh
+    ./create_symlinks.sh
+    ```
+
+El script creará el directorio `apps/api/node_modules/@imgly` (si no existe) y luego el enlace simbólico necesario desde `apps/api/node_modules/@imgly/background-removal-node` hacia `../../../../node_modules/@imgly/background-removal-node`.
+
+### 2. Crear enlaces simbólicos manualmente (Alternativa)
+
+Si prefieres hacerlo manualmente o necesitas entender el proceso, puedes crear un symlink desde el `node_modules` local del subpaquete hacia el paquete real en la raíz. Por ejemplo, para `apps/api`:
 
 ```sh
 cd apps/api
@@ -25,7 +43,7 @@ ln -s ../../../../node_modules/@imgly/background-removal-node node_modules/@imgl
 - Ajusta la ruta relativa según la profundidad de tu estructura.
 - El comando `mkdir -p` crea la carpeta si no existe.
 
-### 2. Instalar la dependencia localmente (alternativa)
+### 3. Instalar la dependencia localmente (Otra alternativa)
 
 Puedes instalar la dependencia directamente en el subpaquete:
 
@@ -36,7 +54,7 @@ bun add @imgly/background-removal-node
 
 Esto creará el `node_modules` local y copiará los archivos necesarios.
 
-### 3. Verificar el symlink
+### 4. Verificar el symlink
 
 Comprueba que el symlink existe y apunta correctamente:
 
@@ -57,7 +75,8 @@ Bun optimiza la instalación de dependencias para velocidad y espacio, centraliz
 ## Resumen
 
 - El error ocurre porque la librería busca recursos en un `node_modules` local que no existe.
-- Solución: crea un symlink manual o instala la dependencia en el subpaquete.
+- Solución recomendada: ejecutar el script `create_symlinks.sh` proporcionado en la raíz del proyecto.
+- Alternativas: crear un symlink manual o instalar la dependencia directamente en el subpaquete.
 - Esto es común en monorepos con Bun y dependencias que usan recursos internos.
 
 ---
