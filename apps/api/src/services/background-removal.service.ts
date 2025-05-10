@@ -69,12 +69,20 @@ export const removeBackgroundFromImage = async (
     // Escribir resultado
     await fs.writeFile(outputPath, fileBuffer);
 
-    // Elimina el archivo original de uploads
+    // Elimina el archivo original de la carpeta 'uploads' después de procesarlo exitosamente.
+    // Esto se hace para liberar espacio y no almacenar archivos temporales innecesariamente.
     try {
-      await fs.unlink(file.path);
+      await fs.unlink(file.path); // file.path contiene la ruta al archivo subido temporalmente por multer
+      console.log(`[INFO] Archivo original eliminado: ${file.path}`);
     } catch (unlinkError) {
-      console.error("Error al eliminar el archivo original:", unlinkError);
-      throw new Error("Error al procesar la imagen");
+      // Si la eliminación falla, se registra el error pero se considera que la operación principal (eliminación de fondo) fue exitosa.
+      // Podrías querer manejar esto de forma diferente dependiendo de tus requisitos (ej. reintentar, marcar para eliminación posterior).
+      console.error(
+        `[WARN] No se pudo eliminar el archivo original ${file.path}:`,
+        unlinkError
+      );
+      // No relanzamos el error aquí para no afectar la respuesta al cliente si el procesamiento de la imagen fue correcto.
+      // throw new Error("Error al procesar la imagen"); // Descomentar si la eliminación fallida debe considerarse un error crítico
     }
     return { outputPath, fileBuffer };
   } catch (error) {

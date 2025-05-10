@@ -259,12 +259,12 @@ La API incluye una ruta POST en `/remove-background` que permite eliminar el fon
 ### Ejemplo de Solicitud con `curl`
 
 ```bash
-curl -X POST http://localhost:3001/remove-background -H "Content-Type: multipart/form-data" -F "image=@input-01.png"
+curl -X POST http://localhost:3001/remove-background/link -H "Content-Type: multipart/form-data" -F "image=@input-01.png"
 
 ```
 
 ```bash
-curl -X POST  http://ec2-34-254-248-103.eu-west-1.compute.amazonaws.com:3001/remove-background -H "Content-Type: multipart/form-data" -F "image=@input-01.png"
+curl -X POST  http://ec2-34-254-248-103.eu-west-1.compute.amazonaws.com:3001/remove-background/link -H "Content-Type: multipart/form-data" -F "image=@input-01.png"
 ```
 
 ### Explicación:
