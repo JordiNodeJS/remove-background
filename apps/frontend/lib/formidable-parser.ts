@@ -72,7 +72,8 @@ export const formidableParser = async (
 
         files[key] = fileList.map((file: any) => ({
           ...file,
-          newFilename: file.newFilename || file.filepath.split("/").pop() || "unknown",
+          newFilename:
+            file.newFilename || file.filepath.split("/").pop() || "unknown",
           // Fix: asignar un valor concreto en lugar de una función
           hashAlgorithm: false,
           toJSON: () => ({
