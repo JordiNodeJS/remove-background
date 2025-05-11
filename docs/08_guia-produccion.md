@@ -276,13 +276,30 @@ curl -X POST  http://ec2-34-254-248-103.eu-west-1.compute.amazonaws.com:3001/rem
 
 Si la solicitud es exitosa, recibirás un JSON con el resultado del procesamiento de la imagen. En caso de error, se devolverá un mensaje con el código de estado correspondiente.
 
-## Referencias del Proyecto
+---
 
-- [Configuración Next.js](./05_comandos-frontend.md)
-- [Instalación Inicial](./03_comandos-instalacion.md)
-- [Gestión de Entornos](../.gitignore#L5-L8)
+## Instalación de Dependencias en el Servidor
 
-Aquí tienes una guía en formato **Markdown** para configurar la memoria **swap** en un sistema Linux:
+Antes de compilar o ejecutar el monorepo en un servidor Linux, asegúrate de instalar las siguientes dependencias básicas:
+
+### 1. Actualizar el sistema e instalar utilidades
+
+```bash
+sudo apt-get update && sudo apt-get install -y unzip
+```
+
+### 2. Instalar Bun
+
+```bash
+curl -fsSL https://bun.sh/install | bash
+```
+
+> **Nota:** The bun executable has been installed in `~/.bun/bin/bun` and the path has been automatically added to your PATH variable in `~/.bashrc`.
+> Para que los cambios surtan efecto en la sesión actual, ejecuta:
+>
+> ```bash
+> source ~/.bashrc
+> ```
 
 ---
 
@@ -305,6 +322,8 @@ Si no hay swap activo, procede a crearlo .
 Por ejemplo, para generar un archivo de **2 GB**:
 
 ```bash
+sudo mkswap /swapfile
+sudo swapoff /swapfile
 sudo fallocate -l 2G /swapfile
 ```
 
@@ -334,6 +353,7 @@ Ejecuta:
 
 ```bash
 sudo mkswap /swapfile
+sudo swapon /swapfile
 ```
 
 Este paso prepara el archivo para su uso como espacio de intercambio .
@@ -408,3 +428,7 @@ Valores bajos (0-10) reducen el uso de swap, mientras que valores altos (100) lo
 - **Alternativas**: En algunos casos, se puede usar una partición dedicada para swap (recomendado para servidores críticos) .
 
 ---
+
+```
+
+```
