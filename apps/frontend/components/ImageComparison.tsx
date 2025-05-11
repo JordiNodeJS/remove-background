@@ -56,18 +56,43 @@ export default function ImageComparison({
           <div className="absolute top-0 left-0 bg-black/50 text-white px-2 py-1 text-xs rounded-br-md">
             Original
           </div>
-        </div>
+        </div>{" "}
         <div className="overflow-hidden relative h-full">
           {processedImage && (
-            <img
-              src={processedImage}
-              alt="Imagen Procesada"
-              className="w-full h-full object-contain"
-            />
+            <>
+              <img
+                key={processedImage} // Key para forzar re-render al cambiar la URL
+                src={processedImage}
+                alt="Imagen Procesada"
+                className="w-full h-full object-contain"
+                onError={(e) => {
+                  console.error(
+                    "Error al cargar imagen procesada:",
+                    processedImage
+                  );
+
+                  // Si la imagen da error, mostrar un mensaje
+                  const target = e.target as HTMLImageElement;
+                  target.onerror = null; // prevenir bucle infinito
+
+                  // Intentamos usar la imagen placeholder
+                  target.src = "/placeholder-error.svg";
+
+                  // Mostrar mensaje superpuesto de error
+                  const errorDiv = document.createElement("div");
+                  errorDiv.className =
+                    "absolute inset-0 flex items-center justify-center bg-black/40";
+                  errorDiv.innerHTML =
+                    '<p class="text-white bg-red-500 px-3 py-2 rounded">Error al cargar imagen procesada</p>';
+                  target.parentElement?.appendChild(errorDiv);
+                }}
+              />
+              {/* Overlay para mostrar que se está viendo la versión sin fondo */}
+              <div className="absolute top-0 right-0 bg-black/50 text-white px-2 py-1 text-xs rounded-bl-md">
+                Sin Fondo
+              </div>
+            </>
           )}
-          <div className="absolute top-0 right-0 bg-black/50 text-white px-2 py-1 text-xs rounded-bl-md">
-            Sin Fondo
-          </div>
         </div>
       </Split>
       <div className="absolute bottom-4 left-0 right-0 flex justify-center">

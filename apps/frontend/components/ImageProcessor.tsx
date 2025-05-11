@@ -10,14 +10,22 @@ export default function ImageProcessor() {
   const [originalImage, setOriginalImage] = useState<string | null>(null);
   const [processedImage, setProcessedImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [hasError, setHasError] = useState(false);
 
   const handleImageProcessed = (originalUrl: string, processedUrl: string) => {
     setOriginalImage(originalUrl);
     setProcessedImage(processedUrl);
 
+    // Resetea el estado de error cuando se procesa una nueva imagen correctamente
+    setHasError(processedUrl === "/placeholder-error.svg");
+
     // Dispara un evento personalizado para notificar al componente de historial
     const event = new CustomEvent("imageProcessed", {
-      detail: { originalUrl, processedUrl },
+      detail: {
+        originalUrl,
+        processedUrl,
+        hasError: processedUrl === "/placeholder-error.svg",
+      },
     });
     window.dispatchEvent(event);
   };

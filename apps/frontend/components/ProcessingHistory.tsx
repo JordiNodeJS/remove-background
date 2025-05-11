@@ -9,6 +9,7 @@ interface HistoryItem {
   originalUrl: string;
   processedUrl: string;
   date: string;
+  hasError?: boolean;
 }
 
 interface ProcessingHistoryProps {
@@ -33,12 +34,16 @@ export default function ProcessingHistory({
       toast.error("Error al cargar el historial");
     }
   }, []);
-
-  const addToHistory = (originalUrl: string, processedUrl: string) => {
+  const addToHistory = (
+    originalUrl: string,
+    processedUrl: string,
+    hasError: boolean = false
+  ) => {
     const newItem: HistoryItem = {
       originalUrl,
       processedUrl,
       date: new Date().toLocaleString(),
+      hasError,
     };
 
     const updatedHistory = [newItem, ...history].slice(0, 10); // Limitamos a 10 elementos
@@ -56,9 +61,17 @@ export default function ProcessingHistory({
   useEffect(() => {
     // Registrar un listener global para capturar nuevas imágenes procesadas
     const handleImageProcessed = (
-      event: CustomEvent<{ originalUrl: string; processedUrl: string }>
+      event: CustomEvent<{
+        originalUrl: string;
+        processedUrl: string;
+        hasError?: boolean;
+      }>
     ) => {
-      addToHistory(event.detail.originalUrl, event.detail.processedUrl);
+      addToHistory(
+        event.detail.originalUrl,
+        event.detail.processedUrl,
+        event.detail.hasError
+      );
     };
 
     window.addEventListener(
@@ -101,6 +114,7 @@ export default function ProcessingHistory({
               className="border rounded-lg overflow-hidden cursor-pointer hover:border-blue-500 transition-colors"
               onClick={() => onSelectImage(item.originalUrl, item.processedUrl)}
             >
+              {" "}
               <div className="aspect-square relative bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
                 <FiImage size={24} className="text-gray-400" />
                 <img
@@ -111,8 +125,18 @@ export default function ProcessingHistory({
                     e.currentTarget.style.display = "none";
                   }}
                 />
+                {item.hasError && (
+                  <div className="absolute bottom-0 right-0 bg-red-500 text-white text-xs px-1 py-0.5 rounded-tl-md">
+                    Error
+                  </div>
+                )}
               </div>
-              <div className="p-2 text-xs text-gray-500">{item.date}</div>
+              <div className="p-2 text-xs text-gray-500 flex justify-between">
+                <span>{item.date}</span>
+                {item.hasError && (
+                  <span className="text-red-500">Procesamiento fallido</span>
+                )}
+              </div>
             </div>
           ))}
         </div>

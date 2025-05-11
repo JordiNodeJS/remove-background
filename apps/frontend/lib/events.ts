@@ -2,6 +2,7 @@
 interface ImageProcessedEventDetail {
   originalUrl: string;
   processedUrl: string;
+  hasError?: boolean;
 }
 
 declare global {

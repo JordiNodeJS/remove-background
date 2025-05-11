@@ -53,15 +53,64 @@ export default function UploadButton({
         const errorText = await response.text();
         throw new Error(`Error en el servidor: ${errorText}`);
       }
-
       const result = await response.json();
       if (result.status === 200) {
         // Creamos una URL para la imagen original
         const originalImageUrl = URL.createObjectURL(file);
 
-        // Notificamos que la imagen fue procesada correctamente
-        toast.success("Imagen procesada correctamente");
-        onImageProcessed(originalImageUrl, result.data.url);
+        console.log("URL de imagen procesada recibida:", result.data.url);
+
+        // Verificar que la URL de la imagen procesada es válida
+        if (!result.data || !result.data.url) {
+          toast.error(
+            "La respuesta del servidor no incluye la URL de la imagen procesada"
+          );
+          throw new Error("Respuesta de servidor inválida");
+        }
+        // Notificamos el mensaje del servidor (puede incluir información sobre fallbacks)
+        if (result.message.includes("no se pudo")) {
+          toast.error(result.message, { duration: 5000 });
+        } else {
+          toast.success(result.message || "Imagen procesada correctamente");
+        }
+
+        // Verificar que la URL de la imagen procesada es cargable
+        try {
+          const imgTest = new Image();
+          const timeoutId = setTimeout(() => {
+            // Si la imagen tarda más de 5 segundos, asumimos un error
+            toast.error("Tiempo de espera agotado cargando la imagen", {
+              duration: 5000,
+            });
+            onImageProcessed(originalImageUrl, result.data.url);
+          }, 5000);
+
+          imgTest.onload = () => {
+            clearTimeout(timeoutId);
+            console.log("Imagen procesada cargada correctamente");
+            onImageProcessed(originalImageUrl, result.data.url);
+          };
+
+          imgTest.onerror = () => {
+            clearTimeout(timeoutId);
+            // Si la imagen da error, mostramos un mensaje pero igual actualizamos con la URL
+            console.error(
+              "Error al cargar la imagen procesada:",
+              result.data.url
+            );
+            toast.error("La imagen procesada no se pudo cargar correctamente", {
+              duration: 5000,
+            });
+
+            // Intentamos usar un placeholder
+            onImageProcessed(originalImageUrl, "/placeholder-error.svg");
+          };
+
+          imgTest.src = result.data.url;
+        } catch (err) {
+          console.error("Error al verificar la imagen procesada:", err);
+          onImageProcessed(originalImageUrl, "/placeholder-error.svg");
+        }
       } else {
         throw new Error(result.message || "Error desconocido");
       }
