@@ -1,36 +1,88 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Eliminador de Fondos con Next.js 15
 
-## Getting Started
+Una aplicación web basada en Next.js 15 para eliminar fondos de imágenes mediante una API externa.
 
-First, run the development server:
+## Características
+
+- Carga de imágenes desde el dispositivo local
+- Eliminación de fondo automática de imágenes
+- Visualizador comparativo con deslizador para ver antes/después
+- Validación de tipos de archivo (solo JPG y PNG)
+- Notificaciones de éxito o error
+
+## Requisitos
+
+- Node.js 18.17 o superior (recomendado 20+)
+- Bun 1.0.0 o superior
+
+## Instalación
+
+1. Clona este repositorio:
+
+   ```bash
+   git clone <url-del-repositorio>
+   ```
+
+2. Instala las dependencias:
+
+   ```bash
+   cd remove-background
+   bun install
+   ```
+
+3. Crea los directorios necesarios (si no existen):
+   ```bash
+   mkdir -p apps/frontend/public/images-input apps/frontend/public/images-output apps/frontend/tmp
+   ```
+
+## Desarrollo
+
+Para iniciar el servidor de desarrollo:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+bun --filter @remove-background/frontend dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+La aplicación estará disponible en [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Variables de Entorno
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Crea un archivo `.env` en la carpeta raíz con los siguientes valores:
 
-## Learn More
+```
+NEXT_PUBLIC_API_URL=http://localhost:3001
+```
 
-To learn more about Next.js, take a look at the following resources:
+## API Backend
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Esta aplicación se comunica con un servicio backend para el procesamiento de imágenes. El endpoint principal es:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `POST /remove-background/link`: Elimina el fondo de una imagen
 
-## Deploy on Vercel
+### Ejemplo de Uso con cURL
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+curl -X POST http://localhost:3001/remove-background/link \
+  -H "Content-Type: multipart/form-data" \
+  -F "image=@input-01.png"
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Estructura del Proyecto
+
+```
+/app
+  /api
+    /remove-background/route.ts  # API route para procesar imágenes
+  /components
+    ImageComparison.tsx          # Comparador visual de imágenes
+    ImageProcessor.tsx           # Componente principal
+    UploadButton.tsx             # Botón y lógica de carga
+  /lib
+    image-upload.ts             # Utilidades para manejo de uploads
+    mock-utils.ts               # Funciones para pruebas
+    types.ts                    # Definiciones de tipos
+  page.tsx                      # Página principal
+/public
+  /images-input                 # Directorio para imágenes originales
+  /images-output                # Directorio para imágenes procesadas
+```
