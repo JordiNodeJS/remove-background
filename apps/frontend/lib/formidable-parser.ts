@@ -1,94 +1,103 @@
 // lib/formidable-parser.ts
-import { IncomingForm } from "formidable";
 import { NextRequest } from "next/server";
-import * as fs from "fs";
-import * as path from "path";
-import { Readable } from "stream";
+import formidable from "formidable";
 
-// Define tipos específicos para formidable
-interface FormidableFields {
-  [key: string]: string | string[];
+// Define the Files type to include all required properties
+export interface FormidableFile {
+  filepath: string;
+  originalFilename?: string;
+  mimetype?: string;
+  size?: number;
+  newFilename: string; // Required by Next.js File interface
+  hashAlgorithm: () => any; // Required by Next.js File interface
+  toJSON: () => any; // Required by Next.js File interface
 }
 
-interface FormidableFiles {
-  [key: string]:
-    | {
-        filepath: string;
-        originalFilename?: string;
-        mimetype?: string;
-        size?: number;
-        [key: string]: unknown;
-      }
-    | Array<{
-        filepath: string;
-        originalFilename?: string;
-        mimetype?: string;
-        size?: number;
-        [key: string]: unknown;
-      }>;
+export interface Files {
+  [key: string]: FormidableFile[];
 }
 
-/**
- * Parsea un NextRequest con formdata usando formidable
- * Implementación mejorada para evitar el error ERR_METHOD_NOT_IMPLEMENTED
- */
-export async function formidableParser(
+// Parse the request with formidable
+export const formidableParser = async (
   req: NextRequest
-): Promise<{ fields: FormidableFields; files: FormidableFiles }> {
-  // Crear un directorio temporal para los archivos subidos
-  const tempDir = path.join(process.cwd(), "tmp");
-  if (!fs.existsSync(tempDir)) {
-    fs.mkdirSync(tempDir, { recursive: true });
-  }
-
-  // Configuración del formidable
-  const form = new IncomingForm({
-    uploadDir: tempDir,
-    keepExtensions: true,
-    maxFileSize: 10 * 1024 * 1024, // 10MB
-    maxFiles: 1, // Limitar a un archivo para reducir complejidad
-  });
-
-  // Convertir la nextRequest en un buffer
-  const arrayBuffer = await req.arrayBuffer();
-  const buffer = Buffer.from(arrayBuffer);
-
-  // Crear un stream Readable implementado completamente
-  const stream = new Readable({
-    read() {
-      this.push(buffer);
-      this.push(null);
-    },
-    // Implementación explícita de _destroy para evitar errores de streams
-    destroy(err, callback) {
-      callback(err);
-    },
-  });
-
-  // Añadir cabeceras necesarias para formidable
-  const contentType = req.headers.get("content-type") || "multipart/form-data";
-  Object.defineProperty(stream, "headers", {
-    value: {
-      "content-type": contentType,
-    },
-  });
-
-  // Procesar el formulario
-  return new Promise<{ fields: FormidableFields; files: FormidableFiles }>(
-    (resolve, reject) => {
-      form.parse(
-        stream as any,
-        (error: Error | null, fields: any, files: any) => {
-          if (error) {
-            reject(error);
+): Promise<{ fields: Record<string, string>; files: Files }> => {
+  return new Promise((resolve, reject) => {
+    // Convert NextRequest to Node's IncomingMessage-like object
+    const reqProxy: any = {
+      headers: Object.fromEntries(req.headers),
+      method: req.method,
+      url: req.url,
+    };
+    
+    // Add necessary stream-like methods
+    if (req.body) {
+      reqProxy.pipe = (destination: any) => {
+        const reader = (req.body as ReadableStream).getReader();
+        
+        const processChunk = ({ done, value }: any) => {
+          if (done) {
+            destination.end();
             return;
           }
-          resolve({
-            fields: fields as FormidableFields,
-            files: files as unknown as FormidableFiles,
-          });
-        }
-      );
+          
+          destination.write(value);
+          reader.read().then(processChunk);
+        };
+        
+        reader.read().then(processChunk);
+        return destination;
+      };
     }
-  );
-}
+
+    const form = formidable({
+      multiples: true,
+      keepExtensions: true,
+    });
+
+    form.parse(reqProxy, (err, fields, rawFiles) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      
+      // Process and transform files to match the expected interface
+      const files: Files = {};
+      
+      // Convert formidable's files format to our Files format
+      Object.entries(rawFiles).forEach(([key, value]) => {
+        const fileList = Array.isArray(value) ? value : [value];
+        
+        files[key] = fileList.map((file: any) => ({
+          ...file,
+          newFilename: file.newFilename || file.filepath.split('/').pop(),
+          hashAlgorithm: () => null,
+          toJSON: () => ({
+            name: file.originalFilename,
+            size: file.size,
+            type: file.mimetype,
+            path: file.filepath
+          })
+        }));
+      });
+
+      resolve({
+        fields: Object.fromEntries(
+          Object.entries(fields).map(([key, value]) => [
+            key,
+            Array.isArray(value) ? value[0] : value,
+          ])
+        ),
+        files,
+      });
+    });
+  });
+};
+
+// Helper function to parse multipart form data from a NextRequest
+export const parseFormData = async (
+  req: NextRequest
+): Promise<{ fields: Record<string, string>; files: Files }> => {
+  return formidableParser(req);
+};
+
+export default parseFormData;
