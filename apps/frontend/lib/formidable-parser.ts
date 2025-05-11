@@ -8,9 +8,10 @@ export interface FormidableFile {
   originalFilename?: string;
   mimetype?: string;
   size?: number;
-  newFilename: string; // Required by Next.js File interface
-  hashAlgorithm: () => any; // Required by Next.js File interface
-  toJSON: () => any; // Required by Next.js File interface
+  newFilename: string;
+  // Fix: hashAlgorithm debería ser un valor específico, no una función
+  hashAlgorithm: false | "sha1" | "md5" | "sha256";
+  toJSON(): object;
 }
 
 export interface Files {
@@ -60,17 +61,20 @@ export const formidableParser = async (
         return;
       }
 
+      const safeFields: formidable.Fields = fields || {};
+
       // Process and transform files to match the expected interface
       const files: Files = {};
 
       // Convert formidable's files format to our Files format
-      Object.entries(rawFiles).forEach(([key, value]) => {
+      Object.entries(rawFiles || {}).forEach(([key, value]) => {
         const fileList = Array.isArray(value) ? value : [value];
 
         files[key] = fileList.map((file: any) => ({
           ...file,
-          newFilename: file.newFilename || file.filepath.split("/").pop(),
-          hashAlgorithm: () => null,
+          newFilename: file.newFilename || file.filepath.split("/").pop() || "unknown",
+          // Fix: asignar un valor concreto en lugar de una función
+          hashAlgorithm: false,
           toJSON: () => ({
             name: file.originalFilename,
             size: file.size,
@@ -82,9 +86,9 @@ export const formidableParser = async (
 
       resolve({
         fields: Object.fromEntries(
-          Object.entries(fields).map(([key, value]) => [
+          Object.entries(safeFields).map(([key, value]) => [
             key,
-            Array.isArray(value) ? value[0] : value,
+            Array.isArray(value) ? value[0] : value || "",
           ])
         ),
         files,
