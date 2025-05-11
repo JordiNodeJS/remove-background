@@ -4,14 +4,39 @@
 
 ---
 
-### **1. Gestión de Imágenes**
+### **1. Configuración del Proyecto**
 
-#### **1.1. Carga y Procesamiento**
+#### **1.1. Estructura Monorepo**
+
+- Utiliza Bun como gestor de dependencias y entorno de ejecución
+- Configura un monorepo con la siguiente estructura:
+  ```
+  /
+  ├── apps/
+  │   ├── frontend/     # Next.js 15 (interfaz de usuario)
+  │   └── api/          # Express (servidor backend)
+  ├── packages/         # Paquetes compartidos (opcional)
+  ├── package.json      # Config raíz con workspaces
+  └── bun.lockb         # Lockfile de Bun
+  ```
+
+#### **1.2. Configuración del Backend**
+
+- En apps/api, implementa un servidor Express con los siguientes endpoints:
+  - `POST /remove-background/link`: Procesa imágenes y elimina el fondo
+  - `GET /images-output/:filename`: Sirve imágenes procesadas estáticamente
+- Utiliza `multer` para el manejo de archivos subidos
+
+---
+
+### **2. Gestión de Imágenes**
+
+#### **2.1. Carga y Procesamiento**
 
 - Crea un formulario para cargar imágenes desde el dispositivo local.
 - Al enviar una imagen, realiza una solicitud POST al endpoint `http://localhost:3001/remove-background/link` con el siguiente formato:
   ```bash
-  curl -X POST http://ec2-3-255-188-43.eu-west-1.compute.amazonaws.com:3001/remove-background/link \
+  curl -X POST http://localhost:3001/remove-background/link \
     -H "Content-Type: multipart/form-data" \
     -F "image=@input-01.png"
   ```
@@ -21,88 +46,143 @@
     "status": 200,
     "message": "Imagen procesada correctamente...",
     "data": {
-      "url": "http://ec2-3-255-188-43.eu-west-1.compute.amazonaws.com:3001/images-output/output-1746907260873-596650149.png"
+      "url": "http://localhost:3001/images-output/output-1746907260873-596650149.png"
     }
   }
   ```
 
-#### **1.2. Almacenamiento**
+#### **2.2. Almacenamiento**
 
-- Guarda las imágenes originales y procesadas en directorios separados (`public/images-input/` y `public/images-output/`).
-- Asegúrate de que las imágenes sean accesibles mediante URLs estáticas.
+- En el backend:
+  - Guarda las imágenes originales en `images-input/`
+  - Guarda las imágenes procesadas en `images-output/`
+  - Configura Express para servir estos directorios estáticamente
+- Asegúrate de añadir nombres únicos a las imágenes (usando timestamps)
 
 ---
 
-### **2. Interfaz de Comparación**
+### **3. Interfaz de Comparación**
 
 - Diseña una interfaz que muestre **dos imágenes lado a lado**:
   - Imagen original (izquierda).
   - Imagen procesada (derecha).
-- Implementa una **barra vertical deslizable** para comparar ambas imágenes (similar a Google Maps 'before/after').
-- Usa una librería como `react-split` o implementa una solución personalizada con CSS/Grid.
+- Implementa una **barra vertical deslizable** para comparar ambas imágenes
+- Usa la biblioteca `react-compare-image` para la comparación deslizable
+- Ejemplo de implementación:
+
+  ```jsx
+  import ReactCompareImage from "react-compare-image";
+
+  export default function ImageComparisonComponent({ before, after }) {
+    return (
+      <div className="comparison-container">
+        <ReactCompareImage
+          leftImage={before}
+          rightImage={after}
+          sliderPositionPercentage={0.5}
+          handle={<CustomHandle />}
+        />
+      </div>
+    );
+  }
+  ```
 
 ---
 
-### **3. Rutas y API**
+### **4. Flujo de la Aplicación**
 
-#### **3.1. Frontend**
-
-- Página principal (`/`): Formulario de carga y sección de comparación.
-- Historial de imágenes procesadas (opcional).
-
-#### **3.2. Backend (API Routes)**
-
-- Crea un endpoint `POST /api/remove-background` que:
-  - Reciba la imagen como `multipart/form-data`.
-  - Simule o integre el procesamiento (usa el ejemplo del curl como mock si es necesario).
-  - Devuelva el JSON especificado.
+1. El usuario sube una imagen mediante un formulario en el frontend
+2. El frontend envía la imagen al backend mediante una solicitud POST
+3. El backend procesa la imagen (elimina el fondo) y devuelve la URL de la imagen procesada
+4. El frontend muestra ambas imágenes (original y procesada) en el componente de comparación
+5. El usuario puede deslizar para comparar ambas imágenes
 
 ---
 
-### **4. Tecnologías y Dependencias**
+### **5. Configuración de CORS y Comunicación**
 
-- Usa **Next.js 15** con App Router.
-- Usa `multer` o `formidable` para manejar uploads.
-- Librerías recomendadas: `react-split`, `axios`, `zod` (opcional para validación).
+- Añade la configuración necesaria en el backend para permitir peticiones desde el frontend:
+  ```javascript
+  // En el servidor Express
+  const cors = require("cors");
+  app.use(
+    cors({
+      origin: "http://localhost:3000", // URL del frontend
+      methods: ["GET", "POST"],
+      allowedHeaders: ["Content-Type"],
+    })
+  );
+  ```
+- En el frontend, configura las llamadas API para manejar correctamente los CORS
 
 ---
 
-### **5. Estructura de Carpetas**
-
-Sigue esta estructura:
+### **6. Estructura de Carpetas Frontend**
 
 ```
-/app
-  /api
-    /remove-background/route.ts
-  /components
-    ImageComparison.tsx
-    UploadButton.tsx
-  /lib
-    ...
-  page.tsx
-/public
-  /images-input
-  /images-output
+apps/frontend/
+├── app/
+│   ├── page.tsx              # Página principal
+│   ├── layout.tsx            # Layout de la app
+│   └── api/                  # API routes (opcional)
+├── components/
+│   ├── ImageComparison.tsx   # Componente de comparación
+│   ├── ImageUploader.tsx     # Formulario de carga
+│   └── ui/                   # Componentes UI reutilizables
+├── lib/
+│   └── api.ts                # Funciones para llamadas API
+└── public/                   # Assets estáticos
 ```
 
 ---
 
-### **6. Instrucciones de Ejecución**
+### **7. Estilización y UI**
 
-- Incluye un archivo `README.md` con:
-  - Pasos para instalar dependencias (`npm install`).
-  - Variables de entorno necesarias (si aplica).
-  - Comandos para iniciar el servidor (`npm run dev`).
-  - Ejemplo de prueba con el curl proporcionado.
-
----
-
-### **7. Requisitos Adicionales**
-
-- Valida que las imágenes sean de tipo `image/png` o `image/jpeg`.
-- Muestra notificaciones (toasts) para errores o éxito en la carga.
+- Utiliza Tailwind CSS para los estilos
+- Implementa un diseño responsive que funcione en móviles y desktop
+- Añade estados de carga (loading) durante el procesamiento de imágenes
+- Implementa toasts o notificaciones para informar sobre el resultado del proceso
 
 ---
 
-Este prompt está optimizado para que la IA genere todo el código necesario en un solo intento, incluyendo manejo de archivos, integración con APIs y una UI interactiva.
+### **8. Manejo de Errores**
+
+- Implementa manejo detallado de errores en el frontend y backend
+- En el frontend:
+  - Muestra mensajes de error específicos si la imagen es demasiado grande
+  - Implementa validación de tipos de archivo (.jpg, .png)
+- En el backend:
+  - Proporciona mensajes de error descriptivos cuando el procesamiento falla
+  - Maneja casos de timeout o errores del servicio
+
+---
+
+### **9. Scripts de Ejecución**
+
+En el package.json principal, añade:
+
+```json
+{
+  "private": true,
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "dev": "concurrently \"bun --filter frontend dev\" \"bun --filter api start\"",
+    "build": "bun --filter frontend build",
+    "start": "concurrently \"bun --filter frontend start\" \"bun --filter api start\""
+  }
+}
+```
+
+---
+
+### **10. Documentación**
+
+- Incluye un README.md detallado con:
+  - Instrucciones de instalación y ejecución
+  - Explicación de la arquitectura
+  - Ejemplos de uso del API
+  - Requisitos del sistema
+
+---
+
+Este prompt está optimizado para generar una aplicación funcional de procesamiento de imágenes con Next.js 15 en el frontend y Express en el backend, utilizando Bun como gestor de dependencias en una estructura de monorepo.

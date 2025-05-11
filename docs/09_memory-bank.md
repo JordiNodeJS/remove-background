@@ -1,6 +1,6 @@
 # Banco de Memoria y Progreso del Proyecto
 
-## Última actualización: 2025-05-02
+## Última actualización: 2025-05-03
 
 ---
 
@@ -33,7 +33,7 @@
 - [x] 3.1.F Proyecto Next.js 15 inicializado
 - [ ] 3.2.F Página principal `/` para subir imágenes y mostrar resultados
 - [ ] 3.3.F Configuración de proxy a backend en desarrollo
-- [ ] 3.4.F Conexión real con el backend (API)
+- [x] 3.4.F Conexión real con el backend (API)
 - [ ] 3.5.F Pruebas unitarias de componentes principales
 
 ---

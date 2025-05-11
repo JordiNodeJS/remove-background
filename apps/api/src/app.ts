@@ -2,9 +2,30 @@ import express, { type Express } from "express";
 import removeBackgroundRouter from "./routes/remove-background.route";
 import { healthRouter } from "./routes/health.route";
 import path from "path";
+import cors from "cors";
 
 export const createApp = (): Express => {
   const app = express();
+
+  // Configurar CORS para permitir peticiones del frontend
+  app.use(
+    cors({
+      origin: "http://localhost:3000",
+      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+      allowedHeaders: [
+        "Origin",
+        "X-Requested-With",
+        "Content-Type",
+        "Accept",
+        "Authorization",
+        "Cache-Control",
+        "Pragma",
+      ],
+      credentials: true,
+      optionsSuccessStatus: 204,
+    })
+  );
+
   app.use(express.json());
 
   // Configurar directorio de imágenes procesadas como estático
