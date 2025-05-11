@@ -28,22 +28,22 @@ export const formidableParser = async (
       method: req.method,
       url: req.url,
     };
-    
+
     // Add necessary stream-like methods
     if (req.body) {
       reqProxy.pipe = (destination: any) => {
         const reader = (req.body as ReadableStream).getReader();
-        
+
         const processChunk = ({ done, value }: any) => {
           if (done) {
             destination.end();
             return;
           }
-          
+
           destination.write(value);
           reader.read().then(processChunk);
         };
-        
+
         reader.read().then(processChunk);
         return destination;
       };
@@ -59,24 +59,24 @@ export const formidableParser = async (
         reject(err);
         return;
       }
-      
+
       // Process and transform files to match the expected interface
       const files: Files = {};
-      
+
       // Convert formidable's files format to our Files format
       Object.entries(rawFiles).forEach(([key, value]) => {
         const fileList = Array.isArray(value) ? value : [value];
-        
+
         files[key] = fileList.map((file: any) => ({
           ...file,
-          newFilename: file.newFilename || file.filepath.split('/').pop(),
+          newFilename: file.newFilename || file.filepath.split("/").pop(),
           hashAlgorithm: () => null,
           toJSON: () => ({
             name: file.originalFilename,
             size: file.size,
             type: file.mimetype,
-            path: file.filepath
-          })
+            path: file.filepath,
+          }),
         }));
       });
 
