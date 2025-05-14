@@ -14,10 +14,36 @@ export default function AppInit() {
 
   useEffect(() => {
     const performHealthCheckWithRetries = async () => {
+      // Determine backend URL
+      let backendUrl: string;
+      const envApiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+      if (envApiUrl) {
+        backendUrl = envApiUrl;
+        console.log(
+          `URL del backend (desde NEXT_PUBLIC_API_URL): ${backendUrl}`
+        );
+      } else if (typeof window !== "undefined" && window.location.hostname) {
+        const protocol = window.location.protocol;
+        const hostname = window.location.hostname;
+        // Puerto por defecto para API en producción (cuando no es localhost)
+        const productionApiPort = 3000; // Basado en la URL original de AWS
+        // Puerto por defecto para API en desarrollo local
+        const localApiPort = 3001; // Basado en el fallback original
+
+        const port =
+          hostname === "localhost" ? localApiPort : productionApiPort;
+        backendUrl = `${protocol}//${hostname}:${port}`;
+        console.log(
+          `URL del backend (construida dinámicamente): ${backendUrl}`
+        );
+      } else {
+        // Fallback para SSR o si window/hostname no está disponible y NEXT_PUBLIC_API_URL tampoco
+        backendUrl = "http://localhost:3001"; // El fallback original
+        console.log(`URL del backend (fallback SSR/default): ${backendUrl}`);
+      }
+
       console.log("Verificando conexión con el backend...");
-      const backendUrl =
-        process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
-      console.log("URL del backend:", backendUrl);
 
       const retries = 3;
       let lastError: Error | null = null;
@@ -113,10 +139,16 @@ export default function AppInit() {
           }
         } catch (fetchError) {
           clearTimeout(initTimeoutId);
-          console.error("Error al inicializar la aplicación (fetch /api/init):", fetchError);
+          console.error(
+            "Error al inicializar la aplicación (fetch /api/init):",
+            fetchError
+          );
         }
       } catch (error) {
-        console.error("Error general en la inicialización de directorios:", error);
+        console.error(
+          "Error general en la inicialización de directorios:",
+          error
+        );
       }
 
       // Verificar que el backend está respondiendo
