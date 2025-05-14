@@ -13,6 +13,20 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  // Añade esta configuración para el watcher
+  webpack: (config, { dev, isServer }) => {
+    if (dev && !isServer) {
+      // Ignora los directorios que causan reinicios innecesarios
+      const ignored = config.watchOptions.ignored ?? [];
+      config.watchOptions.ignored = [
+        ...(Array.isArray(ignored) ? ignored : [ignored]),
+        /public\/images-input/,
+        /public\/images-output/,
+        /tmp/,
+      ];
+    }
+    return config;
+  },
 };
 
 export default nextConfig;
