@@ -123,12 +123,42 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         console.error("Error al eliminar el archivo temporal:", unlinkError);
       }
 
-      console.error("Error al conectar con el backend:", error);
+      let errorDetails = "No additional details available.";
+      if (error instanceof Error) {
+        errorDetails = `Name: ${error.name}, Message: ${error.message}`;
+        // @ts-expect-error TS(2339) Property 'cause' does not exist on type 'Error'.
+        if (error.cause) {
+          try {
+            // @ts-expect-error TS(2339) Property 'cause' does not exist on type 'Error'.
+            errorDetails += ` | Cause: ${JSON.stringify(
+              error.cause,
+              Object.getOwnPropertyNames(error.cause)
+            )}`;
+          } catch (_stringifyError) {
+            // Mark as unused if not needed
+            // @ts-expect-error TS(2339) Property 'cause' does not exist on type 'Error'.
+            errorDetails += ` | Cause: (Could not stringify - ${String(
+              error.cause
+            )})`;
+          }
+        }
+      } else {
+        errorDetails = `Error: ${String(error)}`;
+      }
+
+      console.error(
+        "[remove-background route] Error al conectar con el backend:",
+        error,
+        "Formatted Details:",
+        errorDetails
+      );
+
       return NextResponse.json(
         {
           status: 500,
           message:
-            "No se pudo conectar con el servicio de procesamiento de imágenes",
+            "No se pudo conectar con el servicio de procesamiento de imágenes. Revise los logs del servidor frontend para más detalles.",
+          errorDetails: errorDetails, // Added detailed error information
         },
         { status: 500 }
       );
