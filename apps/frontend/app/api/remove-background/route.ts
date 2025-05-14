@@ -63,8 +63,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     });
 
     // Añadir el blob al FormData
-    backendFormData.append("image", blob, imageFile.name || "image.png"); 
-    
+    backendFormData.append("image", blob, imageFile.name || "image.png");
+
     // Realizar la petición al servicio externo con timeout
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 segundos de timeout
@@ -75,23 +75,34 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     const publicApiUrlFromEnv = process.env.NEXT_PUBLIC_API_URL; // e.g., http://ec2-instance.com:3001
 
     if (publicApiUrlFromEnv) {
-        try {
-            const parsedPublicUrl = new URL(publicApiUrlFromEnv);
-            // If NEXT_PUBLIC_API_URL is set (e.g. for EC2), construct the internal URL using its port.
-            // This assumes the backend runs on the same host as this Next.js API route.
-            backendServiceUrl = `http://localhost:${parsedPublicUrl.port || '3001'}`;
-            console.log(`[remove-background route] NEXT_PUBLIC_API_URL is ${publicApiUrlFromEnv}. Using internal backend URL for server-to-server call: ${backendServiceUrl}`);
-        } catch (e) {
-            console.warn(`[remove-background route] Could not parse NEXT_PUBLIC_API_URL ('${publicApiUrlFromEnv}'). Defaulting to http://localhost:3001. Error:`, e);
-            backendServiceUrl = "http://localhost:3001";
-        }
-    } else {
-        // If NEXT_PUBLIC_API_URL is not set, default to localhost:3001.
+      try {
+        const parsedPublicUrl = new URL(publicApiUrlFromEnv);
+        // If NEXT_PUBLIC_API_URL is set (e.g. for EC2), construct the internal URL using its port.
+        // This assumes the backend runs on the same host as this Next.js API route.
+        backendServiceUrl = `http://localhost:${
+          parsedPublicUrl.port || "3001"
+        }`;
+        console.log(
+          `[remove-background route] NEXT_PUBLIC_API_URL is ${publicApiUrlFromEnv}. Using internal backend URL for server-to-server call: ${backendServiceUrl}`
+        );
+      } catch (e) {
+        console.warn(
+          `[remove-background route] Could not parse NEXT_PUBLIC_API_URL ('${publicApiUrlFromEnv}'). Defaulting to http://localhost:3001. Error:`,
+          e
+        );
         backendServiceUrl = "http://localhost:3001";
-        console.log(`[remove-background route] NEXT_PUBLIC_API_URL not set. Using default internal backend URL for server-to-server call: ${backendServiceUrl}`);
+      }
+    } else {
+      // If NEXT_PUBLIC_API_URL is not set, default to localhost:3001.
+      backendServiceUrl = "http://localhost:3001";
+      console.log(
+        `[remove-background route] NEXT_PUBLIC_API_URL not set. Using default internal backend URL for server-to-server call: ${backendServiceUrl}`
+      );
     }
 
-    console.log(`[remove-background route] Attempting to send image to Express backend at: ${backendServiceUrl}/remove-background/link`);
+    console.log(
+      `[remove-background route] Attempting to send image to Express backend at: ${backendServiceUrl}/remove-background/link`
+    );
 
     let response;
     try {
