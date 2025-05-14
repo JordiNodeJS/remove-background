@@ -126,24 +126,19 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       let errorDetails = "No additional details available.";
       if (error instanceof Error) {
         errorDetails = `Name: ${error.name}, Message: ${error.message}`;
-        // @ts-expect-error TS(2339) Property 'cause' does not exist on type 'Error'.
         if (error.cause) {
           try {
-            // @ts-expect-error TS(2339) Property 'cause' does not exist on type 'Error'.
             errorDetails += ` | Cause: ${JSON.stringify(
               error.cause,
               Object.getOwnPropertyNames(error.cause)
             )}`;
-          } catch (_stringifyError) {
-            // Mark as unused if not needed
-            // @ts-expect-error TS(2339) Property 'cause' does not exist on type 'Error'.
+          } catch (_) {
+            // eslint-disable-line @typescript-eslint/no-unused-vars
             errorDetails += ` | Cause: (Could not stringify - ${String(
               error.cause
             )})`;
           }
         }
-      } else {
-        errorDetails = `Error: ${String(error)}`;
       }
 
       console.error(
