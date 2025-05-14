@@ -30,7 +30,8 @@ export default function AppInit() {
         const hostname = window.location.hostname;
         const productionApiPort = 3001; // Corrected to 3001 for EC2/non-localhost
         const localApiPort = 3001;
-        const port = hostname === "localhost" ? localApiPort : productionApiPort;
+        const port =
+          hostname === "localhost" ? localApiPort : productionApiPort;
         backendUrl = `${protocol}//${hostname}:${port}`;
         console.log(
           `URL del backend (construida dinámicamente): ${backendUrl}`
