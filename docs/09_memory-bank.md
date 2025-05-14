@@ -1,6 +1,6 @@
 # Banco de Memoria y Progreso del Proyecto
 
-## Última actualización: 2025-05-03
+## Última actualización: 2025-05-15
 
 ---
 
@@ -33,7 +33,7 @@
 - [x] 3.1.F Proyecto Next.js 15 inicializado
 - [ ] 3.2.F Página principal `/` para subir imágenes y mostrar resultados
 - [ ] 3.3.F Configuración de proxy a backend en desarrollo
-- [x] 3.4.F Conexión real con el backend (API)
+- [x] 3.4.F Conexión real con el backend (API) - _Estabilizada y robustecida la carga de imágenes procesadas._
 - [ ] 3.5.F Pruebas unitarias de componentes principales
 
 ---
@@ -50,6 +50,19 @@
 - [x] 5.1.CD Scripts de desarrollo y arranque con Bun y concurrently
 - [x] 5.2.CD Variables de entorno documentadas y configuradas en docs
 - [ ] 5.3.CD Configuración de CI/CD para instalar con Bun y ejecutar tests
+
+---
+
+## Logros y Soluciones Recientes (2025-05-15)
+
+- **Resolución de Error `net::ERR_SSL_PROTOCOL_ERROR` en Frontend:**
+  - **Problema:** El frontend no podía cargar la imagen procesada debido a un error de protocolo SSL. La URL de la imagen (`localImageUrl`) se generaba incorrectamente con `https://` cuando el servidor de desarrollo Next.js (ej. en `http://ec2-34-246-184-131.eu-west-1.compute.amazonaws.com:3000`) servía los activos sobre `http://`.
+  - **Solución:** Se implementó una lógica robusta en `apps/frontend/app/api/remove-background/route.ts` para determinar el protocolo correcto:
+    1. Se prioriza el header `x-forwarded-proto`.
+    2. Si no existe, se infiere el protocolo de `req.url`.
+    3. Se aplica una **anulación a `http`** para la URL de la imagen si el `host` corresponde a entornos de desarrollo conocidos que sirven sobre HTTP (como la IP específica de EC2 en el puerto 3000, o `localhost`).
+    4. Se mejoró el parseo del `host` y se añadió logging extensivo para depuración.
+  - **Impacto:** Se corrigió la carga de imágenes procesadas, permitiendo la visualización y comparación en el frontend. Esto fortalece el checkpoint 3.4.F.
 
 ---
 
