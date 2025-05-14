@@ -322,8 +322,6 @@ Si no hay swap activo, procede a crearlo .
 Por ejemplo, para generar un archivo de **2 GB**:
 
 ```bash
-sudo mkswap /swapfile
-sudo swapoff /swapfile
 sudo fallocate -l 2G /swapfile
 ```
 
@@ -354,6 +352,8 @@ Ejecuta:
 ```bash
 sudo mkswap /swapfile
 sudo swapon /swapfile
+
+swapon --show
 ```
 
 Este paso prepara el archivo para su uso como espacio de intercambio .
@@ -374,10 +374,17 @@ Verifica que esté activo con `free -m` .
 
 ## 6. Hacerlo persistente tras reinicios
 
-Edita el archivo `/etc/fstab` y agrega esta línea:
+Edita el archivo `/etc/fstab` (`sudo nano /etc/fstab`) y agrega esta línea:
 
 ```
 /swapfile none swap sw 0 0
+```
+
+Desactiva y desactiva la partición swap.
+
+```
+sudo swapoff /swapfile
+sudo swapoff /swapfile
 ```
 
 Esto asegura que el swap se active automáticamente al reiniciar .
