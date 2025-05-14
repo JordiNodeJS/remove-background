@@ -184,11 +184,112 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       }
 
       // Construir la URL local para el cliente
-      const host = req.headers.get("host") || "localhost:3000";
-      const protocol = host.includes("localhost") ? "http" : "https";
-      const localImageUrl = `${protocol}://${host}/images-output/${outputFileName}`;
+      const hostHeaderValue = req.headers.get("host") || "localhost:3000";
+      const hostParts = hostHeaderValue.split(":");
+      const hostnameFromHeader = hostParts[0].trim(); // Added trim
+      const portFromHeader = hostParts.length > 1 ? hostParts[1].trim() : null; // Added trim
 
-      console.log(`URL para el cliente: ${localImageUrl}`);
+      let protocolForApiAccess: string;
+      const xForwardedProtoHeader = req.headers.get("x-forwarded-proto") as
+        | string
+        | null;
+
+      if (xForwardedProtoHeader) {
+        protocolForApiAccess = xForwardedProtoHeader
+          .split(",")[0]
+          .trim()
+          .toLowerCase();
+      } else {
+        try {
+          const currentRequestURL = new URL(req.url);
+          protocolForApiAccess = currentRequestURL.protocol
+            .replace(":", "")
+            .toLowerCase();
+        } catch (e) {
+          console.error(
+            "Error parsing req.url to determine API access protocol:",
+            e,
+            "Defaulting to http."
+          );
+          protocolForApiAccess = "http";
+        }
+      }
+
+      let protocolForImageServing = protocolForApiAccess;
+
+      // Break down hostHeaderValue for robust comparison
+      const hostPartsForComparison = hostHeaderValue.split(":");
+      const hostnameFromHeaderForComparison = hostPartsForComparison[0];
+      const portFromHeaderForComparison =
+        hostPartsForComparison.length > 1 ? hostPartsForComparison[1] : null;
+
+      // Pre-decision logging
+      console.log("[URL Pre-Override Check]");
+      console.log(`  hostHeaderValue: "${hostHeaderValue}"`);
+      console.log(
+        `  hostnameFromHeader: "${hostnameFromHeaderForComparison}" (lower: "${hostnameFromHeaderForComparison.toLowerCase()}")`
+      );
+      console.log(`  portFromHeader: "${portFromHeaderForComparison}"`);
+      console.log(`  protocolForApiAccess: "${protocolForApiAccess}"`);
+
+      // Check for the specific EC2 development host (case-insensitive hostname)
+      const ec2DevHostnameTarget =
+        "ec2-34-246-184-131.eu-west-1.compute.amazonaws.com";
+      const ec2DevPortTarget = "3000";
+
+      const isSpecificEC2DevHost =
+        hostnameFromHeader.toLowerCase() === ec2DevHostnameTarget &&
+        portFromHeader === ec2DevPortTarget;
+
+      // Check for standard local development hosts
+      const isStandardLocalDevHost =
+        hostHeaderValue.startsWith("localhost:") ||
+        hostHeaderValue.startsWith("127.0.0.1:");
+
+      console.log("[URL Override Condition Check Values]");
+      console.log(
+        `  Comparing hostname: "${hostnameFromHeader.toLowerCase()}" === "${ec2DevHostnameTarget}" -> ${
+          hostnameFromHeader.toLowerCase() === ec2DevHostnameTarget
+        }`
+      );
+      console.log(
+        `  Comparing port: "${portFromHeader}" === "${ec2DevPortTarget}" -> ${
+          portFromHeader === ec2DevPortTarget
+        }`
+      );
+      console.log(`  Result isSpecificEC2DevHost: ${isSpecificEC2DevHost}`);
+      console.log(`  Result isStandardLocalDevHost: ${isStandardLocalDevHost}`);
+
+      if (isSpecificEC2DevHost || isStandardLocalDevHost) {
+        if (protocolForApiAccess === "https") {
+          console.warn(
+            `[URL Generation Override Triggered] API accessed via ${protocolForApiAccess} for host "${hostHeaderValue}". ` +
+              `Image URL will use http as this host is assumed to serve images via HTTP only.`
+          );
+        }
+        protocolForImageServing = "http";
+      } else {
+        console.log(
+          "[URL Generation Override NOT Triggered] Conditions not met for specific dev host or local host."
+        );
+      }
+
+      const localImageUrl = `${protocolForImageServing}://${hostHeaderValue}/images-output/${outputFileName}`;
+
+      // Enhanced logging for debugging URL generation
+      console.log("[URL Generation Details]");
+      console.log(`  Incoming request URL (req.url): ${req.url}`);
+      console.log(
+        `  Host header (req.headers.get("host")): ${req.headers.get("host")}`
+      );
+      console.log(`  X-Forwarded-Proto header: ${xForwardedProtoHeader}`);
+      console.log(
+        `  Protocol used for API access (protocolForApiAccess): ${protocolForApiAccess}`
+      );
+      console.log(
+        `  Protocol chosen for image serving (protocolForImageServing): ${protocolForImageServing}`
+      );
+      console.log(`  Final localImageUrl for client: ${localImageUrl}`);
 
       // Construir la respuesta según el formato esperado
       const apiResponse: ApiResponse = {
@@ -224,8 +325,35 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         }
 
         // Construir la URL local para el cliente
-        const host = req.headers.get("host") || "localhost:3000";
-        const protocol = host.includes("localhost") ? "http" : "https";
+        const host = req.headers.get("host") || "localhost:3000"; // This is the host of the Next.js frontend
+        let protocol: string;
+
+        const xForwardedProtoHeader = req.headers.get("x-forwarded-proto") as
+          | string
+          | null;
+        if (xForwardedProtoHeader) {
+          // If x-forwarded-proto is set (e.g., by a load balancer or reverse proxy), trust it.
+          // It might be a comma-separated list if there are multiple proxies. Take the first one.
+          protocol = xForwardedProtoHeader.split(",")[0].trim().toLowerCase();
+        } else {
+          // If no x-forwarded-proto, determine protocol from the request URL to this API route.
+          // req.url in NextRequest is an absolute URL string.
+          try {
+            const currentRequestURL = new URL(req.url);
+            protocol = currentRequestURL.protocol
+              .replace(":", "")
+              .toLowerCase(); // "http" or "https"
+          } catch (e) {
+            // Fallback in case req.url is unexpectedly not an absolute URL
+            console.error(
+              "Error parsing req.url to determine protocol:",
+              e,
+              "Defaulting to http."
+            );
+            protocol = "http"; // Safe fallback
+          }
+        }
+
         const localImageUrl = `${protocol}://${host}/images-output/${outputFileName}`;
 
         const apiResponse: ApiResponse = {
