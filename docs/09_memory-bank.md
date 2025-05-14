@@ -56,6 +56,7 @@
 ## Logros y Soluciones Recientes (2025-05-15)
 
 - **Resolución de Error `net::ERR_SSL_PROTOCOL_ERROR` en Frontend:**
+
   - **Problema:** El frontend no podía cargar la imagen procesada debido a un error de protocolo SSL. La URL de la imagen (`localImageUrl`) se generaba incorrectamente con `https://` cuando el servidor de desarrollo Next.js (ej. en `http://ec2-34-246-184-131.eu-west-1.compute.amazonaws.com:3000`) servía los activos sobre `http://`.
   - **Solución:** Se implementó una lógica robusta en `apps/frontend/app/api/remove-background/route.ts` para determinar el protocolo correcto:
     1. Se prioriza el header `x-forwarded-proto`.
@@ -63,6 +64,12 @@
     3. Se aplica una **anulación a `http`** para la URL de la imagen si el `host` corresponde a entornos de desarrollo conocidos que sirven sobre HTTP (como la IP específica de EC2 en el puerto 3000, o `localhost`).
     4. Se mejoró el parseo del `host` y se añadió logging extensivo para depuración.
   - **Impacto:** Se corrigió la carga de imágenes procesadas, permitiendo la visualización y comparación en el frontend. Esto fortalece el checkpoint 3.4.F.
+
+- **Resolución de Error `AbortError: This operation was aborted` (Timeout) en Frontend API Route:**
+  - **Problema:** La ruta API del frontend (`apps/frontend/app/api/remove-background/route.ts`) experimentaba timeouts al llamar al backend (`apps/api`) para el procesamiento de imágenes. El error se manifestaba como un `AbortError` en los logs del frontend, indicando que la operación de `fetch` era abortada. Esto ocurría porque el tiempo de procesamiento en el backend, que incluye la descarga de modelos de IA y la eliminación del fondo, excedía el tiempo de espera por defecto (o el configurado inicialmente) en la ruta API del frontend.
+  - **Diagnóstico:** Los logs del backend mostraban tiempos de procesamiento superiores a los timeouts configurados en el frontend (inicialmente 30s, luego 43s+). La consola del navegador en el frontend y los logs de la API del frontend mostraban el `AbortError` y el mensaje "This operation was aborted".
+  - **Solución:** Se incrementó progresivamente el `timeout` en la llamada `fetch` dentro de `apps/frontend/app/api/remove-background/route.ts`. El `AbortController` configurado para la petición `fetch` se ajustó para permitir un tiempo de espera mayor, estableciéndose finalmente en 120 segundos (2 minutos).
+  - **Impacto:** Al aumentar el tiempo de espera, la ruta API del frontend ahora espera lo suficiente para que el backend complete tareas de larga duración como el procesamiento de imágenes, resolviendo los `AbortError` y permitiendo que el flujo completo de eliminación de fondo funcione correctamente. Esto también refuerza el checkpoint 3.4.F.
 
 ---
 
