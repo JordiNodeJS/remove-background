@@ -28,13 +28,9 @@ export default function AppInit() {
       } else if (typeof window !== "undefined" && window.location.hostname) {
         const protocol = window.location.protocol;
         const hostname = window.location.hostname;
-        // Puerto por defecto para API en producción (cuando no es localhost)
-        const productionApiPort = 3000; // Basado en la URL original de AWS
-        // Puerto por defecto para API en desarrollo local
-        const localApiPort = 3001; // Basado en el fallback original
-
-        const port =
-          hostname === "localhost" ? localApiPort : productionApiPort;
+        const productionApiPort = 3001; // Corrected to 3001 for EC2/non-localhost
+        const localApiPort = 3001;
+        const port = hostname === "localhost" ? localApiPort : productionApiPort;
         backendUrl = `${protocol}//${hostname}:${port}`;
         console.log(
           `URL del backend (construida dinámicamente): ${backendUrl}`
