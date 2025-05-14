@@ -17,14 +17,14 @@ export default function AppInit() {
       // Determine backend URL
       let backendUrl: string;
       const envApiUrl = process.env.NEXT_PUBLIC_API_URL;
-      console.log('[AppInit] process.env.NEXT_PUBLIC_API_URL:', envApiUrl); // Added log
+      console.log("[AppInit] process.env.NEXT_PUBLIC_API_URL:", envApiUrl); // Added log
 
       if (envApiUrl) {
         backendUrl = envApiUrl;
         console.log(
           `URL del backend (desde NEXT_PUBLIC_API_URL): ${backendUrl}`
         );
-        console.log('[AppInit] Usando NEXT_PUBLIC_API_URL:', envApiUrl);
+        console.log("[AppInit] Usando NEXT_PUBLIC_API_URL:", envApiUrl);
       } else if (typeof window !== "undefined" && window.location.hostname) {
         const protocol = window.location.protocol;
         const hostname = window.location.hostname;
