@@ -223,9 +223,12 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       );
 
       // Guardar en el directorio local
-      const outputDir = path.join(process.cwd(), "public/images-output");
+      const outputDir = path.resolve(__dirname, "../../../../public/images-output");
       if (!fs.existsSync(outputDir)) {
         fs.mkdirSync(outputDir, { recursive: true });
+        console.log(`Directorio de salida creado en: ${outputDir}`);
+      } else {
+        console.log(`Directorio de salida ya existe en: ${outputDir}`);
       }
 
       const outputFileName = `output-${timestamp}-${random}${fileExt}`;
@@ -364,7 +367,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
       // Si falla, proporcionamos una respuesta fallback usando la imagen original
       try {
-        const outputDir = path.join(process.cwd(), "public/images-output");
+        const outputDir = path.resolve(__dirname, "../../../../public/images-output");
         if (!fs.existsSync(outputDir)) {
           fs.mkdirSync(outputDir, { recursive: true });
         }
