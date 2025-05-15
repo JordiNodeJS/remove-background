@@ -292,7 +292,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
       // Check for the specific EC2 development host (case-insensitive hostname)
       const ec2DevHostnameTarget =
-        "ec2-34-246-184-131.eu-west-1.compute.amazonaws.com";
+        "ec2-63-35-184-124.eu-west-1.compute.amazonaws.com";
       const ec2DevPortTarget = "3000";
 
       const isSpecificEC2DevHost =
