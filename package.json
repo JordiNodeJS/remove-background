@@ -15,7 +15,6 @@
     "build:all": "bun run --parallel --signal --filter=@remove-background/frontend --filter=@remove-background/api build",
     "build:frontend": "rm -fr apps/frontend/.next/ && bun run --filter=@remove-background/frontend build",
     "build:api": "bun run --filter=@remove-background/api build",
-    "build:backend": "rm -fr apps/api/.next/ && bun run --filter=@remove-background/api build",
     "start": "bun stop:all && bun run --parallel --filter=@remove-background/frontend --filter=@remove-background/api start",
     "rm": "bun run apps/api/src/utilities/remove-copy.ts",
     "test": "bun test apps/api/src/__tests__/remove-background.test.ts",
