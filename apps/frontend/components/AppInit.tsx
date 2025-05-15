@@ -18,6 +18,8 @@ export default function AppInit() {
       let backendUrl: string;
       const envApiUrl = process.env.NEXT_PUBLIC_API_URL;
       
+      console.log('[AppInit] Valor de process.env.NODE_ENV en cliente:', process.env.NODE_ENV); // Log para depurar NODE_ENV
+
       // Prioritize localhost for development mode for client-side health checks
       if (process.env.NODE_ENV === 'development') {
         backendUrl = 'http://localhost:3001';
