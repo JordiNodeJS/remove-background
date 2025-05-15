@@ -67,7 +67,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
     // Realizar la petición al servicio externo con timeout
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 120000); // 120 segundos de timeout
+    const timeoutId = setTimeout(() => controller.abort(), 180000); // 180 segundos de timeout (antes 120000)
 
     // Determine the backend URL for server-to-server communication.
     // Prefer 'localhost' to avoid hairpin NAT or firewall issues with public IPs for loopback.
