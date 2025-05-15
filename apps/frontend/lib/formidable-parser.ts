@@ -5,8 +5,8 @@ import formidable from "formidable";
 // Define the Files type to include all required properties
 export interface FormidableFile {
   filepath: string;
-  originalFilename?: string;
-  mimetype?: string;
+  originalFilename?: string | null;
+  mimetype?: string | null;
   size?: number;
   newFilename: string;
   // Fix: hashAlgorithm debería ser un valor específico, no una función
@@ -35,7 +35,7 @@ export const formidableParser = async (
       reqProxy.pipe = (destination: any) => {
         const reader = (req.body as ReadableStream).getReader();
 
-        const processChunk = ({ done, value }: any) => {
+        const processChunk = ({ done, value }: { done: boolean; value?: Uint8Array }) => {
           if (done) {
             destination.end();
             return;
@@ -68,21 +68,26 @@ export const formidableParser = async (
 
       // Convert formidable's files format to our Files format
       Object.entries(rawFiles || {}).forEach(([key, value]) => {
-        const fileList = Array.isArray(value) ? value : [value];
+        const fileArray = Array.isArray(value) ? value : (value ? [value] : []); // Ensure value is not undefined before creating array
+        const validFiles: formidable.File[] = fileArray.filter(
+          (f): f is formidable.File => f !== undefined && f !== null // Type guard
+        );
 
-        files[key] = fileList.map((file: any) => ({
-          ...file,
-          newFilename:
-            file.newFilename || file.filepath.split("/").pop() || "unknown",
-          // Fix: asignar un valor concreto en lugar de una función
-          hashAlgorithm: false,
-          toJSON: () => ({
-            name: file.originalFilename,
-            size: file.size,
-            type: file.mimetype,
-            path: file.filepath,
-          }),
-        }));
+        if (validFiles.length > 0) { // Process only if there are valid files
+          files[key] = validFiles.map((file: formidable.File) => ({ // Now file is guaranteed to be formidable.File
+            ...file,
+            newFilename:
+              file.newFilename || file.filepath.split("/").pop() || "unknown",
+            // Fix: asignar un valor concreto en lugar de una función
+            hashAlgorithm: false,
+            toJSON: () => ({
+              name: file.originalFilename,
+              size: file.size,
+              type: file.mimetype,
+              path: file.filepath,
+            }),
+          }));
+        }
       });
 
       resolve({
