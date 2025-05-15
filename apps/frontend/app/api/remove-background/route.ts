@@ -8,6 +8,8 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
+  console.log(`[remove-background POST] __dirname: ${__dirname}`);
+  console.log(`[remove-background POST] process.cwd(): ${process.cwd()}`);
   try {
     // Parsear directamente el formData (evitando el uso de formidable que causa el error _transform)
     const formData = await req.formData();
@@ -223,7 +225,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       );
 
       // Guardar en el directorio local
-      const outputDir = path.resolve(__dirname, "../../../../public/images-output");
+      const outputDir = path.join(process.cwd(), "public/images-output");
       if (!fs.existsSync(outputDir)) {
         fs.mkdirSync(outputDir, { recursive: true });
         console.log(`Directorio de salida creado en: ${outputDir}`);
@@ -367,7 +369,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
       // Si falla, proporcionamos una respuesta fallback usando la imagen original
       try {
-        const outputDir = path.resolve(__dirname, "../../../../public/images-output");
+        const outputDir = path.join(process.cwd(), "public/images-output");
         if (!fs.existsSync(outputDir)) {
           fs.mkdirSync(outputDir, { recursive: true });
         }
