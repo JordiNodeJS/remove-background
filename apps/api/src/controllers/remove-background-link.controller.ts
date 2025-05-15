@@ -46,8 +46,12 @@ export const removeBackgroundLinkController: RequestHandler = async (
     // Construir la URL absoluta para acceder a la imagen
     // Obtenemos el protocolo (http/https) y el host (dominio) de la solicitud
     const protocol = req.protocol;
-    const host = req.get('host');
-    const imageUrl = `${protocol}://${host}/images-output/${fileName}`;
+    const hostname = req.hostname; // Obtiene el nombre de host sin el puerto (ej. 'ec2-...')
+    const apiPort = process.env.PORT || "3001"; // Puerto donde corre la API
+
+    // Construir la URL base de la API asegurando el puerto correcto
+    const apiBaseUrl = `${protocol}://${hostname}:${apiPort}`;
+    const imageUrl = `${apiBaseUrl}/images-output/${fileName}`;
     
     // Devolver la URL en formato JSON
     res.status(200).json(
