@@ -16,7 +16,8 @@ export default function AppInit() {
     const performHealthCheckWithRetries = async () => {
       // Determine backend URL
       let backendUrl: string;
-      const envApiUrl = process.env.NEXT_PUBLIC_API_URL;
+      // const envApiUrl = process.env.NEXT_PUBLIC_API_URL;
+      const envApiUrl = 'http://localhost:3001';
       
       console.log('[AppInit] Valor de process.env.NODE_ENV en cliente:', process.env.NODE_ENV); // Log para depurar NODE_ENV
 
