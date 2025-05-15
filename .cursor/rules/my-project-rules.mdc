@@ -1,0 +1,136 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+
+**Reglas y Convenciones Clave del Proyecto (Extraídas de `.github`):**
+
+1.  **Estructura General del Proyecto (Monorepo con Bun):**
+    *   **Raíz del Proyecto:**
+        *   `apps/frontend/`: Aplicación Next.js 15 (UI).
+        *   `apps/api/`: Servidor Express (backend REST/GraphQL).
+        *   `packages/`: Paquetes compartidos (tipos, utilidades, UI, etc.).
+        *   `package.json`: Configuración raíz con workspaces (`"apps/*", "packages/*"`).
+        *   `bun.lockb`: Lockfile de Bun.
+    *   **Herramientas:** Bun para gestión de dependencias y ejecución.
+    *   **Scripts Principales (en `package.json` raíz):**
+        *   `dev`: `concurrently "bun --filter frontend dev" "bun --filter api start"`
+        *   `build`: `bun --filter frontend build`
+        *   `start`: `concurrently "bun --filter frontend start" "bun --filter api start"`
+
+2.  **Convenciones de Nomenclatura y Contenido por Directorio:**
+    *   `apps/frontend/`: Código Next.js (páginas en `app/page.tsx`, layouts en `app/layout.tsx`, componentes en `components/`, etc.).
+    *   `apps/api/`: Servidor Express (rutas en `routes/`, middlewares en `middlewares/`).
+    *   `packages/shared/`: Módulos reutilizables (tipos TypeScript, helpers).
+
+3.  **Backend (Express - `apps/api/`):**
+    *   **Endpoints para Imágenes:**
+        *   `POST /remove-background/link`: Procesa imágenes (ej. elimina fondo). Usa `multer` para la subida.
+        *   `GET /images-output/:filename`: Sirve imágenes procesadas estáticamente.
+    *   **Procesamiento de Imágenes (con `@imgly/background-removal-node`):**
+        *   Importar explícitamente `@imgly/background-removal-node`.
+        *   Función debe aceptar imagen como `Buffer`, `ArrayBuffer`, `Uint8Array`, `Blob`, `URL` o `string`.
+        *   Usar `removeBackground()` para procesar.
+        *   Salida en formato `image/png`.
+        *   Permitir selección de tipo de resultado (`foreground`, `background`, `mask`) vía parámetro.
+        *   Manejo de errores robusto; retorno como `Blob`.
+        *   Código bien estructurado, documentado, siguiendo buenas prácticas de Node.js.
+    *   **Almacenamiento de Imágenes:**
+        *   Originales en `images-input/`.
+        *   Procesadas en `images-output/` (con nombres únicos, ej. usando timestamps).
+        *   Servir estos directorios estáticamente con Express.
+    *   **API REST para Imágenes (General):**
+        *   Devolver datos binarios.
+        *   Cabecera `Content-Type` correcta (ej. `image/jpeg`, `image/png`).
+        *   Manejo de errores con códigos HTTP apropiados (ej. 404).
+        *   Seguir patrones RESTful estándar.
+    *   **CORS:** Configurar para permitir peticiones desde el frontend (ej. `http://localhost:3000`), métodos `GET`, `POST`, y cabecera `Content-Type`.
+
+4.  **Frontend (Next.js 15 - `apps/frontend/`):**
+    *   **Estructura de Carpetas Recomendada:**
+        *   `app/page.tsx`, `app/layout.tsx`, `app/api/` (API routes opcionales).
+        *   `components/ImageComparison.tsx`, `components/ImageUploader.tsx`, `components/ui/`.
+        *   `lib/api.ts` (funciones para llamadas API).
+        *   `public/` (assets estáticos).
+    *   **Comunicación con Backend:**
+        *   Proxy en desarrollo: `{ "proxy": "http://localhost:3001" }` en `package.json` de `apps/frontend`.
+        *   Variables de entorno: `NEXT_PUBLIC_API_URL`.
+    *   **Gestión de Imágenes:**
+        *   Formulario de carga (local).
+        *   `POST` a `http://localhost:3001/remove-background/link` (`multipart/form-data`).
+        *   Manejar respuesta JSON del backend: `{ status, message, data: { url } }`.
+    *   **Interfaz de Comparación de Imágenes:**
+        *   Mostrar original y procesada lado a lado.
+        *   Usar `react-compare-image` con barra deslizable.
+    *   **Estilización:** Tailwind CSS, diseño responsive.
+    *   **UX:** Estados de carga, notificaciones/toasts.
+    *   **Manejo de Errores:** Mensajes específicos (imagen grande, tipo de archivo inválido), validación de tipos de archivo (`.jpg`, `.png`).
+
+5.  **Buenas Prácticas Generales:**
+    *   **Versionado:** Semántico en cada workspace.
+    *   **Pruebas:**
+        *   Unitarias aisladas (ej. `apps/frontend/__tests__`, `apps/api/__tests__`).
+        *   Para API REST: validar endpoints, tiempo de respuesta (< 500ms), integración, carga.
+    *   **CI/CD:** Configurado para instalar con Bun y ejecutar tests.
+    *   **Documentación:** `README.md` detallado (instalación, arquitectura, API, requisitos).
+    *   **Referencia Cruzada Importante:** Revisar `docs/memory-bank.md` para prioridades del proyecto (este archivo no está en `.github` pero se menciona como crucial).
+
+**Cómo Configurar Cursor para Ayudar a Seguir Estas Reglas:**
+
+Cursor, al estar basado en VS Code, puede ayudarte a mantener estas convenciones de varias maneras:
+
+1.  **Configuración del Editor (Archivo `settings.json` de Cursor/VS Code):**
+    Para la consistencia básica del código, puedes configurar:
+    *   **Indentación:** ` "editor.tabSize": 2, "editor.insertSpaces": true `
+    *   **Finales de Línea:** ` "files.eol": "\n" ` (para LF)
+    *   **Charset:** Usualmente UTF-8 por defecto.
+    *   **Espacios Finales:** ` "files.trimTrailingWhitespace": true `
+    *   **Nueva Línea Final:** ` "files.insertFinalNewline": true `
+    *   **Archivos Markdown:** Puedes tener configuraciones específicas por lenguaje para `trimTrailingWhitespace`.
+        ```json
+        "[markdown]": {
+            "files.trimTrailingWhitespace": false
+        }
+        ```
+
+2.  **Formateo Automático de Código (con Prettier):**
+    *   **Instala la extensión Prettier - Code formatter** en Cursor.
+    *   Crea un archivo `.prettierrc.json` en la raíz de tu proyecto (o configura Prettier directamente en `settings.json` de Cursor, aunque un archivo es más portable). Basado en las convenciones comunes y lo que suele funcionar bien con las reglas extraídas:
+        ```json
+        // .prettierrc.json
+        {
+          "semi": true,
+          "singleQuote": false, // O true, si es la preferencia del proyecto
+          "tabWidth": 2,
+          "trailingComma": "es5",
+          "printWidth": 80, // Ajusta según las preferencias del proyecto
+          "arrowParens": "always"
+        }
+        ```
+    *   Crea un archivo `.prettierignore` en la raíz para evitar formatear archivos generados, dependencias, etc. (similar al que te propuse antes).
+    *   Configura Cursor para formatear al guardar: ` "editor.formatOnSave": true ` y ` "editor.defaultFormatter": "esbenp.prettier-vscode" ` (para Prettier).
+
+3.  **Análisis Estático de Código y Linting (con ESLint):**
+    *   **Instala la extensión ESLint** en Cursor.
+    *   Necesitarás las dependencias de ESLint en tu proyecto (`eslint`, `@typescript-eslint/parser`, `@typescript-eslint/eslint-plugin`, `eslint-plugin-react`, `eslint-plugin-react-hooks`, `eslint-config-next`, `eslint-config-prettier`). Instálalas con `bun add -D <packages...>`.
+    *   Crea un archivo `.eslintrc.json` en la raíz. Una configuración base podría ser la que te propuse anteriormente, que incluye:
+        *   Parser para TypeScript.
+        *   Plugins para TypeScript, React, React Hooks.
+        *   Extiende configuraciones recomendadas incluyendo `next/core-web-vitals` y `prettier` (para evitar conflictos).
+        *   Reglas como `react/react-in-jsx-scope": "off"` (para React 17+).
+        *   Secciones `overrides` para diferenciar reglas entre `apps/api` y `apps/frontend`.
+    *   ESLint te ayudará a identificar problemas de código, seguir buenas prácticas de JavaScript/TypeScript y las específicas de React/Next.js.
+
+4.  **Fragmentos de Código (Snippets):**
+    Para patrones repetitivos o estructuras específicas del proyecto (ej., la estructura de un nuevo componente React en `apps/frontend/components/`, una nueva ruta Express en `apps/api/routes/`, o la función de eliminación de fondo con su firma específica), puedes crear snippets de código personalizados en Cursor.
+    *   Ve a `File > Preferences > Configure User Snippets` (o `Archivo > Preferencias > Configurar Fragmentos de Código de Usuario`) y selecciona el lenguaje apropiado (JavaScript, TypeScript, TypeScriptReact) o crea un archivo de snippets global o de proyecto.
+    *   Esto acelera el desarrollo y asegura que el nuevo código siga las convenciones establecidas.
+
+5.  **Tareas (`tasks.json`):**
+    Puedes definir tareas en Cursor para ejecutar tus scripts de linting, formateo o pruebas directamente desde el editor (ej. `bun run lint`, `bun run format`).
+
+6.  **Comentarios y Documentación Interna:**
+    Fomenta el uso de comentarios JSDoc/TSDoc para documentar funciones, especialmente aquellas con lógica compleja o firmas específicas como la de `removeBackground`. Cursor mostrará esta información al pasar el ratón o al autocompletar.
+
+
