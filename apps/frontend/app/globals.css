@@ -1,36 +1,48 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f7fafd;
-  --foreground: #18181b;
-  --primary: #2563eb;
-  --primary-hover: #1d4ed8;
-  --secondary: #f1f5f9;
-  --border: #e5e7eb;
-  --muted: #64748b;
-  --accent: #e0e7ff;
+  --background: #f8f5f1;
+  --foreground: #4b2e05;
+  --primary: #a05a2c;
+  --primary-hover: #7c3f10;
+  --secondary: #f3ede6;
+  --border: #e5d3c0;
+  --muted: #8d6e4a;
+  --accent: #e7d7c1;
   --radius: 14px;
+  --button-gradient: linear-gradient(90deg, #ffb347 0%, #ffcc80 100%);
+  --button-gradient-hover: linear-gradient(90deg, #ff9800 0%, #ffb347 100%);
+  --download-gradient: linear-gradient(90deg, #a05a2c 0%, #7c3f10 100%);
+  --download-gradient-hover: linear-gradient(90deg, #7c3f10 0%, #a05a2c 100%);
 }
 
 html.light {
-  --background: #f7fafd;
-  --foreground: #18181b;
-  --primary: #2563eb;
-  --primary-hover: #1d4ed8;
-  --secondary: #f1f5f9;
-  --border: #e5e7eb;
-  --muted: #64748b;
-  --accent: #e0e7ff;
+  --background: #f8f5f1;
+  --foreground: #4b2e05;
+  --primary: #a05a2c;
+  --primary-hover: #7c3f10;
+  --secondary: #f3ede6;
+  --border: #e5d3c0;
+  --muted: #8d6e4a;
+  --accent: #e7d7c1;
+  --button-gradient: linear-gradient(90deg, #ffb347 0%, #ffcc80 100%);
+  --button-gradient-hover: linear-gradient(90deg, #ff9800 0%, #ffb347 100%);
+  --download-gradient: linear-gradient(90deg, #a05a2c 0%, #7c3f10 100%);
+  --download-gradient-hover: linear-gradient(90deg, #7c3f10 0%, #a05a2c 100%);
 }
 html.dark {
-  --background: #0a0a0a;
-  --foreground: #ededed;
-  --primary: #60a5fa;
-  --primary-hover: #3b82f6;
-  --secondary: #18181b;
-  --border: #262626;
-  --muted: #a1a1aa;
-  --accent: #1e293b;
+  --background: #0d1b12;
+  --foreground: #e6f4ea;
+  --primary: #34d399;
+  --primary-hover: #059669;
+  --secondary: #1a3323;
+  --border: #14532d;
+  --muted: #7ecba7;
+  --accent: #193c2b;
+  --button-gradient: linear-gradient(90deg, #166534 0%, #34d399 100%);
+  --button-gradient-hover: linear-gradient(90deg, #059669 0%, #34d399 100%);
+  --download-gradient: linear-gradient(90deg, #34d399 0%, #166534 100%);
+  --download-gradient-hover: linear-gradient(90deg, #059669 0%, #166534 100%);
 }
 
 @theme inline {
@@ -59,19 +71,33 @@ body {
 
 /* Modern button style */
 .btn-primary {
-  background: var(--primary);
-  color: #fff;
+  background: var(--button-gradient);
+  color: #4b2e05;
   border-radius: calc(var(--radius) - 4px);
   padding: 0.75rem 1.5rem;
-  font-weight: 600;
+  font-weight: 700;
   border: none;
-  box-shadow: 0 2px 8px 0 rgba(37, 99, 235, 0.08);
-  transition: background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px 0 rgba(160, 90, 44, 0.10);
+  transition: background 0.2s, box-shadow 0.2s, filter 0.2s;
+  filter: brightness(1);
+  letter-spacing: 0.01em;
+  text-shadow: 0 1px 0 #fff8, 0 2px 8px #fff2;
 }
 .btn-primary:hover {
-  background: var(--primary-hover);
-  box-shadow: 0 4px 16px 0 rgba(37, 99, 235, 0.12);
+  background: var(--button-gradient-hover);
+  box-shadow: 0 4px 16px 0 rgba(160, 90, 44, 0.18);
+  filter: brightness(1.05);
 }
+
+html.dark .btn-primary {
+  color: #e6f4ea;
+  text-shadow: 0 1px 0 #193c2b88, 0 2px 8px #193c2b22;
+  box-shadow: 0 2px 8px 0 rgba(52, 211, 153, 0.10);
+}
+html.dark .btn-primary:hover {
+  filter: brightness(1.08);
+}
+
 .btn-secondary {
   background: var(--accent);
   color: var(--primary);
@@ -84,6 +110,32 @@ body {
 .btn-secondary:hover {
   background: var(--primary);
   color: #fff;
+}
+
+.btn-download {
+  background: var(--download-gradient);
+  color: #fff;
+  border-radius: 999px;
+  font-weight: 700;
+  border: none;
+  box-shadow: 0 4px 24px 0 rgba(52, 211, 153, 0.15);
+  transition: background 0.2s, box-shadow 0.2s, filter 0.2s;
+  filter: brightness(1);
+  letter-spacing: 0.01em;
+  text-shadow: 0 1px 0 #193c2b88, 0 2px 8px #193c2b22;
+}
+.btn-download:hover {
+  background: var(--download-gradient-hover);
+  filter: brightness(1.08);
+}
+
+html.light .btn-download {
+  color: #fff;
+  text-shadow: 0 1px 0 #a05a2c88, 0 2px 8px #a05a2c22;
+  box-shadow: 0 4px 24px 0 rgba(160, 90, 44, 0.15);
+}
+html.light .btn-download:hover {
+  filter: brightness(1.08);
 }
 
 input[type="file"] {

@@ -144,11 +144,8 @@ export default function UploadButton({
         className={`btn-primary w-full flex items-center justify-center gap-2 text-lg shadow-xl relative overflow-hidden transition-transform duration-200 active:scale-95
           ${isLoading ? "opacity-60 cursor-not-allowed" : "hover:scale-[1.03]"}`}
         style={{
-          background: isLoading
-            ? 'linear-gradient(90deg, #e0e7ff 0%, #f1f5f9 100%)'
-            : 'linear-gradient(90deg, #2563eb 0%, #60a5fa 100%)',
-          color: isLoading ? '#64748b' : '#fff',
-          boxShadow: isLoading ? '0 2px 8px #e0e7ff' : '0 4px 24px #2563eb33',
+          background: undefined, // usa el gradiente de la clase
+          color: isLoading ? '#e5d3c0' : '#fff',
         }}
       >
         <span className="absolute left-0 top-0 w-full h-full opacity-10 bg-[radial-gradient(circle_at_30%_30%,#fff_0%,transparent_70%)] pointer-events-none" />
