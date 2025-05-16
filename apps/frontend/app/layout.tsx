@@ -15,10 +15,12 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Eliminador de Fondos de Imágenes",
-  description:
-    "Una aplicación para eliminar fondos de imágenes usando Next.js 15",
+  description: "Una aplicación para eliminar fondos de imágenes usando Next.js 15",
   authors: [{ name: "Remove Background Project" }],
   keywords: ["nextjs", "image processing", "background removal"],
+  icons: {
+    icon: "/favicon.svg"
+  }
 };
 
 export default function RootLayout({
