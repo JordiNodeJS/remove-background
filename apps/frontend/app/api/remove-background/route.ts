@@ -131,8 +131,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     } catch (error) {
       console.error("Error al procesar la imagen del backend:", error);
       
-      // Si falla, creamos una URL mock para no romper la interfaz
-      const outputFileName = `output-${timestamp}-${random}.png`; // Usar .png como fallback si fileExt no es confiable aquí
+      // Si falla, usamos la imagen original como fallback.
+      // El outputFileName ya está definido antes del bloque try-catch principal y se usará.
       
       // Copiamos la imagen original como fallback
       try {
@@ -141,7 +141,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
           fs.mkdirSync(outputDir, { recursive: true });
         }
         
-        const outputPath = path.join(outputDir, outputFileName);
+        const outputPath = path.join(outputDir, `output-${timestamp}-${random}${fileExt}`);
         // Copiar la imagen original (savedFilePath) como fallback
         fs.copyFileSync(savedFilePath, outputPath);
         
@@ -157,11 +157,11 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         const appBaseUrl = process.env.APP_BASE_URL;
         let localImageUrl;
         if (appBaseUrl) {
-          localImageUrl = `${appBaseUrl}/images-output/${outputFileName}`;
+          localImageUrl = `${appBaseUrl}/images-output/output-${timestamp}-${random}${fileExt}`;
         } else {
           const host = req.headers.get("host") || "localhost:3000";
           const protocol = host.includes("localhost") ? "http" : "https";
-          localImageUrl = `${protocol}://${host}/images-output/${outputFileName}`;
+          localImageUrl = `${protocol}://${host}/images-output/output-${timestamp}-${random}${fileExt}`;
         }
 
         
