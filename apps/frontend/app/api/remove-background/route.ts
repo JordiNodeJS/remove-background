@@ -1,6 +1,6 @@
 // app/api/remove-background/route.ts
 import { NextRequest, NextResponse } from "next/server";
-import { parseForm, saveFile } from "@/lib/image-upload";
+import { parseForm, saveUploadedFile } from "@/lib/image-upload"; // Cambiado saveFile a saveUploadedFile
 import { ApiResponse } from "@/lib/types";
 import path from "path";
 import fs from "fs";
@@ -13,7 +13,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
     // Parsear el formulario con la imagen
     const { files } = await parseForm(req);
-    const imageFile = files.image as any;
+    const imageFile = files.image; // imageFile es ahora File | undefined
 
     if (!imageFile) {
       return NextResponse.json(
@@ -27,7 +27,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
     // Validar el tipo de archivo
     const allowedTypes = ["image/jpeg", "image/png"];
-    if (!allowedTypes.includes(imageFile.mimetype)) {
+    if (!allowedTypes.includes(imageFile.type)) { // Cambiado imageFile.mimetype a imageFile.type
       return NextResponse.json(
         {
           status: 400,
@@ -38,19 +38,19 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       );
     } 
     
-    // Guardar la imagen en el directorio de input
-    await saveFile(imageFile); 
+    // Guardar la imagen en el directorio de input y obtener su ruta
+    const savedFilePath = await saveUploadedFile(imageFile); 
     
     // Usamos un enfoque directo con archivos para evitar problemas de streams
     // Creamos un archivo temporal para la subida
     const timestamp = Date.now();
     const random = Math.floor(Math.random() * 900000000) + 100000000;
-    const fileExt = path.extname(imageFile.originalFilename || ".png");
+    const fileExt = path.extname(imageFile.name || ".png"); // Cambiado imageFile.originalFilename a imageFile.name
     const tempFileName = `temp-${timestamp}-${random}${fileExt}`;
     const tempPath = path.join(process.cwd(), "tmp", tempFileName);
     
-    // Copiamos el archivo al directorio temporal
-    fs.copyFileSync(imageFile.filepath, tempPath);
+    // Copiamos el archivo guardado al directorio temporal
+    fs.copyFileSync(savedFilePath, tempPath);
     
     try {
       // Usar curl directamente para enviar el archivo al API
@@ -71,8 +71,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       console.log("URL de imagen recibida del backend:", imageUrl);
       
       // Descargar la imagen procesada usando un enfoque de archivos
-      const imageFileName = path.basename(imageUrl);
-      const backendOutputPath = imageUrl.replace("http://localhost:3001/images-output/", "");
+      // const imageFileName = path.basename(imageUrl); // No se usa directamente
+      // const backendOutputPath = imageUrl.replace("http://localhost:3001/images-output/", ""); // No se usa directamente
       
       // Generar nombre único para guardar localmente
       const outputFileName = `output-${timestamp}-${random}${fileExt}`;
@@ -96,9 +96,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       
       console.log(`Imagen guardada localmente en: ${outputPath}`);
       
-      // Limpieza del archivo temporal
+      // Limpieza del archivo temporal y el archivo guardado inicialmente
       try {
-        fs.unlinkSync(imageFile.filepath);
+        fs.unlinkSync(savedFilePath); // Eliminar el archivo guardado por saveUploadedFile
         fs.unlinkSync(tempPath);
       } catch (error) {
         console.error("Error al eliminar archivos temporales:", error);
@@ -132,7 +132,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       console.error("Error al procesar la imagen del backend:", error);
       
       // Si falla, creamos una URL mock para no romper la interfaz
-      const outputFileName = `output-${timestamp}-${random}.png`;
+      const outputFileName = `output-${timestamp}-${random}.png`; // Usar .png como fallback si fileExt no es confiable aquí
       
       // Copiamos la imagen original como fallback
       try {
@@ -142,12 +142,12 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         }
         
         const outputPath = path.join(outputDir, outputFileName);
-        // Copiar la imagen original como fallback
-        fs.copyFileSync(imageFile.filepath, outputPath);
+        // Copiar la imagen original (savedFilePath) como fallback
+        fs.copyFileSync(savedFilePath, outputPath);
         
         // Limpieza de archivos temporales
         try {
-          fs.unlinkSync(imageFile.filepath);
+          fs.unlinkSync(savedFilePath); // Eliminar el archivo guardado por saveUploadedFile
           fs.unlinkSync(tempPath);
         } catch (e) {
           console.error("Error al eliminar archivos temporales:", e);
@@ -176,7 +176,13 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         return NextResponse.json(apiResponse);
       } catch (copyError) {
         console.error("Error al crear imagen fallback:", copyError);
-        
+        // Asegurarse de limpiar los archivos temporales incluso si la copia de fallback falla
+        try {
+          fs.unlinkSync(savedFilePath);
+          fs.unlinkSync(tempPath);
+        } catch (e) {
+          console.error("Error al eliminar archivos temporales durante el error de fallback:", e);
+        }
         return NextResponse.json(
           {
             status: 500,
