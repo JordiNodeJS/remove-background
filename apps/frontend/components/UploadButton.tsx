@@ -22,6 +22,7 @@ export default function UploadButton({
   onLoading,
 }: UploadButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const [cooldown, setCooldown] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,13 +63,13 @@ export default function UploadButton({
         }
         let extra = "";
         if (typeof errorJson.lastProcessingTime === "number") {
-          extra = `\nÚltima imagen procesada en ${(
-            errorJson.lastProcessingTime / 1000
-          ).toFixed(1)} segundos.`;
+          extra = `\nÚltima imagen procesada en ${(errorJson.lastProcessingTime / 1000).toFixed(1)} segundos.`;
         }
         toast.error(`${errorJson.message}${extra}`, { duration: 7000 });
         setIsLoading(false);
         onLoading(false);
+        setCooldown(true);
+        setTimeout(() => setCooldown(false), 4000); // 4 segundos de espera
         return;
       }
 
@@ -161,21 +162,31 @@ export default function UploadButton({
         hidden
       />
       <button
-        onClick={() => fileInputRef.current?.click()}
-        disabled={isLoading}
-        className={`btn-primary w-full flex items-center justify-center gap-2 text-lg shadow-xl relative overflow-hidden transition-transform duration-200 active:scale-95
-          ${
-            isLoading ? "opacity-60 cursor-not-allowed" : "hover:scale-[1.03]"
-          }`}
+        onClick={() => {
+          if (!isLoading && !cooldown) fileInputRef.current?.click();
+        }}
+        disabled={isLoading || cooldown}
+        className={`btn-primary w-full flex items-center justify-center gap-2 text-lg shadow-xl relative overflow-hidden transition-transform duration-200 active:scale-95 ${
+          isLoading || cooldown ? "opacity-60 cursor-not-allowed" : "hover:scale-[1.03]"
+        }`}
         style={{
-          background: undefined, // usa el gradiente de la clase
-          color: isLoading ? "#e5d3c0" : "#fff",
+          background: undefined,
+          color: isLoading || cooldown ? "#e5d3c0" : "#fff",
         }}
       >
         <span className="absolute left-0 top-0 w-full h-full opacity-10 bg-[radial-gradient(circle_at_30%_30%,#fff_0%,transparent_70%)] pointer-events-none" />
         <FiUpload size={22} />
-        {isLoading ? "Procesando..." : "Subir imagen para quitar fondo"}
+        {isLoading
+          ? "Procesando..."
+          : cooldown
+          ? "Espera a que el servidor esté libre..."
+          : "Subir imagen para quitar fondo"}
       </button>
+      {cooldown && (
+        <div className="text-center text-yellow-700 dark:text-yellow-400 mt-2 text-base font-medium">
+          El servidor está ocupado procesando otra imagen. Espera unos segundos...
+        </div>
+      )}
       <p className="text-muted mt-3 text-center text-base">
         Solo formatos JPG y PNG. Tamaño máximo: 10MB
       </p>
