@@ -50,7 +50,17 @@ export const removeBackgroundLinkController: RequestHandler = async (
     const apiPort = process.env.PORT || "3001"; // Puerto donde corre la API
 
     // Construir la URL base de la API asegurando el puerto correcto
-    const apiBaseUrl = `${protocol}://${hostname}:${apiPort}`;
+    // Priorizar la variable de entorno API_PUBLIC_URL si está definida
+    let apiBaseUrl = process.env.API_PUBLIC_URL;
+    if (!apiBaseUrl) {
+      console.warn("La variable de entorno API_PUBLIC_URL no está definida. Se recomienda configurarla para entornos de producción. Usando fallback basado en la solicitud.");
+      apiBaseUrl = `${protocol}://${hostname}:${apiPort}`;
+    } else {
+      // Asegurarse de que la URL de API_PUBLIC_URL no tenga una barra al final
+      if (apiBaseUrl.endsWith('/')) {
+        apiBaseUrl = apiBaseUrl.slice(0, -1);
+      }
+    }
     const imageUrl = `${apiBaseUrl}/images-output/${fileName}`;
     
     // Devolver la URL en formato JSON
