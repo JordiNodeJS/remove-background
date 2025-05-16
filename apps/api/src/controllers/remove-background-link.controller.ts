@@ -50,13 +50,16 @@ export const removeBackgroundLinkController: RequestHandler = async (
     const apiPort = process.env.PORT || "3001"; // Puerto donde corre la API
 
     // Construir la URL base de la API asegurando el puerto correcto
-    // Priorizar la variable de entorno API_PUBLIC_URL si está definida
-    let apiBaseUrl = process.env.API_PUBLIC_URL;
+    // Priorizar la variable de entorno APP_BASE_URL si está definida
+    const appBaseUrlFromEnv = process.env.APP_BASE_URL;
+    console.log(`[DEBUG] Valor de APP_BASE_URL desde .env: ${appBaseUrlFromEnv}`); // Registro para depuración
+
+    let apiBaseUrl = appBaseUrlFromEnv;
     if (!apiBaseUrl) {
-      console.warn("La variable de entorno API_PUBLIC_URL no está definida. Se recomienda configurarla para entornos de producción. Usando fallback basado en la solicitud.");
+      console.warn("La variable de entorno APP_BASE_URL no está definida. Se recomienda configurarla para entornos de producción. Usando fallback basado en la solicitud.");
       apiBaseUrl = `${protocol}://${hostname}:${apiPort}`;
     } else {
-      // Asegurarse de que la URL de API_PUBLIC_URL no tenga una barra al final
+      // Asegurarse de que la URL de APP_BASE_URL no tenga una barra al final
       if (apiBaseUrl.endsWith('/')) {
         apiBaseUrl = apiBaseUrl.slice(0, -1);
       }
