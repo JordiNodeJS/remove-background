@@ -49,6 +49,28 @@ export default function UploadButton({
         body: formData,
       });
 
+      // Manejo especial para la cola: 429 = servicio ocupado
+      if (response.status === 429) {
+        let errorJson: { message: string; lastProcessingTime?: number };
+        try {
+          errorJson = await response.json();
+        } catch {
+          errorJson = {
+            message:
+              "El servicio está ocupado. Intenta de nuevo en unos segundos.",
+          };
+        }
+        let extra = "";
+        if (typeof errorJson.lastProcessingTime === "number") {
+          extra = `\nÚltima imagen procesada en ${(errorJson.lastProcessingTime /
+            1000).toFixed(1)} segundos.`;
+        }
+        toast.error(`${errorJson.message}${extra}`, { duration: 7000 });
+        setIsLoading(false);
+        onLoading(false);
+        return;
+      }
+
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(`Error en el servidor: ${errorText}`);
@@ -76,8 +98,8 @@ export default function UploadButton({
 
         // Verificar que la URL de la imagen procesada es cargable
         try {
-          const imgTest = new Image();
-          const timeoutId = setTimeout(() => {
+          const imgTest = new window.Image();
+          const timeoutId = window.setTimeout(() => {
             // Si la imagen tarda más de 5 segundos, asumimos un error
             toast.error("Tiempo de espera agotado cargando la imagen", {
               duration: 5000,
@@ -101,7 +123,6 @@ export default function UploadButton({
             toast.error("La imagen procesada no se pudo cargar correctamente", {
               duration: 5000,
             });
-
             // Intentamos usar un placeholder
             onImageProcessed(originalImageUrl, "/placeholder-error.svg");
           };
