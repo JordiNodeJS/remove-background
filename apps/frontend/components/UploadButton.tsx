@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { FiUpload } from "react-icons/fi";
 import toast from "react-hot-toast";
 import { z } from "zod";
@@ -23,7 +23,26 @@ export default function UploadButton({
 }: UploadButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [cooldown, setCooldown] = useState(false);
+  const [backendBusy, setBackendBusy] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Consulta periódica al backend para saber si está ocupado
+  useEffect(() => {
+    const checkStatus = async () => {
+      try {
+        const res = await fetch("/processing-status");
+        const data = await res.json();
+        setBackendBusy(Boolean(data.processing));
+      } catch {
+        setBackendBusy(false);
+      }
+    };
+    checkStatus();
+    const interval = setInterval(checkStatus, 3000);
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -63,7 +82,9 @@ export default function UploadButton({
         }
         let extra = "";
         if (typeof errorJson.lastProcessingTime === "number") {
-          extra = `\nÚltima imagen procesada en ${(errorJson.lastProcessingTime / 1000).toFixed(1)} segundos.`;
+          extra = `\nÚltima imagen procesada en ${(
+            errorJson.lastProcessingTime / 1000
+          ).toFixed(1)} segundos.`;
         }
         toast.error(`${errorJson.message}${extra}`, { duration: 7000 });
         setIsLoading(false);
@@ -163,15 +184,17 @@ export default function UploadButton({
       />
       <button
         onClick={() => {
-          if (!isLoading && !cooldown) fileInputRef.current?.click();
+          if (!isLoading && !cooldown && !backendBusy) fileInputRef.current?.click();
         }}
-        disabled={isLoading || cooldown}
+        disabled={isLoading || cooldown || backendBusy}
         className={`btn-primary w-full flex items-center justify-center gap-2 text-lg shadow-xl relative overflow-hidden transition-transform duration-200 active:scale-95 ${
-          isLoading || cooldown ? "opacity-60 cursor-not-allowed" : "hover:scale-[1.03]"
+          isLoading || cooldown || backendBusy
+            ? "opacity-60 cursor-not-allowed"
+            : "hover:scale-[1.03]"
         }`}
         style={{
           background: undefined,
-          color: isLoading || cooldown ? "#e5d3c0" : "#fff",
+          color: isLoading || cooldown || backendBusy ? "#e5d3c0" : "#fff",
         }}
       >
         <span className="absolute left-0 top-0 w-full h-full opacity-10 bg-[radial-gradient(circle_at_30%_30%,#fff_0%,transparent_70%)] pointer-events-none" />
@@ -180,11 +203,19 @@ export default function UploadButton({
           ? "Procesando..."
           : cooldown
           ? "Espera a que el servidor esté libre..."
+          : backendBusy
+          ? "Servidor ocupado procesando otra imagen..."
           : "Subir imagen para quitar fondo"}
       </button>
       {cooldown && (
         <div className="text-center text-yellow-700 dark:text-yellow-400 mt-2 text-base font-medium">
           El servidor está ocupado procesando otra imagen. Espera unos segundos...
+        </div>
+      )}
+      {backendBusy && !isLoading && !cooldown && (
+        <div className="text-center text-yellow-700 dark:text-yellow-400 mt-2 text-base font-medium">
+          El servidor está ocupado procesando otra imagen. Intenta de nuevo en unos
+          segundos.
         </div>
       )}
       <p className="text-muted mt-3 text-center text-base">
