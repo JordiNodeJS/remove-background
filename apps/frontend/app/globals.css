@@ -77,7 +77,7 @@ body {
   padding: 0.75rem 1.5rem;
   font-weight: 700;
   border: none;
-  box-shadow: 0 2px 8px 0 rgba(160, 90, 44, 0.10);
+  box-shadow: 0 2px 8px 0 rgba(160, 90, 44, 0.1);
   transition: background 0.2s, box-shadow 0.2s, filter 0.2s;
   filter: brightness(1);
   letter-spacing: 0.01em;
@@ -92,7 +92,7 @@ body {
 html.dark .btn-primary {
   color: #e6f4ea;
   text-shadow: 0 1px 0 #193c2b88, 0 2px 8px #193c2b22;
-  box-shadow: 0 2px 8px 0 rgba(52, 211, 153, 0.10);
+  box-shadow: 0 2px 8px 0 rgba(52, 211, 153, 0.1);
 }
 html.dark .btn-primary:hover {
   filter: brightness(1.08);

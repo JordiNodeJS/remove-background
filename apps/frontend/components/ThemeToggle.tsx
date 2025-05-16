@@ -39,9 +39,15 @@ export default function ThemeToggle() {
         {theme === "light" ? "Activar modo oscuro" : "Activar modo claro"}
       </span>
       {theme === "light" ? (
-        <FiMoon size={24} className="text-blue-500 group-hover:text-blue-700 transition-colors" />
+        <FiMoon
+          size={24}
+          className="text-blue-500 group-hover:text-blue-700 transition-colors"
+        />
       ) : (
-        <FiSun size={24} className="text-yellow-300 group-hover:text-yellow-400 transition-colors" />
+        <FiSun
+          size={24}
+          className="text-yellow-300 group-hover:text-yellow-400 transition-colors"
+        />
       )}
     </button>
   );

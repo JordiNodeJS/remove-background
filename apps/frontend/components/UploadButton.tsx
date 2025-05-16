@@ -142,10 +142,12 @@ export default function UploadButton({
         onClick={() => fileInputRef.current?.click()}
         disabled={isLoading}
         className={`btn-primary w-full flex items-center justify-center gap-2 text-lg shadow-xl relative overflow-hidden transition-transform duration-200 active:scale-95
-          ${isLoading ? "opacity-60 cursor-not-allowed" : "hover:scale-[1.03]"}`}
+          ${
+            isLoading ? "opacity-60 cursor-not-allowed" : "hover:scale-[1.03]"
+          }`}
         style={{
           background: undefined, // usa el gradiente de la clase
-          color: isLoading ? '#e5d3c0' : '#fff',
+          color: isLoading ? "#e5d3c0" : "#fff",
         }}
       >
         <span className="absolute left-0 top-0 w-full h-full opacity-10 bg-[radial-gradient(circle_at_30%_30%,#fff_0%,transparent_70%)] pointer-events-none" />

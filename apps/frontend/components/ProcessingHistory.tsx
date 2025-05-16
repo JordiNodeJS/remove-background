@@ -117,7 +117,10 @@ export default function ProcessingHistory({
               }}
             >
               <div className="aspect-square relative flex items-center justify-center">
-                <FiImage size={28} className="text-blue-200 group-hover:text-blue-400 absolute z-10 left-2 top-2" />
+                <FiImage
+                  size={28}
+                  className="text-blue-200 group-hover:text-blue-400 absolute z-10 left-2 top-2"
+                />
                 <img
                   src={item.processedUrl}
                   alt={`Processed image ${index}`}
@@ -135,7 +138,9 @@ export default function ProcessingHistory({
               <div className="p-2 text-xs text-gray-700 dark:text-gray-300 flex justify-between items-center font-medium">
                 <span className="truncate max-w-[70%]">{item.date}</span>
                 {item.hasError && (
-                  <span className="text-red-500 font-bold">Procesamiento fallido</span>
+                  <span className="text-red-500 font-bold">
+                    Procesamiento fallido
+                  </span>
                 )}
               </div>
             </div>

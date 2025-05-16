@@ -58,7 +58,16 @@ export default function ImageComparison({
           target="_blank"
           rel="noopener noreferrer"
         >
-          <svg width="22" height="22" fill="none" viewBox="0 0 24 24"><path fill="currentColor" d="M12 16.5a1 1 0 0 1-1-1V6.91l-2.3 2.3a1 1 0 1 1-1.4-1.42l4-4a1 1 0 0 1 1.4 0l4 4a1 1 0 1 1-1.4 1.42l-2.3-2.3v8.59a1 1 0 0 1-1 1Z"/><path fill="currentColor" d="M5 18a1 1 0 0 1 0-2h14a1 1 0 1 1 0 2H5Z"/></svg>
+          <svg width="22" height="22" fill="none" viewBox="0 0 24 24">
+            <path
+              fill="currentColor"
+              d="M12 16.5a1 1 0 0 1-1-1V6.91l-2.3 2.3a1 1 0 1 1-1.4-1.42l4-4a1 1 0 0 1 1.4 0l4 4a1 1 0 1 1-1.4 1.42l-2.3-2.3v8.59a1 1 0 0 1-1 1Z"
+            />
+            <path
+              fill="currentColor"
+              d="M5 18a1 1 0 0 1 0-2h14a1 1 0 1 1 0 2H5Z"
+            />
+          </svg>
           Descargar imagen sin fondo
         </a>
       )}
