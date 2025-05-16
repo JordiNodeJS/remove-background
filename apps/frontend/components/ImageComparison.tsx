@@ -36,8 +36,8 @@ export default function ImageComparison({
         rightImageLabel="Sin Fondo"
         sliderLineColor="#FFF"
         sliderLineWidth={3}
-        leftImageCss={{ width: "100%", height: "100%", objectFit: "contain" }}
-        rightImageCss={{ width: "100%", height: "100%", objectFit: "contain" }}
+        leftImageCss={{ height: "100%", objectFit: "scale-down" }}
+        rightImageCss={{ height: "100%", objectFit: "scale-down" }}
         vertical={true}
       />
       {/* El componente ReactCompareImage puede que ya incluya etiquetas o un método para ellas.
