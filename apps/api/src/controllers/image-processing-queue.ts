@@ -3,8 +3,8 @@
 // Cuando termina una tarea, se procesa la siguiente y se notifica el tiempo de la anterior
 
 interface QueueItem {
-  req: import('express').Request;
-  res: import('express').Response;
+  req: import("express").Request;
+  res: import("express").Response;
   enqueueTime: number;
 }
 
@@ -13,12 +13,13 @@ class ProcessingQueue {
   private processing = false;
   private lastProcessingTime: number | null = null;
 
-  enqueue(req: import('express').Request, res: import('express').Response) {
+  enqueue(req: import("express").Request, res: import("express").Response) {
     if (this.processing) {
       // Servicio ocupado: responder inmediatamente
       res.status(429).json({
         status: 429,
-        message: 'El servicio está ocupado. Por favor, espere a que termine el procesamiento actual.',
+        message:
+          "El servicio está ocupado. Por favor, espere a que termine el procesamiento actual.",
         lastProcessingTime: this.lastProcessingTime,
       });
       return;

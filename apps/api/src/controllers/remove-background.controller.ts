@@ -14,6 +14,7 @@ export const removeBackgroundController: RequestHandler = async (
 ): Promise<void> => {
   res.status(429).json({
     status: 429,
-    message: "Este endpoint solo está disponible mediante la cola de procesamiento. Usa /remove-background/link para gestionar la espera.",
+    message:
+      "Este endpoint solo está disponible mediante la cola de procesamiento. Usa /remove-background/link para gestionar la espera.",
   });
 };

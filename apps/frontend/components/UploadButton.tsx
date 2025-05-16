@@ -62,8 +62,9 @@ export default function UploadButton({
         }
         let extra = "";
         if (typeof errorJson.lastProcessingTime === "number") {
-          extra = `\nÚltima imagen procesada en ${(errorJson.lastProcessingTime /
-            1000).toFixed(1)} segundos.`;
+          extra = `\nÚltima imagen procesada en ${(
+            errorJson.lastProcessingTime / 1000
+          ).toFixed(1)} segundos.`;
         }
         toast.error(`${errorJson.message}${extra}`, { duration: 7000 });
         setIsLoading(false);

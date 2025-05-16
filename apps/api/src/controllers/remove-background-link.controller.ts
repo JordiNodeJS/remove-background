@@ -57,27 +57,35 @@ export const removeBackgroundLinkController: RequestHandler = async (
       // Construir la URL base de la API asegurando el puerto correcto
       // Priorizar la variable de entorno APP_BASE_URL si está definida
       const appBaseUrlFromEnv = process.env.APP_BASE_URL;
-      console.log(`[DEBUG] Valor de APP_BASE_URL desde .env: ${appBaseUrlFromEnv}`); // Registro para depuración
+      console.log(
+        `[DEBUG] Valor de APP_BASE_URL desde .env: ${appBaseUrlFromEnv}`
+      ); // Registro para depuración
 
       let apiBaseUrl = appBaseUrlFromEnv;
       if (!apiBaseUrl) {
-        console.warn("La variable de entorno APP_BASE_URL no está definida. Se recomienda configurarla para entornos de producción. Usando fallback basado en la solicitud.");
+        console.warn(
+          "La variable de entorno APP_BASE_URL no está definida. Se recomienda configurarla para entornos de producción. Usando fallback basado en la solicitud."
+        );
         apiBaseUrl = `${protocol}://${hostname}:${apiPort}`;
       } else {
         // Asegurarse de que la URL de APP_BASE_URL no tenga una barra al final
-        if (apiBaseUrl.endsWith('/')) {
+        if (apiBaseUrl.endsWith("/")) {
           apiBaseUrl = apiBaseUrl.slice(0, -1);
         }
       }
       const imageUrl = `${apiBaseUrl}/images-output/${fileName}`;
       const processingTime = Date.now() - start;
       // Devolver la URL en formato JSON
-      res.status(200).json(
-        successResponse(
-          { url: imageUrl },
-          `Imagen procesada correctamente en ${(processingTime / 1000).toFixed(2)} segundos.`
-        )
-      );
+      res
+        .status(200)
+        .json(
+          successResponse(
+            { url: imageUrl },
+            `Imagen procesada correctamente en ${(
+              processingTime / 1000
+            ).toFixed(2)} segundos.`
+          )
+        );
       done(processingTime);
     } catch (error) {
       res.status(500).json(serverErrorResponse(error as Error));
