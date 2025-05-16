@@ -209,9 +209,21 @@ function ProcessingTimer() {
           {/* Cuerpo */}
           <ellipse cx="0" cy="8" rx="12" ry="8" fill="#a3e635" />
           {/* Concha */}
-          <circle cx="-6" cy="4" r="7" fill="#fde68a" stroke="#b45309" strokeWidth="2" />
+          <circle
+            cx="-6"
+            cy="4"
+            r="7"
+            fill="#fde68a"
+            stroke="#b45309"
+            strokeWidth="2"
+          />
           {/* Espiral de la concha */}
-          <path d="M-6 4 q2 2 0 4 q-2 2 0 4" stroke="#b45309" strokeWidth="1.2" fill="none" />
+          <path
+            d="M-6 4 q2 2 0 4 q-2 2 0 4"
+            stroke="#b45309"
+            strokeWidth="1.2"
+            fill="none"
+          />
           {/* Ojos */}
           <ellipse cx="7" cy="0" rx="2" ry="4" fill="#a3e635" />
           <ellipse cx="-7" cy="0" rx="2" ry="4" fill="#a3e635" />
