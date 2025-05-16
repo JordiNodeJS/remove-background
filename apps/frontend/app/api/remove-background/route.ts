@@ -70,60 +70,23 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       
       console.log("URL de imagen recibida del backend:", imageUrl);
       
-      // Descargar la imagen procesada usando un enfoque de archivos
-      // const imageFileName = path.basename(imageUrl); // No se usa directamente
-      // const backendOutputPath = imageUrl.replace("http://localhost:3001/images-output/", ""); // No se usa directamente
-      
-      // Generar nombre único para guardar localmente
-      const outputFileName = `output-${timestamp}-${random}${fileExt}`;
-      
-      // Directorios para la imagen
-      const outputDir = path.join(process.cwd(), "public/images-output");
-      if (!fs.existsSync(outputDir)) {
-        fs.mkdirSync(outputDir, { recursive: true });
-      }
-      
-      const outputPath = path.join(outputDir, outputFileName);
-      
-      // Descargar la imagen con curl para evitar problemas de streams
-      const downloadCmd = `curl -s ${imageUrl} -o ${outputPath}`;
-      execSync(downloadCmd);
-      
-      // Verificar que el archivo se descargó correctamente
-      if (!fs.existsSync(outputPath) || fs.statSync(outputPath).size === 0) {
-        throw new Error("La imagen descargada está vacía o no se pudo descargar");
-      }
-      
-      console.log(`Imagen guardada localmente en: ${outputPath}`);
-      
       // Limpieza del archivo temporal y el archivo guardado inicialmente
+      // Estos archivos se crearon para enviar la imagen al backend.
+      // Ya no necesitamos descargar la imagen del backend al frontend si el procesamiento fue exitoso.
       try {
         fs.unlinkSync(savedFilePath); // Eliminar el archivo guardado por saveUploadedFile
         fs.unlinkSync(tempPath);
       } catch (error) {
-        console.error("Error al eliminar archivos temporales:", error);
+        console.error("Error al eliminar archivos temporales tras procesar en backend:", error);
       }
-      
-      // Construir la URL local para el cliente
-      const appBaseUrl = process.env.APP_BASE_URL;
-      let localImageUrl;
-      if (appBaseUrl) {
-        localImageUrl = `${appBaseUrl}/images-output/${outputFileName}`;
-      } else {
-        const host = req.headers.get("host") || "localhost:3000";
-        const protocol = host.includes("localhost") ? "http" : "https";
-        localImageUrl = `${protocol}://${host}/images-output/${outputFileName}`;
-      }
-
-      
-      console.log(`URL para el cliente: ${localImageUrl}`);
       
       // Construir la respuesta según el formato esperado
+      // Devolvemos directamente la URL de la imagen procesada por el backend.
       const apiResponse: ApiResponse = {
         status: 200,
-        message: "Imagen procesada correctamente",
+        message: "Imagen procesada correctamente por el backend",
         data: {
-          url: localImageUrl,
+          url: imageUrl, // Usar la URL del backend directamente
         },
       };
       
