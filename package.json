@@ -32,6 +32,7 @@
     "@imgly/background-removal-node": "^1.4.5",
     "@types/formidable": "^3.4.5",
     "@types/multer": "^1.4.12",
+    "canvas-confetti": "^1.9.3",
     "cors": "^2.8.5",
     "formidable": "^3.5.4",
     "kill-port": "^2.0.1",
@@ -43,6 +44,7 @@
     "zod": "^3.24.4"
   },
   "devDependencies": {
+    "@types/canvas-confetti": "^1.9.0",
     "@types/cors": "^2.8.18"
   }
 }
