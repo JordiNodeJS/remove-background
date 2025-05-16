@@ -1,4 +1,12 @@
 
+**Recordatorio importante:**
+
+Para que las aplicaciones funcionen correctamente, es imprescindible definir las variables de entorno necesarias en los archivos `.env` correspondientes de cada app:
+- `apps/frontend/.env` para el frontend (Next.js)
+- `apps/api/.env` para el backend (Express)
+
+Asegúrate de crear y mantener estos archivos con las variables requeridas antes de ejecutar cada aplicación.
+
 En este monorepo, donde se tiene una aplicación frontend (Next.js) y una API backend (Express), cada una maneja sus propias variables de entorno de forma independiente. Aquí te explico cómo funciona generalmente:
 
 ### Variables de Entorno del Frontend (Next.js en `apps/frontend`)
