@@ -126,15 +126,17 @@ export default function ImageProcessor() {
               processedImage &&
               processedImage !== "/placeholder-error.svg" && (
                 <div
-                  className="text-center mt-4 font-semibold text-lg"
+                  className="text-center mt-4 font-extralight text-lg"
                   style={{
                     color: "#059669",
-                    textShadow:
-                      "0 1px 2px #fff, 0 1px 8px #fff, 0 0px 1px #fff", // sombra blanca más fuerte
-                    background: "rgba(255,255,255,0.7)", // fondo semitransparente para contraste
+                    background: "#fff", // fondo blanco sólido
                     borderRadius: 8,
                     display: "inline-block",
                     padding: "0.25em 1em",
+                    border: "2px solid #059669",
+                    boxShadow: "0 2px 12px 0 rgba(0,0,0,0.10)",
+                    textShadow:
+                      "0 1px 2px #fff, 0 0px 2px #059669, 0 0px 1px #000",
                   }}
                 >
                   ¡Procesamiento completado en{" "}
