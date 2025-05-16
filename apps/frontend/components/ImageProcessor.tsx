@@ -163,22 +163,62 @@ function ProcessingTimer() {
     document.documentElement.classList.contains("dark");
   const bg = isDark ? "#1e293b" : "#f1f5f9";
   const color = isDark ? "#38bdf8" : "#2563eb";
+
+  // Animación caracol SVG
+  const progress = Math.min((elapsed % 30000) / 30000, 1); // 0 a 1 en 30s
+  const snailX = 24 + progress * 200; // de 24 a 224 px
+  const trailWidth = snailX - 24;
+
   return (
-    <div
-      className="mt-2 px-4 py-2 rounded font-mono text-base shadow"
-      style={{
-        background: bg,
-        color,
-        display: "inline-block",
-        fontWeight: 600,
-        border: `1.5px solid ${color}`,
-        letterSpacing: "0.01em",
-        minWidth: 180,
-        textAlign: "center",
-        marginTop: 8,
-      }}
-    >
-      Tiempo transcurrido: {(elapsed / 1000).toFixed(1)}s
+    <div className="mt-2 flex flex-col items-center">
+      <div
+        className="px-4 py-2 rounded font-mono text-base shadow"
+        style={{
+          background: bg,
+          color,
+          display: "inline-block",
+          fontWeight: 600,
+          border: `1.5px solid ${color}`,
+          letterSpacing: "0.01em",
+          minWidth: 180,
+          textAlign: "center",
+          marginTop: 8,
+        }}
+      >
+        Tiempo transcurrido: {(elapsed / 1000).toFixed(1)}s
+      </div>
+      <svg
+        width={250}
+        height={48}
+        viewBox="0 0 250 48"
+        className="mt-2"
+        style={{ maxWidth: 250 }}
+      >
+        {/* Rastro */}
+        <rect
+          x="24"
+          y="32"
+          width={trailWidth}
+          height="6"
+          rx="3"
+          fill="#a3e635"
+          opacity="0.5"
+        />
+        {/* Caracol (simple, estilizado) */}
+        <g transform={`translate(${snailX}, 24)`}>
+          {/* Cuerpo */}
+          <ellipse cx="0" cy="8" rx="12" ry="8" fill="#a3e635" />
+          {/* Concha */}
+          <circle cx="-6" cy="4" r="7" fill="#fde68a" stroke="#b45309" strokeWidth="2" />
+          {/* Espiral de la concha */}
+          <path d="M-6 4 q2 2 0 4 q-2 2 0 4" stroke="#b45309" strokeWidth="1.2" fill="none" />
+          {/* Ojos */}
+          <ellipse cx="7" cy="0" rx="2" ry="4" fill="#a3e635" />
+          <ellipse cx="-7" cy="0" rx="2" ry="4" fill="#a3e635" />
+          <circle cx="7" cy="-2" r="1" fill="#222" />
+          <circle cx="-7" cy="-2" r="1" fill="#222" />
+        </g>
+      </svg>
     </div>
   );
 }
