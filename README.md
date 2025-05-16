@@ -1,3 +1,52 @@
+# 📝 Resumen del Proyecto
+
+**Remove Background** es una aplicación web que permite eliminar automáticamente el fondo de imágenes utilizando inteligencia artificial. El usuario puede subir una imagen, el sistema procesa la imagen en el backend y devuelve una versión sin fondo lista para descargar o comparar. El objetivo principal de este proyecto es servir como ejemplo educativo para aprender a estructurar y desplegar un monorepo moderno con Next.js y Express usando Bun como gestor de paquetes.
+
+## 🚀 Tecnologías Utilizadas
+
+- **Next.js 15** (Frontend, React, SSR)
+- **Express** (Backend, API REST)
+- **Bun** (Gestor de paquetes y scripts, workspaces)
+- **TypeScript** (Tipado estático en todo el monorepo)
+- **@imgly/background-removal-node** (Procesamiento de imágenes en backend)
+- **Tailwind CSS** (Estilos en el frontend)
+- **React Hot Toast** (Notificaciones)
+
+## 📚 Puntos Importantes Aprendidos
+
+Este proyecto se diseñó para aprender y practicar la creación de un monorepo profesional con separación clara entre frontend y backend. Los aprendizajes clave incluyen:
+
+- **Estructura de monorepo**: Separación de apps (frontend y backend) y paquetes compartidos.
+- **Workspaces con Bun**: Configuración de workspaces para gestionar dependencias y scripts de manera eficiente.
+- **Integración Next.js + Express**: Comunicación entre frontend y backend usando rutas API y fetch server-to-server.
+- **Gestión de archivos y rutas dinámicas**: Cómo manejar uploads, almacenamiento y servir archivos generados dinámicamente en producción.
+- **Variables de entorno y configuración multiplataforma**: Uso de variables para distinguir entornos y evitar problemas de rutas absolutas/relativas.
+- **Despliegue y build en producción**: Scripts para build y arranque concurrente, y consideraciones para servir imágenes procesadas.
+- **Buenas prácticas de tipado y modularidad**: Uso de TypeScript y separación de lógica en controladores, servicios y utilidades.
+
+### Desglose de puntos importantes
+
+- Monorepo con apps y packages compartidos
+- Configuración de scripts y workspaces en Bun
+- Comunicación robusta entre Next.js y Express
+- Manejo seguro de archivos y rutas en producción
+- Uso de rutas API dinámicas en Next.js para servir recursos
+- Diagnóstico y solución de errores comunes en despliegue
+- Automatización de build y arranque para producción
+
+## 💡 Mejoras Futuras
+
+- Autenticación de usuarios y gestión de cuentas
+- Historial de imágenes procesadas por usuario
+- Soporte para más formatos de imagen y mayor tamaño
+- Procesamiento en background y notificaciones por email
+- Interfaz de administración para moderar imágenes
+- Integración con almacenamiento en la nube (S3, Azure Blob)
+- Pruebas automatizadas E2E y cobertura de tests
+- Despliegue automatizado (CI/CD) y monitorización avanzada
+
+---
+
 # Remove Background
 
 ## Descripción
