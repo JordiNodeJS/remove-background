@@ -16,20 +16,16 @@ export default function AppInit() {
     const performHealthCheckWithRetries = async () => {
       // Determine backend URL
       let backendUrl: string;
-      // const envApiUrl = process.env.NEXT_PUBLIC_API_URL;
-      const envApiUrl = 'http://localhost:3001';
       
-      console.log('[AppInit] Valor de process.env.NODE_ENV en cliente:', process.env.NODE_ENV); // Log para depurar NODE_ENV
+      console.log('[AppInit] Valor de process.env.NODE_ENV en cliente:', process.env.NODE_ENV);
 
-      // Prioritize localhost for development mode for client-side health checks
-      if (process.env.NODE_ENV === 'development') {
+      // Priorizar variable de entorno NEXT_PUBLIC_APP_BASE_URL
+      if (process.env.NEXT_PUBLIC_APP_BASE_URL) {
+        backendUrl = process.env.NEXT_PUBLIC_APP_BASE_URL;
+        console.log(`[AppInit] Usando NEXT_PUBLIC_APP_BASE_URL para health check: ${backendUrl}`);
+      } else if (process.env.NODE_ENV === 'development') {
         backendUrl = 'http://localhost:3001';
-        console.log(`[AppInit] Modo Desarrollo: Forzando URL del backend para health check a: ${backendUrl}`);
-      } else if (envApiUrl) {
-        backendUrl = envApiUrl;
-        console.log(
-          `[AppInit] Modo Producción/Otro: Usando NEXT_PUBLIC_API_URL para health check: ${backendUrl}`
-        );
+        console.log(`[AppInit] Modo Desarrollo: Fallback a localhost: ${backendUrl}`);
       } else if (typeof window !== "undefined" && window.location.hostname) {
         const protocol = window.location.protocol;
         const hostname = window.location.hostname;
