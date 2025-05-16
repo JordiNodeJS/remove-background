@@ -13,6 +13,7 @@ export default function ImageProcessor() {
   const [hasError, setHasError] = useState(false);
 
   const handleImageProcessed = (originalUrl: string, processedUrl: string) => {
+    console.log("ImageProcessor: handleImageProcessed -> Original:", originalUrl, "Procesada:", processedUrl);
     setOriginalImage(originalUrl);
     setProcessedImage(processedUrl);
 

@@ -112,7 +112,10 @@ export default function ProcessingHistory({
             <div
               key={index}
               className="border rounded-lg overflow-hidden cursor-pointer hover:border-blue-500 transition-colors"
-              onClick={() => onSelectImage(item.originalUrl, item.processedUrl)}
+              onClick={() => {
+                console.log("Historial: Selección -> Original:", item.originalUrl, "Procesada:", item.processedUrl); // DEBUG
+                onSelectImage(item.originalUrl, item.processedUrl);
+              }}
             >
               {" "}
               <div className="aspect-square relative bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
