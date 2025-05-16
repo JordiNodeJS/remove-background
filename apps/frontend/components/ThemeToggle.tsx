@@ -4,17 +4,19 @@ import { useEffect, useState } from "react";
 import { FiSun, FiMoon } from "react-icons/fi";
 
 export default function ThemeToggle() {
-  const [theme, setTheme] = useState<"light" | "dark">(() => {
-    if (typeof window !== "undefined") {
-      return (
-        (localStorage.getItem("theme") as "light" | "dark") ||
-        (window.matchMedia("(prefers-color-scheme: dark)").matches
-          ? "dark"
-          : "light")
-      );
-    }
-    return "light";
-  });
+  // Estado inicial fijo para evitar error de hidratación
+  const [theme, setTheme] = useState<"light" | "dark">("light");
+
+  useEffect(() => {
+    // Sincroniza el tema real solo en el cliente
+    const userTheme = window.localStorage.getItem("theme") as
+      | "light"
+      | "dark"
+      | null;
+    if (userTheme) setTheme(userTheme);
+    else if (window.matchMedia("(prefers-color-scheme: dark)").matches)
+      setTheme("dark");
+  }, []);
 
   useEffect(() => {
     document.documentElement.classList.remove("light", "dark");
@@ -26,18 +28,17 @@ export default function ThemeToggle() {
     setTheme((prev) => (prev === "light" ? "dark" : "light"));
   };
 
+  // Mientras no esté montado, renderiza el valor por defecto (sin cambiar el texto)
+  const label = theme === "dark" ? "Activar modo claro" : "Activar modo oscuro";
+
   return (
     <button
-      aria-label={
-        theme === "light" ? "Activar modo oscuro" : "Activar modo claro"
-      }
+      aria-label={label}
       onClick={toggleTheme}
       className="fixed top-4 right-4 z-50 w-12 h-12 rounded-full bg-gradient-to-br from-blue-100 via-white to-blue-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 border-2 border-blue-200 dark:border-blue-900 shadow-lg hover:scale-110 transition-transform duration-200 group flex items-center justify-center p-0"
       style={{ outline: "none" }}
     >
-      <span className="sr-only">
-        {theme === "light" ? "Activar modo oscuro" : "Activar modo claro"}
-      </span>
+      <span className="sr-only">{label}</span>
       {theme === "light" ? (
         <FiMoon
           size={24}
