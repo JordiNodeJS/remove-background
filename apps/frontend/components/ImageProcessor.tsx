@@ -107,6 +107,14 @@ export default function ImageProcessor() {
             <div className="flex flex-col items-center">
               <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
               <p className="text-muted font-medium">Procesando imagen...</p>
+              <p className="text-muted text-sm">
+                Por favor, espera un momento mientras procesamos tu imagen.
+                <br />
+                Esto puede tardar unos segundos dependiendo del tamaño de la
+                imagen y la carga del servidor. En caso de que el procesamiento
+                tarde más de lo esperado, alrededor de 30 segundos, intenta
+                subir una imagen diferente o vuelve a intentarlo.
+              </p>
               <p className="text-xs text-gray-500 mt-2">
                 {processingTime !== null
                   ? `Tiempo transcurrido: ${(processingTime / 1000).toFixed(
