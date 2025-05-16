@@ -1,6 +1,10 @@
 # Eliminador de Fondos con Next.js 15
 
-Una aplicación web basada en Next.js 15 para eliminar fondos de imágenes mediante una API externa.
+> **Importancia del proyecto:**
+>
+> Este proyecto demuestra que es posible correr un modelo de inteligencia artificial para quitar el fondo de imágenes en servidores VPS básicos y de bajos recursos, como las instancias EC2 más pequeñas de AWS. El procesamiento de cada imagen en una VPS de este tipo puede tomar alrededor de **45 segundos**, mientras que en una computadora local moderna el mismo proceso dura apenas un par de segundos. Esto lo hace ideal para soluciones económicas y autoalojadas de procesamiento de imágenes con IA.
+
+Una aplicación web basada en Next.js 15 para eliminar fondos de imágenes mediante una API propia.
 
 ## Características
 
