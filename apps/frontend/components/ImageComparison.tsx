@@ -40,10 +40,22 @@ export default function ImageComparison({
         rightImageCss={{ height: "100%", objectFit: "scale-down" }}
         vertical={true}
       />
+      {/* Botón para descargar la imagen procesada */}
+      {processedImage && (
+        <a
+          href={processedImage}
+          download
+          className="absolute bottom-4 right-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow transition-colors z-20"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Descargar imagen sin fondo
+        </a>
+      )}
       {/* El componente ReactCompareImage puede que ya incluya etiquetas o un método para ellas.
           Se eliminarán los overlays manuales y se ajustará si es necesario.
       */}
-      {/*
+      {/* 
       <div className="absolute top-2 left-0 right-0 flex justify-center z-10">
         <div className="bg-black/70 text-white px-4 py-2 rounded-full text-sm flex items-center gap-2">
           <span>Original</span>
@@ -55,7 +67,7 @@ export default function ImageComparison({
       {/* Ya no se necesita el componente Split ni sus divs hijos directos para las imágenes.
           ReactCompareImage maneja esto internamente.
       */}
-      {/*
+      {/* 
       <Split
         className="flex h-[500px]"
         direction="horizontal"
@@ -115,7 +127,7 @@ export default function ImageComparison({
       {/* El mensaje "Desliza para comparar" puede ser redundante si el handle del slider es obvio.
           Se puede mantener o eliminar según la preferencia visual. Por ahora lo comentaré.
       */}
-      {/*
+      {/* 
       <div className="absolute bottom-4 left-0 right-0 flex justify-center">
         <div className="bg-black/70 text-white px-3 py-1 rounded-full text-xs">
           Desliza para comparar
