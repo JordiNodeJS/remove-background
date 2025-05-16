@@ -107,7 +107,7 @@ export default function ImageProcessor() {
             <div className="flex flex-col items-center">
               <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
               <p className="text-muted font-medium">Procesando imagen...</p>
-              <TypewriterProcessingMessage />
+              <ProcessingTimer />
             </div>
           </div>
         ) : (
@@ -147,60 +147,38 @@ export default function ImageProcessor() {
   );
 }
 
-function TypewriterProcessingMessage() {
-  const fullText =
-    "Por favor, espera un momento mientras procesamos tu imagen.\nEsto puede tardar unos segundos dependiendo del tamaño de la imagen y la carga del servidor. En caso de que el procesamiento tarde más de lo esperado, alrededor de 30 segundos, intenta subir una imagen diferente o vuelve a intentarlo.";
-  const [displayed, setDisplayed] = useState("");
+function ProcessingTimer() {
+  const [elapsed, setElapsed] = useState(0);
   useEffect(() => {
-    let i = 0;
-    const totalDuration = 15000; // 15 segundos
-    const interval = totalDuration / fullText.length;
+    const start = Date.now();
     const timer = setInterval(() => {
-      setDisplayed((prev) => prev + fullText[i]);
-      i++;
-      if (i >= fullText.length) clearInterval(timer);
-    }, interval);
+      setElapsed(Date.now() - start);
+    }, 100);
     return () => clearInterval(timer);
   }, []);
 
-  // Detectar modo oscuro usando la clase de Tailwind en <html>
+  // Detectar modo oscuro
   const isDark =
     typeof window !== "undefined" &&
     document.documentElement.classList.contains("dark");
-  const bg = isDark
-    ? "linear-gradient(90deg, #1e293b 80%, #334155 100%)" // slate-800 a slate-700
-    : "linear-gradient(90deg, #fff 80%, #f1f5f9 100%)"; // blanco a slate-100
-  const borderColor = isDark ? "#334155" : "#cbd5e1"; // slate-700 o slate-300
-
+  const bg = isDark ? "#1e293b" : "#f1f5f9";
+  const color = isDark ? "#38bdf8" : "#2563eb";
   return (
-    <p
-      className="text-sm whitespace-pre-line px-4 py-2 rounded-lg font-mono tracking-wide animate-fade-in"
+    <div
+      className="mt-2 px-4 py-2 rounded font-mono text-base shadow"
       style={{
-        minHeight: 90,
-        letterSpacing: "0.01em",
-        fontSize: "1.05em",
         background: bg,
-        borderLeft: `4px solid ${borderColor}`,
-        border: `1.5px solid ${borderColor}`,
-        marginTop: 8,
-        marginBottom: 8,
-        boxShadow: isDark
-          ? "0 2px 12px 0 rgba(0,0,0,0.25)"
-          : "0 2px 12px 0 rgba(0,0,0,0.10)",
-        color: isDark ? "#e0e7ef" : "#334155", // slate-100 o slate-700
-        width: "fit-content",
-        maxWidth: "100%",
-        transition: "width 0.2s",
+        color,
         display: "inline-block",
+        fontWeight: 600,
+        border: `1.5px solid ${color}`,
+        letterSpacing: "0.01em",
+        minWidth: 180,
+        textAlign: "center",
+        marginTop: 8,
       }}
     >
-      {displayed}
-      <span
-        className="inline-block animate-pulse"
-        style={{ color: isDark ? "#38bdf8" : "#2563eb" }}
-      >
-        |
-      </span>
-    </p>
+      Tiempo transcurrido: {(elapsed / 1000).toFixed(1)}s
+    </div>
   );
 }
