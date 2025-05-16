@@ -92,16 +92,16 @@ export default function ProcessingHistory({
   return (
     <div className="mt-8 border rounded-lg p-4 bg-white dark:bg-gray-800">
       <div
-        className="flex items-center justify-between cursor-pointer"
+        className="flex items-center justify-between cursor-pointer select-none"
         onClick={() => setExpanded(!expanded)}
       >
         <div className="flex items-center gap-2">
           <FiClock className="text-blue-500" />
-          <h3 className="font-medium">
+          <h3 className="font-semibold text-base text-gray-700 dark:text-gray-200 tracking-tight">
             Historial de imágenes ({history.length})
           </h3>
         </div>
-        <button className="text-sm text-blue-500 hover:underline">
+        <button className="text-sm font-semibold px-3 py-1 rounded-full bg-blue-50 hover:bg-blue-100 text-blue-600 dark:bg-gray-700 dark:text-blue-200 dark:hover:bg-gray-800 transition-colors">
           {expanded ? "Ocultar" : "Mostrar"}
         </button>
       </div>
@@ -111,33 +111,31 @@ export default function ProcessingHistory({
           {history.map((item, index) => (
             <div
               key={index}
-              className="border rounded-lg overflow-hidden cursor-pointer hover:border-blue-500 transition-colors"
+              className="border rounded-xl overflow-hidden cursor-pointer hover:border-blue-500 transition-colors bg-gray-50 dark:bg-gray-900 shadow-sm group"
               onClick={() => {
-                console.log("Historial: Selección -> Original:", item.originalUrl, "Procesada:", item.processedUrl); // DEBUG
                 onSelectImage(item.originalUrl, item.processedUrl);
               }}
             >
-              {" "}
-              <div className="aspect-square relative bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
-                <FiImage size={24} className="text-gray-400" />
+              <div className="aspect-square relative flex items-center justify-center">
+                <FiImage size={28} className="text-blue-200 group-hover:text-blue-400 absolute z-10 left-2 top-2" />
                 <img
                   src={item.processedUrl}
                   alt={`Processed image ${index}`}
-                  className="absolute inset-0 w-full h-full object-cover"
+                  className="absolute inset-0 w-full h-full object-cover rounded-t-xl"
                   onError={(e) => {
                     e.currentTarget.style.display = "none";
                   }}
                 />
                 {item.hasError && (
-                  <div className="absolute bottom-0 right-0 bg-red-500 text-white text-xs px-1 py-0.5 rounded-tl-md">
+                  <div className="absolute bottom-0 right-0 bg-red-500 text-white text-xs px-2 py-1 rounded-tl-xl shadow">
                     Error
                   </div>
                 )}
               </div>
-              <div className="p-2 text-xs text-gray-500 flex justify-between">
-                <span>{item.date}</span>
+              <div className="p-2 text-xs text-gray-700 dark:text-gray-300 flex justify-between items-center font-medium">
+                <span className="truncate max-w-[70%]">{item.date}</span>
                 {item.hasError && (
-                  <span className="text-red-500">Procesamiento fallido</span>
+                  <span className="text-red-500 font-bold">Procesamiento fallido</span>
                 )}
               </div>
             </div>

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import InitWrapper from "./app-init";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,12 +16,13 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Eliminador de Fondos de Imágenes",
-  description: "Una aplicación para eliminar fondos de imágenes usando Next.js 15",
+  description:
+    "Una aplicación para eliminar fondos de imágenes usando Next.js 15",
   authors: [{ name: "Remove Background Project" }],
   keywords: ["nextjs", "image processing", "background removal"],
   icons: {
-    icon: "/favicon.svg"
-  }
+    icon: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({
@@ -33,6 +35,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <ThemeToggle />
         <InitWrapper />
         {children}
       </body>

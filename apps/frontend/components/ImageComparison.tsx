@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-// import Split from "react-split"; // Eliminado
+// import { useState, useEffect, useRef } from "react";
 import ReactCompareImage from "react-compare-image"; // Añadido
 
 interface ImageComparisonProps {
@@ -26,114 +25,44 @@ export default function ImageComparison({
     );
   }
   return (
-    <div className="w-full h-[500px] rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 relative">
-      {/* Las etiquetas "Original" y "Sin Fondo" pueden ser añadidas por react-compare-image o necesitar un overlay manual si no.
-          Por ahora, se eliminan los overlays existentes para evitar duplicidad y se ajustarán según sea necesario. */}
+    <div className="w-full h-[500px] rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 relative bg-white dark:bg-[#18181b] shadow-lg flex items-center justify-center">
+      {/* Etiquetas flotantes para las imágenes */}
+      <span className="absolute left-6 top-4 z-20 bg-white/90 dark:bg-gray-900/90 text-blue-700 dark:text-blue-200 font-bold px-4 py-1 rounded-full shadow text-base tracking-tight border border-blue-100 dark:border-blue-900 select-none pointer-events-none">
+        Original
+      </span>
+      <span className="absolute right-6 bottom-4 z-20 bg-blue-600 text-white font-bold px-4 py-1 rounded-full shadow text-base tracking-tight border border-blue-700 select-none pointer-events-none">
+        Sin fondo
+      </span>
       <ReactCompareImage
         leftImage={originalImage}
         rightImage={processedImage}
-        leftImageLabel="Original"
-        rightImageLabel="Sin Fondo"
-        sliderLineColor="#FFF"
-        sliderLineWidth={3}
-        leftImageCss={{ height: "100%", objectFit: "scale-down" }}
-        rightImageCss={{ height: "100%", objectFit: "scale-down" }}
+        sliderLineColor="#2563eb"
+        sliderLineWidth={4}
+        leftImageCss={{
+          height: "100%",
+          objectFit: "scale-down",
+          background: "#f1f5f9",
+        }}
+        rightImageCss={{
+          height: "100%",
+          objectFit: "scale-down",
+          background: "#f1f5f9",
+        }}
         vertical={true}
       />
-      {/* Botón para descargar la imagen procesada */}
       {processedImage && (
         <a
           href={processedImage}
           download
-          className="absolute bottom-4 right-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow transition-colors z-20"
+          className="absolute bottom-4 right-4 btn-secondary shadow-xl text-base px-6 py-3 rounded-full bg-gradient-to-r from-blue-400 via-blue-600 to-blue-500 text-white font-bold border-0 hover:from-blue-500 hover:to-blue-700 hover:scale-105 transition-transform duration-200 flex items-center gap-2"
           target="_blank"
           rel="noopener noreferrer"
+          style={{ boxShadow: '0 4px 24px #2563eb33' }}
         >
+          <svg width="22" height="22" fill="none" viewBox="0 0 24 24"><path fill="currentColor" d="M12 16.5a1 1 0 0 1-1-1V6.91l-2.3 2.3a1 1 0 1 1-1.4-1.42l4-4a1 1 0 0 1 1.4 0l4 4a1 1 0 1 1-1.4 1.42l-2.3-2.3v8.59a1 1 0 0 1-1 1Z"/><path fill="currentColor" d="M5 18a1 1 0 0 1 0-2h14a1 1 0 1 1 0 2H5Z"/></svg>
           Descargar imagen sin fondo
         </a>
       )}
-      {/* El componente ReactCompareImage puede que ya incluya etiquetas o un método para ellas.
-          Se eliminarán los overlays manuales y se ajustará si es necesario.
-      */}
-      {/* 
-      <div className="absolute top-2 left-0 right-0 flex justify-center z-10">
-        <div className="bg-black/70 text-white px-4 py-2 rounded-full text-sm flex items-center gap-2">
-          <span>Original</span>
-          <span className="text-xs bg-white/20 px-2 py-1 rounded-full">vs</span>
-          <span>Sin Fondo</span>
-        </div>
-      </div>
-      */}
-      {/* Ya no se necesita el componente Split ni sus divs hijos directos para las imágenes.
-          ReactCompareImage maneja esto internamente.
-      */}
-      {/* 
-      <Split
-        className="flex h-[500px]"
-        direction="horizontal"
-        sizes={[sliderPosition, 100 - sliderPosition]}
-        minSize={10}
-        expandToMin={false}
-        gutterSize={4}
-        gutterAlign="center"
-        snapOffset={0}
-        dragInterval={1}
-        onDragEnd={(sizes) => setSliderPosition(sizes[0])}
-      >
-        <div className="overflow-hidden relative h-full">
-          {originalImage && (
-            <img
-              src={originalImage}
-              alt="Imagen Original"
-              className="w-full h-full object-contain"
-            />
-          )}
-          <div className="absolute top-0 left-0 bg-black/50 text-white px-2 py-1 text-xs rounded-br-md">
-            Original
-          </div>
-        </div>
-        <div className="overflow-hidden relative h-full">
-          {processedImage && (
-            <>
-              <img
-                key={processedImage}
-                src={processedImage}
-                alt="Imagen Procesada"
-                className="w-full h-full object-contain"
-                onError={(e) => {
-                  console.error(
-                    "Error al cargar imagen procesada:",
-                    processedImage
-                  );
-                  const target = e.target as HTMLImageElement;
-                  target.onerror = null; 
-                  target.src = "/placeholder-error.svg";
-                  const errorDiv = document.createElement("div");
-                  errorDiv.className =
-                    "absolute inset-0 flex items-center justify-center bg-black/40";
-                  errorDiv.innerHTML =
-                    '<p class="text-white bg-red-500 px-3 py-2 rounded">Error al cargar imagen procesada</p>';
-                  target.parentElement?.appendChild(errorDiv);
-                }}
-              />
-              <div className="absolute top-0 right-0 bg-black/50 text-white px-2 py-1 text-xs rounded-bl-md">
-                Sin Fondo
-              </div>
-            </>
-          )}
-        </div>
-      </Split>
-      */}
-      {/* El mensaje "Desliza para comparar" puede ser redundante si el handle del slider es obvio.
-          Se puede mantener o eliminar según la preferencia visual. Por ahora lo comentaré.
-      */}
-      {/* 
-      <div className="absolute bottom-4 left-0 right-0 flex justify-center">
-        <div className="bg-black/70 text-white px-3 py-1 rounded-full text-xs">
-          Desliza para comparar
-        </div>
-      </div>
-      */}
     </div>
   );
 }

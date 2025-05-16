@@ -1,8 +1,36 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f7fafd;
+  --foreground: #18181b;
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --secondary: #f1f5f9;
+  --border: #e5e7eb;
+  --muted: #64748b;
+  --accent: #e0e7ff;
+  --radius: 14px;
+}
+
+html.light {
+  --background: #f7fafd;
+  --foreground: #18181b;
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --secondary: #f1f5f9;
+  --border: #e5e7eb;
+  --muted: #64748b;
+  --accent: #e0e7ff;
+}
+html.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --primary: #60a5fa;
+  --primary-hover: #3b82f6;
+  --secondary: #18181b;
+  --border: #262626;
+  --muted: #a1a1aa;
+  --accent: #1e293b;
 }
 
 @theme inline {
@@ -12,15 +40,67 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* Modern card style */
+.card {
+  background: var(--secondary);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 24px 0 rgba(30, 41, 59, 0.08);
+  border: 1px solid var(--border);
+  padding: 2rem 1.5rem;
+}
+
+/* Modern button style */
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+  border-radius: calc(var(--radius) - 4px);
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  border: none;
+  box-shadow: 0 2px 8px 0 rgba(37, 99, 235, 0.08);
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.btn-primary:hover {
+  background: var(--primary-hover);
+  box-shadow: 0 4px 16px 0 rgba(37, 99, 235, 0.12);
+}
+.btn-secondary {
+  background: var(--accent);
+  color: var(--primary);
+  border-radius: calc(var(--radius) - 4px);
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  border: none;
+  transition: background 0.2s;
+}
+.btn-secondary:hover {
+  background: var(--primary);
+  color: #fff;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+.text-muted {
+  color: var(--muted);
+}
+
+hr {
+  border-color: var(--border);
+}
+
+/* Responsive tweaks */
+@media (max-width: 600px) {
+  .card {
+    padding: 1rem 0.5rem;
+  }
 }

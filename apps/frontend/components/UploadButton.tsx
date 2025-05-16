@@ -141,17 +141,21 @@ export default function UploadButton({
       <button
         onClick={() => fileInputRef.current?.click()}
         disabled={isLoading}
-        className={`w-full flex items-center justify-center py-4 px-6 rounded-lg border-2 border-dashed 
-          ${
-            isLoading
-              ? "bg-gray-100 border-gray-300 text-gray-400"
-              : "bg-white border-blue-500 text-blue-600 dark:bg-gray-800 dark:border-blue-400 dark:text-blue-400 hover:bg-blue-50 hover:dark:bg-gray-700 transition-colors"
-          }`}
+        className={`btn-primary w-full flex items-center justify-center gap-2 text-lg shadow-xl relative overflow-hidden transition-transform duration-200 active:scale-95
+          ${isLoading ? "opacity-60 cursor-not-allowed" : "hover:scale-[1.03]"}`}
+        style={{
+          background: isLoading
+            ? 'linear-gradient(90deg, #e0e7ff 0%, #f1f5f9 100%)'
+            : 'linear-gradient(90deg, #2563eb 0%, #60a5fa 100%)',
+          color: isLoading ? '#64748b' : '#fff',
+          boxShadow: isLoading ? '0 2px 8px #e0e7ff' : '0 4px 24px #2563eb33',
+        }}
       >
-        <FiUpload className="mr-2" size={20} />
+        <span className="absolute left-0 top-0 w-full h-full opacity-10 bg-[radial-gradient(circle_at_30%_30%,#fff_0%,transparent_70%)] pointer-events-none" />
+        <FiUpload size={22} />
         {isLoading ? "Procesando..." : "Subir imagen para quitar fondo"}
       </button>
-      <p className="text-sm text-gray-500 mt-2 text-center dark:text-gray-400">
+      <p className="text-muted mt-3 text-center text-base">
         Solo formatos JPG y PNG. Tamaño máximo: 10MB
       </p>
     </div>

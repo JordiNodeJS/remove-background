@@ -10,15 +10,16 @@ export default function ImageProcessor() {
   const [originalImage, setOriginalImage] = useState<string | null>(null);
   const [processedImage, setProcessedImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [hasError, setHasError] = useState(false);
 
   const handleImageProcessed = (originalUrl: string, processedUrl: string) => {
-    console.log("ImageProcessor: handleImageProcessed -> Original:", originalUrl, "Procesada:", processedUrl);
+    console.log(
+      "ImageProcessor: handleImageProcessed -> Original:",
+      originalUrl,
+      "Procesada:",
+      processedUrl
+    );
     setOriginalImage(originalUrl);
     setProcessedImage(processedUrl);
-
-    // Resetea el estado de error cuando se procesa una nueva imagen correctamente
-    setHasError(processedUrl === "/placeholder-error.svg");
 
     // Dispara un evento personalizado para notificar al componente de historial
     const event = new CustomEvent("imageProcessed", {
@@ -36,35 +37,42 @@ export default function ImageProcessor() {
       <Toaster position="top-center" />
 
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Eliminador de fondos</h1>
-        <p className="text-gray-600 dark:text-gray-300">
-          Sube una imagen y automáticamente eliminaremos el fondo
+        <h1
+          className="text-3xl font-bold mb-2 text-center"
+          style={{ letterSpacing: "-1px" }}
+        >
+          Eliminador de fondos
+        </h1>
+        <p className="text-muted text-lg text-center font-medium max-w-2xl mx-auto">
+          Sube una imagen y automáticamente eliminaremos el fondo para ti. ¡Haz
+          magia con tus fotos en un solo clic!
         </p>
       </div>
       <div className="space-y-8">
-        <UploadButton
-          onImageProcessed={handleImageProcessed}
-          onLoading={setIsLoading}
-        />
-
+        <div className="card">
+          <UploadButton
+            onImageProcessed={handleImageProcessed}
+            onLoading={setIsLoading}
+          />
+        </div>
         {isLoading ? (
-          <div className="w-full h-[400px] flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded-lg">
+          <div className="w-full h-[400px] flex items-center justify-center card">
             <div className="flex flex-col items-center">
               <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
-              <p className="text-gray-500 dark:text-gray-400">
-                Procesando imagen...
-              </p>
+              <p className="text-muted font-medium">Procesando imagen...</p>
             </div>
           </div>
         ) : (
-          <ImageComparison
-            originalImage={originalImage}
-            processedImage={processedImage}
-          />
+          <div className="card">
+            <ImageComparison
+              originalImage={originalImage}
+              processedImage={processedImage}
+            />
+          </div>
         )}
-
-        {/* Componente de historial de imágenes procesadas */}
-        <ProcessingHistory onSelectImage={handleImageProcessed} />
+        <div className="card">
+          <ProcessingHistory onSelectImage={handleImageProcessed} />
+        </div>
       </div>
     </div>
   );
