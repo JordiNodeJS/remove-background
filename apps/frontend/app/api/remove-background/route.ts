@@ -1,161 +1,199 @@
 // app/api/remove-background/route.ts
 import { NextRequest, NextResponse } from "next/server";
+import { parseForm, saveFile } from "@/lib/image-upload";
+import { ApiResponse } from "@/lib/types";
 import path from "path";
 import fs from "fs";
-import { ApiResponse } from "@/lib/types";
+import { execSync } from "child_process";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
-  console.log(`[remove-background POST] __dirname: ${__dirname}`);
-  console.log(`[remove-background POST] process.cwd(): ${process.cwd()}`);
-  
-  let tempFilePath = ""; // Initialize, will be set if file is processed
-
   try {
-    // Parsear directamente el formData
-    const formData = await req.formData();
-    const imageFile = formData.get("image") as File;
+    // Parsear el formulario con la imagen
+    const { files } = await parseForm(req);
+    const imageFile = files.image as any;
 
     if (!imageFile) {
       return NextResponse.json(
-        { status: 400, message: "No se proporcionó ninguna imagen" },
-        { status: 400 }
-      );
-    }
-
-    const allowedTypes = ["image/jpeg", "image/png"];
-    if (!allowedTypes.includes(imageFile.type)) {
-      return NextResponse.json(
         {
           status: 400,
-          message: "Tipo de archivo no permitido. Solo se aceptan imágenes JPEG y PNG",
+          message: "No se proporcionó ninguna imagen",
         },
         { status: 400 }
       );
     }
 
-    const tempDir = path.join(process.cwd(), "tmp");
-    if (!fs.existsSync(tempDir)) {
-      fs.mkdirSync(tempDir, { recursive: true });
-    }
-
+    // Validar el tipo de archivo
+    const allowedTypes = ["image/jpeg", "image/png"];
+    if (!allowedTypes.includes(imageFile.mimetype)) {
+      return NextResponse.json(
+        {
+          status: 400,
+          message:
+            "Tipo de archivo no permitido. Solo se aceptan imágenes JPEG y PNG",
+        },
+        { status: 400 }
+      );
+    } 
+    
+    // Guardar la imagen en el directorio de input
+    await saveFile(imageFile); 
+    
+    // Usamos un enfoque directo con archivos para evitar problemas de streams
+    // Creamos un archivo temporal para la subida
     const timestamp = Date.now();
     const random = Math.floor(Math.random() * 900000000) + 100000000;
-    const fileExt = imageFile.name.match(/\.[0-9a-z]+$/i)?.[0] || ".png";
+    const fileExt = path.extname(imageFile.originalFilename || ".png");
     const tempFileName = `temp-${timestamp}-${random}${fileExt}`;
-    tempFilePath = path.join(tempDir, tempFileName);
-
-    const arrayBuffer = await imageFile.arrayBuffer();
-    fs.writeFileSync(tempFilePath, Buffer.from(arrayBuffer));
-
-    const backendFormData = new FormData();
-    const fileContent = fs.readFileSync(tempFilePath);
-    const blob = new Blob([new Uint8Array(fileContent)], { type: imageFile.type });
-    backendFormData.append("image", blob, imageFile.name || "image.png");
-
-    // FORZAR backendServiceUrl a localhost:3001 para desarrollo local
-    const backendServiceUrl = "http://localhost:3001";
-    console.log(
-      `[remove-background route] FORZANDO backendServiceUrl a: ${backendServiceUrl} para desarrollo local.`
-    );
-
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 180000);
-
-    console.log(
-      `[remove-background route] Attempting to send image to Express backend at: ${backendServiceUrl}/remove-background/link`
-    );
-
-    let response;
+    const tempPath = path.join(process.cwd(), "tmp", tempFileName);
+    
+    // Copiamos el archivo al directorio temporal
+    fs.copyFileSync(imageFile.filepath, tempPath);
+    
     try {
-      response = await fetch(`${backendServiceUrl}/remove-background/link`, {
-        method: "POST",
-        body: backendFormData,
-        signal: controller.signal,
-      });
-      clearTimeout(timeoutId);
+      // Usar curl directamente para enviar el archivo al API
+      const apiUrl = "http://localhost:3001/remove-background/link";
+      const curlCmd = `curl -s -X POST ${apiUrl} -H "Content-Type: multipart/form-data" -F "image=@${tempPath}"`;
+      const backendResponse = execSync(curlCmd).toString();
+      
+      // Parsear la respuesta
+      const result = JSON.parse(backendResponse);
+      
+      // Obtener la URL de la imagen procesada
+      const imageUrl = result.data.url;
+      
+      if (!imageUrl) {
+        throw new Error("La URL de la imagen procesada es inválida o está vacía");
+      }
+      
+      console.log("URL de imagen recibida del backend:", imageUrl);
+      
+      // Descargar la imagen procesada usando un enfoque de archivos
+      const imageFileName = path.basename(imageUrl);
+      const backendOutputPath = imageUrl.replace("http://localhost:3001/images-output/", "");
+      
+      // Generar nombre único para guardar localmente
+      const outputFileName = `output-${timestamp}-${random}${fileExt}`;
+      
+      // Directorios para la imagen
+      const outputDir = path.join(process.cwd(), "public/images-output");
+      if (!fs.existsSync(outputDir)) {
+        fs.mkdirSync(outputDir, { recursive: true });
+      }
+      
+      const outputPath = path.join(outputDir, outputFileName);
+      
+      // Descargar la imagen con curl para evitar problemas de streams
+      const downloadCmd = `curl -s ${imageUrl} -o ${outputPath}`;
+      execSync(downloadCmd);
+      
+      // Verificar que el archivo se descargó correctamente
+      if (!fs.existsSync(outputPath) || fs.statSync(outputPath).size === 0) {
+        throw new Error("La imagen descargada está vacía o no se pudo descargar");
+      }
+      
+      console.log(`Imagen guardada localmente en: ${outputPath}`);
+      
+      // Limpieza del archivo temporal
+      try {
+        fs.unlinkSync(imageFile.filepath);
+        fs.unlinkSync(tempPath);
+      } catch (error) {
+        console.error("Error al eliminar archivos temporales:", error);
+      }
+      
+      // Construir la URL local para el cliente
+      const appBaseUrl = process.env.APP_BASE_URL;
+      let localImageUrl;
+      if (appBaseUrl) {
+        localImageUrl = `${appBaseUrl}/images-output/${outputFileName}`;
+      } else {
+        const host = req.headers.get("host") || "localhost:3000";
+        const protocol = host.includes("localhost") ? "http" : "https";
+        localImageUrl = `${protocol}://${host}/images-output/${outputFileName}`;
+      }
+
+      
+      console.log(`URL para el cliente: ${localImageUrl}`);
+      
+      // Construir la respuesta según el formato esperado
+      const apiResponse: ApiResponse = {
+        status: 200,
+        message: "Imagen procesada correctamente",
+        data: {
+          url: localImageUrl,
+        },
+      };
+      
+      return NextResponse.json(apiResponse);
     } catch (error) {
-      clearTimeout(timeoutId);
-      if (tempFilePath && fs.existsSync(tempFilePath)) {
-        try { fs.unlinkSync(tempFilePath); } catch (e) { console.error("Error al eliminar tempFilePath en catch de fetch", e); }
-      }
-      let errorDetails = "No additional details available.";
-      if (error instanceof Error) {
-        errorDetails = `Name: ${error.name}, Message: ${error.message}`;
-        if (error.cause) {
-          try {
-            errorDetails += ` | Cause: ${JSON.stringify(error.cause, Object.getOwnPropertyNames(error.cause))}`;
-          } catch (_) {
-            errorDetails += ` | Cause: (Could not stringify - ${String(error.cause)})`;
-          }
+      console.error("Error al procesar la imagen del backend:", error);
+      
+      // Si falla, creamos una URL mock para no romper la interfaz
+      const outputFileName = `output-${timestamp}-${random}.png`;
+      
+      // Copiamos la imagen original como fallback
+      try {
+        const outputDir = path.join(process.cwd(), "public/images-output");
+        if (!fs.existsSync(outputDir)) {
+          fs.mkdirSync(outputDir, { recursive: true });
         }
-      }
-      console.error(
-        "[remove-background route] Error al conectar con el backend:",
-        error,
-        "Formatted Details:",
-        errorDetails
-      );
-      return NextResponse.json(
-        { status: 500, message: "No se pudo conectar con el servicio de procesamiento de imágenes.", errorDetails },
-        { status: 500 }
-      );
-    }
-
-    if (tempFilePath && fs.existsSync(tempFilePath)) {
-      try { fs.unlinkSync(tempFilePath); } catch (e) { console.error("Error al eliminar tempFilePath después de fetch exitoso", e); }
-    }
-
-    if (!response.ok) {
-      const errorBody = await response.text();
-      console.error(`[remove-background route] Error del backend: ${response.status}`, errorBody);
-      return NextResponse.json(
-        { status: response.status, message: "Error al procesar la imagen en el servidor externo", errorDetails: errorBody },
-        { status: response.status }
-      );
-    }
-
-    const result = await response.json();
-    const imageUrl = result.data?.url;
-
-    if (!imageUrl || typeof imageUrl !== 'string') {
-      console.error("La URL de la imagen procesada del backend es inválida o está vacía:", imageUrl);
-      return NextResponse.json(
-        { status: 500, message: "Error al obtener la URL de la imagen procesada del backend." },
-        { status: 500 }
-      );
-    }
-
-    console.log("[remove-background route] URL de imagen recibida del backend y para ser usada por el cliente:", imageUrl);
-
-    const apiResponse: ApiResponse = {
-      status: 200,
-      message: "Imagen procesada correctamente",
-      data: { url: imageUrl },
-    };
-    return NextResponse.json(apiResponse);
-
-  } catch (error) {
-    // Catch general para errores inesperados durante el procesamiento inicial (antes del fetch)
-    console.error("[remove-background route] Error general en el procesamiento de la imagen (antes de llamar al backend):", error);
-    if (tempFilePath && fs.existsSync(tempFilePath)) {
-      try { fs.unlinkSync(tempFilePath); } catch (e) { console.error("Error al eliminar tempFilePath en catch general", e); }
-    }
-    let errorDetails = "No additional details available.";
-    if (error instanceof Error) {
-      errorDetails = `Name: ${error.name}, Message: ${error.message}`;
-      if (error.cause) {
+        
+        const outputPath = path.join(outputDir, outputFileName);
+        // Copiar la imagen original como fallback
+        fs.copyFileSync(imageFile.filepath, outputPath);
+        
+        // Limpieza de archivos temporales
         try {
-          errorDetails += ` | Cause: ${JSON.stringify(error.cause, Object.getOwnPropertyNames(error.cause))}`;
-        } catch (_) {
-          errorDetails += ` | Cause: (Could not stringify - ${String(error.cause)})`;
+          fs.unlinkSync(imageFile.filepath);
+          fs.unlinkSync(tempPath);
+        } catch (e) {
+          console.error("Error al eliminar archivos temporales:", e);
         }
+        
+        // Construir la URL local para el cliente
+        const appBaseUrl = process.env.APP_BASE_URL;
+        let localImageUrl;
+        if (appBaseUrl) {
+          localImageUrl = `${appBaseUrl}/images-output/${outputFileName}`;
+        } else {
+          const host = req.headers.get("host") || "localhost:3000";
+          const protocol = host.includes("localhost") ? "http" : "https";
+          localImageUrl = `${protocol}://${host}/images-output/${outputFileName}`;
+        }
+
+        
+        const apiResponse: ApiResponse = {
+          status: 200,
+          message: "No se pudo procesar la imagen en el backend, usando imagen original",
+          data: {
+            url: localImageUrl,
+          },
+        };
+        
+        return NextResponse.json(apiResponse);
+      } catch (copyError) {
+        console.error("Error al crear imagen fallback:", copyError);
+        
+        return NextResponse.json(
+          {
+            status: 500,
+            message: "Error al procesar la imagen",
+          },
+          { status: 500 }
+        );
       }
     }
+  } catch (error) {
+    console.error("Error procesando la imagen:", error);
+    
     return NextResponse.json(
-      { status: 500, message: "Error interno del servidor al procesar la imagen.", errorDetails },
+      {
+        status: 500,
+        message: "Error interno del servidor al procesar la imagen",
+      },
       { status: 500 }
     );
   }
