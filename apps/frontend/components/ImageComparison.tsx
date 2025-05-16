@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import Split from "react-split";
+// import Split from "react-split"; // Eliminado
+import ReactCompareImage from "react-compare-image"; // Añadido
 
 interface ImageComparisonProps {
   originalImage: string | null;
@@ -12,8 +13,8 @@ export default function ImageComparison({
   originalImage,
   processedImage,
 }: ImageComparisonProps) {
-  const [sliderPosition, setSliderPosition] = useState(50);
-  const containerRef = useRef<HTMLDivElement>(null);
+  // const [sliderPosition, setSliderPosition] = useState(50); // Eliminado
+  // const containerRef = useRef<HTMLDivElement>(null); // Eliminado
 
   if (!originalImage || !processedImage) {
     return (
@@ -25,7 +26,24 @@ export default function ImageComparison({
     );
   }
   return (
-    <div className="w-full rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 relative">
+    <div className="w-full h-[500px] rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 relative">
+      {/* Las etiquetas "Original" y "Sin Fondo" pueden ser añadidas por react-compare-image o necesitar un overlay manual si no.
+          Por ahora, se eliminan los overlays existentes para evitar duplicidad y se ajustarán según sea necesario. */}
+      <ReactCompareImage
+        leftImage={originalImage}
+        rightImage={processedImage}
+        leftImageLabel="Original"
+        rightImageLabel="Sin Fondo"
+        sliderLineColor="#FFF"
+        sliderLineWidth={3}
+        leftImageCss={{ width: "100%", height: "100%", objectFit: "contain" }}
+        rightImageCss={{ width: "100%", height: "100%", objectFit: "contain" }}
+        vertical={true}
+      />
+      {/* El componente ReactCompareImage puede que ya incluya etiquetas o un método para ellas.
+          Se eliminarán los overlays manuales y se ajustará si es necesario.
+      */}
+      {/*
       <div className="absolute top-2 left-0 right-0 flex justify-center z-10">
         <div className="bg-black/70 text-white px-4 py-2 rounded-full text-sm flex items-center gap-2">
           <span>Original</span>
@@ -33,6 +51,11 @@ export default function ImageComparison({
           <span>Sin Fondo</span>
         </div>
       </div>
+      */}
+      {/* Ya no se necesita el componente Split ni sus divs hijos directos para las imágenes.
+          ReactCompareImage maneja esto internamente.
+      */}
+      {/*
       <Split
         className="flex h-[500px]"
         direction="horizontal"
@@ -56,12 +79,12 @@ export default function ImageComparison({
           <div className="absolute top-0 left-0 bg-black/50 text-white px-2 py-1 text-xs rounded-br-md">
             Original
           </div>
-        </div>{" "}
+        </div>
         <div className="overflow-hidden relative h-full">
           {processedImage && (
             <>
               <img
-                key={processedImage} // Key para forzar re-render al cambiar la URL
+                key={processedImage}
                 src={processedImage}
                 alt="Imagen Procesada"
                 className="w-full h-full object-contain"
@@ -70,15 +93,9 @@ export default function ImageComparison({
                     "Error al cargar imagen procesada:",
                     processedImage
                   );
-
-                  // Si la imagen da error, mostrar un mensaje
                   const target = e.target as HTMLImageElement;
-                  target.onerror = null; // prevenir bucle infinito
-
-                  // Intentamos usar la imagen placeholder
+                  target.onerror = null; 
                   target.src = "/placeholder-error.svg";
-
-                  // Mostrar mensaje superpuesto de error
                   const errorDiv = document.createElement("div");
                   errorDiv.className =
                     "absolute inset-0 flex items-center justify-center bg-black/40";
@@ -87,7 +104,6 @@ export default function ImageComparison({
                   target.parentElement?.appendChild(errorDiv);
                 }}
               />
-              {/* Overlay para mostrar que se está viendo la versión sin fondo */}
               <div className="absolute top-0 right-0 bg-black/50 text-white px-2 py-1 text-xs rounded-bl-md">
                 Sin Fondo
               </div>
@@ -95,11 +111,17 @@ export default function ImageComparison({
           )}
         </div>
       </Split>
+      */}
+      {/* El mensaje "Desliza para comparar" puede ser redundante si el handle del slider es obvio.
+          Se puede mantener o eliminar según la preferencia visual. Por ahora lo comentaré.
+      */}
+      {/*
       <div className="absolute bottom-4 left-0 right-0 flex justify-center">
         <div className="bg-black/70 text-white px-3 py-1 rounded-full text-xs">
           Desliza para comparar
         </div>
       </div>
+      */}
     </div>
   );
 }
