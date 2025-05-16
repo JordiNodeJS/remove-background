@@ -12,7 +12,7 @@
     "kill": "kill-port 3000",
     "frontend": "bun run --filter=@remove-background/frontend dev",
     "backend": "bun run --filter=@remove-background/api dev --watch",
-    "build:all": "bun run --parallel --signal --filter=@remove-background/frontend --filter=@remove-background/api build",
+    "build:all": "rm -fr apps/frontend/.next/ && bun run --parallel --signal --filter=@remove-background/frontend --filter=@remove-background/api build",
     "build:start:frontend": "rm -fr apps/frontend/.next/ && bun run --filter=@remove-background/frontend build &&  bun run stop:all && bun run --filter=@remove-background/frontend start",
     "build:api": "bun run --filter=@remove-background/api build",
     "start": "bun stop:all && bun run --parallel --filter=@remove-background/frontend --filter=@remove-background/api start",
