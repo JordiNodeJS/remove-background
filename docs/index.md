@@ -37,10 +37,18 @@ Bienvenido a la documentación del proyecto **Remove Background**. Aquí encontr
    - Diferencias clave en el contexto del monorepo
    - Tabla comparativa
 8. [Guía de Despliegue en Producción](./08_guia-produccion.md)
+   - Variables de entorno
+   - Configuración de servidores
+   - Configuración en Frontend (Next.js)
+   - Configuración en Backend (Express)
+   - Diferencias y consideraciones
    - Build optimizado
    - Variables de entorno
    - Configuración de servidores
-9. [Banco de Memoria y Progreso del Proyecto](./09_memory-bank.md)
+
+
+
+10. [Banco de Memoria y Progreso del Proyecto](./09_memory-bank.md)
    - Última actualización
    - Checkpoints y progreso
 10. [Troubleshooting: Enlaces simbólicos (symlinks) en monorepos Bun](./10_troubleshooting.md)
@@ -52,6 +60,10 @@ Bienvenido a la documentación del proyecto **Remove Background**. Aquí encontr
     - Ejemplo con better-sqlite3
     - Ejemplo con Prisma
     - Buenas prácticas y recomendaciones
+13. [Guía: Variables de Entorno en el Monorepo](./13_variables-entorno.md)
+    - Configuración en Frontend (Next.js)
+    - Configuración en Backend (Express)
+    - Diferencias y consideraciones
 
 ---
 
