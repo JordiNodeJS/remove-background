@@ -30,7 +30,8 @@ export default function UploadButton({
   useEffect(() => {
     const checkStatus = async () => {
       try {
-        let apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+        let apiBase =
+          process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
         if (apiBase.endsWith("/")) apiBase = apiBase.slice(0, -1);
         const res = await fetch(`${apiBase}/processing-status`);
         const data = await res.json();
@@ -186,7 +187,8 @@ export default function UploadButton({
       />
       <button
         onClick={() => {
-          if (!isLoading && !cooldown && !backendBusy) fileInputRef.current?.click();
+          if (!isLoading && !cooldown && !backendBusy)
+            fileInputRef.current?.click();
         }}
         disabled={isLoading || cooldown || backendBusy}
         className={`btn-primary w-full flex items-center justify-center gap-2 text-lg shadow-xl relative overflow-hidden transition-transform duration-200 active:scale-95 ${
@@ -211,13 +213,14 @@ export default function UploadButton({
       </button>
       {cooldown && (
         <div className="text-center text-yellow-700 dark:text-yellow-400 mt-2 text-base font-medium">
-          El servidor está ocupado procesando otra imagen. Espera unos segundos...
+          El servidor está ocupado procesando otra imagen. Espera unos
+          segundos...
         </div>
       )}
       {backendBusy && !isLoading && !cooldown && (
         <div className="text-center text-yellow-700 dark:text-yellow-400 mt-2 text-base font-medium">
-          El servidor está ocupado procesando otra imagen. Intenta de nuevo en unos
-          segundos.
+          El servidor está ocupado procesando otra imagen. Intenta de nuevo en
+          unos segundos.
         </div>
       )}
       <p className="text-muted mt-3 text-center text-base">

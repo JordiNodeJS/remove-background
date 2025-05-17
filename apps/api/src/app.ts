@@ -6,7 +6,7 @@ import path from "path";
 import cors from "cors";
 
 export const createApp = (): Express => {
-  const app = express();  // Configurar CORS para permitir peticiones del frontend
+  const app = express(); // Configurar CORS para permitir peticiones del frontend
   // Usando una configuración simplificada con origen permitido para todos
   app.use(
     cors({
