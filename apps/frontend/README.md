@@ -57,19 +57,11 @@ Crea un archivo `.env` en la carpeta raíz con los siguientes valores:
 NEXT_PUBLIC_API_URL=http://localhost:3001
 ```
 
-## API Backend
+## Comunicación con el Backend
 
-Esta aplicación se comunica con un servicio backend para el procesamiento de imágenes. El endpoint principal es:
+La información detallada sobre cómo esta aplicación frontend se comunica con el servicio backend para el procesamiento de imágenes se ha movido a la documentación principal del proyecto.
 
-- `POST /remove-background/link`: Elimina el fondo de una imagen
-
-### Ejemplo de Uso con cURL
-
-```bash
-curl -X POST http://localhost:3001/remove-background/link \
-  -H "Content-Type: multipart/form-data" \
-  -F "image=@input-01.png"
-```
+Puedes encontrar más detalles en [Comunicación con la API del Backend](../../../docs/api_communication.md).
 
 ## Estructura del Proyecto
 
