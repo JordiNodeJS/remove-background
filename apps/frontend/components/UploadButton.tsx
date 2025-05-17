@@ -30,7 +30,9 @@ export default function UploadButton({
   useEffect(() => {
     const checkStatus = async () => {
       try {
-        const res = await fetch("/processing-status");
+        let apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+        if (apiBase.endsWith("/")) apiBase = apiBase.slice(0, -1);
+        const res = await fetch(`${apiBase}/processing-status`);
         const data = await res.json();
         setBackendBusy(Boolean(data.processing));
       } catch {
