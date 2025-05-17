@@ -62,10 +62,13 @@ remove-background/
 ├── apps/
 │   ├── frontend/     # Aplicación Next.js 15 (interfaz de usuario)
 │   └── api/          # Servidor Express (servicios REST)
+├── docs/             # Documentación adicional del proyecto
 ├── packages/         # Paquetes compartidos (tipos, utilidades, UI)
 ├── package.json      # Configuración raíz (workspaces)
 └── bun.lockb         # Lockfile de Bun
 ```
+
+Para más detalles sobre la comunicación entre el frontend y el backend, consulta el documento [Comunicación con la API del Backend](./docs/api_communication.md).
 
 ## Características Principales
 

@@ -9,6 +9,10 @@ Bienvenido a la documentación del proyecto **Remove Background**. Aquí encontr
 1. [Estructura recomendada para una API REST en el monorepo](./07_estructura-api-rest.md)
    - Organización de carpetas y archivos
    - Buenas prácticas
+2. [Análisis arquitectónico y control de la comunicación frontend-backend](./api_communication.md#análisis-arquitectónico-y-control-de-la-comunicación-en-el-monorepo)
+   - Inspección de la estructura
+   - Flujo de comunicación
+   - Evaluación de patrones y recomendaciones
 2. [Tutorial básico: Lectura y escritura de archivos en Node.js con fs/promises](./01_tutorial-lectura-escritura-archivos.md)
    - Importar el módulo necesario
    - Asegurar la existencia de un directorio
