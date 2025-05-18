@@ -93,9 +93,15 @@ export default async function removeImageBackground(
     config.output ??= { format: "image/png" };
     config.output.format ??= "image/png";
 
+    // Función sleep para el retardo artificial
+    const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+    
+    // Aplicar retardo de 1 minuto
+    
     const outputBlob = await removeBackground(inputBlob, config);
     const outputBuffer = Buffer.from(await outputBlob.arrayBuffer());
-
+    await sleep(30000);
+    
     return outputBuffer;
   } catch (err) {
     console.error(
