@@ -4,12 +4,15 @@ import { parseForm, saveUploadedFile } from "@/lib/image-upload"; // Cambiado sa
 import { ApiResponse } from "@/lib/types";
 import path from "path";
 import fs from "fs";
-import { execSync } from "child_process";
+
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
+  let savedFilePath: string | undefined = undefined;
+  let tempPath: string | undefined = undefined;
+
   try {
     // Parsear el formulario con la imagen
     const { files } = await parseForm(req);
@@ -20,6 +23,19 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         {
           status: 400,
           message: "No se proporcionó ninguna imagen",
+        },
+        { status: 400 }
+      );
+    }
+
+    // Validar el tamaño del archivo
+    const MAX_FILE_SIZE_MB = parseInt(process.env.MAX_UPLOAD_FILE_SIZE_MB || "5", 10);
+    const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024; // Convertir MB a bytes
+    if (imageFile.size > MAX_FILE_SIZE_BYTES) {
+      return NextResponse.json(
+        {
+          status: 400,
+          message: `El archivo es demasiado grande. El tamaño máximo permitido es de ${MAX_FILE_SIZE_MB}MB`,
         },
         { status: 400 }
       );
@@ -39,7 +55,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     } 
     
     // Guardar la imagen en el directorio de input y obtener su ruta
-    const savedFilePath = await saveUploadedFile(imageFile); 
+    savedFilePath = await saveUploadedFile(imageFile); 
     
     // Usamos un enfoque directo con archivos para evitar problemas de streams
     // Creamos un archivo temporal para la subida
@@ -47,46 +63,67 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     const random = Math.floor(Math.random() * 900000000) + 100000000;
     const fileExt = path.extname(imageFile.name || ".png"); // Cambiado imageFile.originalFilename a imageFile.name
     const tempFileName = `temp-${timestamp}-${random}${fileExt}`;
-    const tempPath = path.join(process.cwd(), "tmp", tempFileName);
+    const configuredTempDir = process.env.TEMP_DIR_PATH || path.join(process.cwd(), "tmp");
+    // Usar path.resolve para asegurar una ruta absoluta y normalizada.
+    const tempDir = path.resolve(configuredTempDir);
+    tempPath = path.join(tempDir, tempFileName);
+
+    // Asegurarse de que el directorio temporal exista
+    if (!fs.existsSync(tempDir)) {
+      fs.mkdirSync(tempDir, { recursive: true });
+    }
     
     // Copiamos el archivo guardado al directorio temporal
     fs.copyFileSync(savedFilePath, tempPath);
     
     try {
-      // Usar curl directamente para enviar el archivo al API
-      const apiUrl = "http://localhost:3001/remove-background/link";
-      const curlCmd = `curl -s -X POST ${apiUrl} -H "Content-Type: multipart/form-data" -F "image=@${tempPath}"`;
-      const backendResponse = execSync(curlCmd).toString();
+      // Usar fetch para enviar el archivo al API del backend
+      const backendApiUrl = process.env.BACKEND_API_URL || "http://localhost:3001/remove-background/link";
       
-      // Parsear la respuesta
-      const result = JSON.parse(backendResponse);
+      const formData = new FormData();
+      // El backend espera un archivo con el nombre 'image'
+      // Necesitamos leer el archivo temporal como un Blob para enviarlo con FormData
+      const fileBuffer = fs.readFileSync(tempPath);
+      const blob = new Blob([fileBuffer], { type: imageFile.type });
+      formData.append("image", blob, imageFile.name);
+
+      const response = await fetch(backendApiUrl, {
+        method: "POST",
+        body: formData,
+        // No es necesario establecer Content-Type manualmente para FormData con fetch,
+        // el navegador/Node lo hará automáticamente con el boundary correcto.
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(`Error del backend: ${response.status} ${response.statusText}`, errorText);
+        throw new Error(`Error del backend: ${response.status} ${response.statusText}`);
+      }
+
+      const result = await response.json();
       
-      // Obtener la URL de la imagen procesada
-      const imageUrl = result.data.url;
+      const imageUrl = result.data?.url;
       
       if (!imageUrl) {
-        throw new Error("La URL de la imagen procesada es inválida o está vacía");
+        console.error("Respuesta del backend no contiene URL de imagen válida:", result);
+        throw new Error("La URL de la imagen procesada es inválida o está vacía en la respuesta del backend");
       }
       
       console.log("URL de imagen recibida del backend:", imageUrl);
       
       // Limpieza del archivo temporal y el archivo guardado inicialmente
-      // Estos archivos se crearon para enviar la imagen al backend.
-      // Ya no necesitamos descargar la imagen del backend al frontend si el procesamiento fue exitoso.
       try {
         fs.unlinkSync(savedFilePath); // Eliminar el archivo guardado por saveUploadedFile
         fs.unlinkSync(tempPath);
-      } catch (error) {
-        console.error("Error al eliminar archivos temporales tras procesar en backend:", error);
+      } catch (cleanupError) {
+        console.error("Error al eliminar archivos temporales tras procesar en backend:", cleanupError);
       }
       
-      // Construir la respuesta según el formato esperado
-      // Devolvemos directamente la URL de la imagen procesada por el backend.
       const apiResponse: ApiResponse = {
         status: 200,
         message: "Imagen procesada correctamente por el backend",
         data: {
-          url: imageUrl, // Usar la URL del backend directamente
+          url: imageUrl,
         },
       };
       
@@ -157,6 +194,18 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     }
   } catch (error) {
     console.error("Error procesando la imagen:", error);
+
+    // Limpieza de archivos en caso de error en el flujo principal
+    try {
+      if (savedFilePath && fs.existsSync(savedFilePath)) {
+        fs.unlinkSync(savedFilePath);
+      }
+      if (tempPath && fs.existsSync(tempPath)) {
+        fs.unlinkSync(tempPath);
+      }
+    } catch (cleanupError) {
+      console.error("Error al eliminar archivos temporales en el catch principal:", cleanupError);
+    }
     
     return NextResponse.json(
       {

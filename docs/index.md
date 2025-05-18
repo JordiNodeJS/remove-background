@@ -13,7 +13,7 @@ Bienvenido a la documentación del proyecto **Remove Background**. Aquí encontr
    - Inspección de la estructura
    - Flujo de comunicación
    - Evaluación de patrones y recomendaciones
-2. [Tutorial básico: Lectura y escritura de archivos en Node.js con fs/promises](./01_tutorial-lectura-escritura-archivos.md)
+3. [Tutorial básico: Lectura y escritura de archivos en Node.js con fs/promises](./01_tutorial-lectura-escritura-archivos.md)
    - Importar el módulo necesario
    - Asegurar la existencia de un directorio
    - Leer un archivo (por ejemplo, una imagen)
