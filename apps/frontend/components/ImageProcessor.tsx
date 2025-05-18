@@ -12,18 +12,29 @@ export default function ImageProcessor() {
   const [processedImage, setProcessedImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [processingTime, setProcessingTime] = useState<number | null>(null);
+  const [serviceBusy, setServiceBusy] = useState(false);
+  const [showBusyMessage, setShowBusyMessage] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const busyTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const startTimeRef = useRef<number | null>(null);
 
   const handleImageProcessed = (originalUrl: string, processedUrl: string) => {
-    console.log(
-      "ImageProcessor: handleImageProcessed -> Original:",
-      originalUrl,
-      "Procesada:",
-      processedUrl
-    );
+    const isBusy = processedUrl === "/placeholder-busy.svg";
+    setServiceBusy(isBusy);
     setOriginalImage(originalUrl);
     setProcessedImage(processedUrl);
+
+    if (isBusy) {
+      setShowBusyMessage(true);
+      if (busyTimeoutRef.current) clearTimeout(busyTimeoutRef.current);
+      busyTimeoutRef.current = setTimeout(() => {
+        setShowBusyMessage(false);
+        setServiceBusy(false);
+      }, 3500); // Muestra el mensaje por 3.5 segundos
+    } else {
+      setShowBusyMessage(false);
+      if (busyTimeoutRef.current) clearTimeout(busyTimeoutRef.current);
+    }
 
     // Detener el cronómetro
     if (startTimeRef.current) {
@@ -102,7 +113,14 @@ export default function ImageProcessor() {
             onLoading={setIsLoading}
           />
         </div>
-        {isLoading ? (
+        {showBusyMessage ? (
+          <div className="w-full h-[400px] flex items-center justify-center card bg-red-50 dark:bg-red-900/30">
+            <div className="flex flex-col items-center">
+              <svg width="48" height="48" fill="none" viewBox="0 0 24 24" className="mb-4 text-red-500"><path fill="currentColor" d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm1 15h-2v-2h2v2Zm0-4h-2V7h2v6Z"/></svg>
+              <p className="text-red-700 dark:text-red-200 font-semibold text-lg text-center">No se puede procesar la imagen porque el servicio está ocupado. Por favor, inténtalo de nuevo en unos minutos.</p>
+            </div>
+          </div>
+        ) : isLoading ? (
           <div className="w-full h-[400px] flex items-center justify-center card">
             <div className="flex flex-col items-center">
               <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
@@ -112,18 +130,21 @@ export default function ImageProcessor() {
           </div>
         ) : (
           <div className="card">
-            <ImageComparison
-              originalImage={originalImage}
-              processedImage={processedImage}
-            />
+            {processedImage && processedImage !== "/placeholder-error.svg" ? (
+              <ImageComparison
+                originalImage={originalImage}
+                processedImage={processedImage}
+              />
+            ) : null}
             {processingTime !== null &&
               processedImage &&
-              processedImage !== "/placeholder-error.svg" && (
+              processedImage !== "/placeholder-error.svg" &&
+              !serviceBusy && (
                 <div
                   className="text-center mt-4 font-extralight text-lg"
                   style={{
                     color: "#059669",
-                    background: "#fff", // fondo blanco sólido
+                    background: "#fff",
                     borderRadius: 8,
                     display: "inline-block",
                     padding: "0.25em 1em",
@@ -139,9 +160,9 @@ export default function ImageProcessor() {
               )}
           </div>
         )}
-        <div className="card">
-          <ProcessingHistory onSelectImage={handleImageProcessed} />
-        </div>
+      </div>
+      <div className="card">
+        <ProcessingHistory onSelectImage={handleImageProcessed} />
       </div>
     </div>
   );
@@ -180,56 +201,16 @@ function ProcessingTimer() {
           fontWeight: 600,
           border: `1.5px solid ${color}`,
           letterSpacing: "0.01em",
-          minWidth: 180,
-          textAlign: "center",
-          marginTop: 8,
         }}
       >
-        Tiempo transcurrido: {(elapsed / 1000).toFixed(1)}s
+        {`Tiempo transcurrido: ${(elapsed / 1000).toFixed(1)}s`}
       </div>
-      <svg
-        width={250}
-        height={48}
-        viewBox="0 0 250 48"
-        className="mt-2"
-        style={{ maxWidth: 250 }}
-      >
-        {/* Rastro */}
-        <rect
-          x="24"
-          y="32"
-          width={trailWidth}
-          height="6"
-          rx="3"
-          fill="#a3e635"
-          opacity="0.5"
-        />
-        {/* Caracol (simple, estilizado) */}
-        <g transform={`translate(${snailX}, 24)`}>
-          {/* Cuerpo */}
-          <ellipse cx="0" cy="8" rx="12" ry="8" fill="#a3e635" />
-          {/* Concha */}
-          <circle
-            cx="-6"
-            cy="4"
-            r="7"
-            fill="#fde68a"
-            stroke="#b45309"
-            strokeWidth="2"
-          />
-          {/* Espiral de la concha */}
-          <path
-            d="M-6 4 q2 2 0 4 q-2 2 0 4"
-            stroke="#b45309"
-            strokeWidth="1.2"
-            fill="none"
-          />
-          {/* Ojos */}
-          <ellipse cx="7" cy="0" rx="2" ry="4" fill="#a3e635" />
-          <ellipse cx="-7" cy="0" rx="2" ry="4" fill="#a3e635" />
-          <circle cx="7" cy="-2" r="1" fill="#222" />
-          <circle cx="-7" cy="-2" r="1" fill="#222" />
-        </g>
+      <svg width="240" height="32" viewBox="0 0 240 32" fill="none" className="mt-2">
+        <rect x="24" y="14" width={trailWidth} height="4" rx="2" fill={color} opacity="0.2" />
+        <circle cx={snailX} cy="16" r="8" fill={color} />
+        <circle cx={snailX - 4} cy="14" r="2" fill={bg} />
+        <circle cx={snailX + 4} cy="14" r="2" fill={bg} />
+        <ellipse cx={snailX} cy="20" rx="3" ry="1.5" fill={bg} />
       </svg>
     </div>
   );
