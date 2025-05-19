@@ -30,7 +30,12 @@ export default function ThemeToggle() {
   }, [theme]);
 
   const toggleTheme = () => {
-    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+    const newTheme = theme === "light" ? "dark" : "light";
+    setTheme(newTheme);
+    // Actualiza la cookie para SSR
+    document.cookie = `theme=${newTheme}; path=/; max-age=31536000`;
+    // Recarga la página para que SSR y Clerk lo detecten
+    window.location.reload();
   };
 
   if (!mounted) return null;
