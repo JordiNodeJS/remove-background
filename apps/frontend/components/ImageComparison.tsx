@@ -26,7 +26,7 @@ export default function ImageComparison({
     );
   }
   return (
-    <div className="w-full h-[500px] rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 relative bg-white dark:bg-[#18181b] shadow-lg flex items-center justify-center">
+    <div className="w-full h-[500px] rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 relative bg-background shadow-lg flex items-center justify-center">
       {/* Etiquetas flotantes para las imágenes */}
       <span className="absolute left-6 top-4 z-20 bg-white/90 dark:bg-green-900/90 text-green-900 dark:text-green-100 font-bold px-4 py-1 rounded-full shadow text-base tracking-tight border border-green-200 dark:border-green-800 select-none pointer-events-none">
         Original
