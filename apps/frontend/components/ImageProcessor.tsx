@@ -96,7 +96,7 @@ export default function ImageProcessor() {
       <Toaster position="top-center" />
 
       <div className="mb-8 w-full text-center">
-        <div className="inline-block px-6 py-2 mb-4 rounded-full bg-white/50 dark:bg-[var(--secondary)]/50 backdrop-blur-md border border-white/30 dark:border-[var(--border)]/30 shadow-md">
+        <div className="inline-block px-6 py-2 mb-4 backdrop-blur-md">
           <h1
             className="text-3xl font-bold text-center text-[var(--primary)]"
             style={{ letterSpacing: "-1px" }}
@@ -104,7 +104,7 @@ export default function ImageProcessor() {
             Eliminador de fondos
           </h1>
         </div>
-        <p className="text-muted text-lg text-center font-medium max-w-2xl mx-auto px-6 py-3 rounded-xl bg-white/30 dark:bg-[var(--secondary)]/30 backdrop-blur-sm border border-white/20 dark:border-[var(--border)]/20 shadow-sm">
+        <p className="text-muted text-lg text-center font-medium max-w-2xl mx-auto px-6 py-3 rounded-xl bg-white/30 dark:bg-[var(--secondary)]/30 backdrop-blur-sm border border-white/20 dark:border-[var(--border)]/20">
           Sube una imagen y automáticamente eliminaremos el fondo para ti. ¡Haz
           magia con tus fotos en un solo clic!
         </p>
