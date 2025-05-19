@@ -14,6 +14,8 @@ export default function ImageComparison({
   originalImage,
   processedImage,
 }: ImageComparisonProps) {
+  const isDark = typeof window !== 'undefined' && document.documentElement.classList.contains('dark');
+
   if (!originalImage || !processedImage) {
     return (
       <div className="w-full h-[400px] flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded-lg">
@@ -53,7 +55,7 @@ export default function ImageComparison({
               objectFit: "contain",
               width: "100%",
               height: "100%",
-              background: "#f1f5f9",
+              background: isDark ? '#000000' : '#ffffff',
             }}
           />
         }
