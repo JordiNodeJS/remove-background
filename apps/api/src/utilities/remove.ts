@@ -100,7 +100,8 @@ export default async function removeImageBackground(
     
     const outputBlob = await removeBackground(inputBlob, config);
     const outputBuffer = Buffer.from(await outputBlob.arrayBuffer());
-    await sleep(15000);
+    // para prueba de tiempo de espera
+    // await sleep(15000);
     
     return outputBuffer;
   } catch (err) {
