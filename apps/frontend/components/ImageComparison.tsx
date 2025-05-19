@@ -4,7 +4,7 @@ import {
   ReactCompareSlider,
   ReactCompareSliderImage,
 } from "react-compare-slider";
-import { useState, useEffect } from 'react'; // Import useState and useEffect
+import { useState, useEffect } from "react"; // Import useState and useEffect
 
 interface ImageComparisonProps {
   originalImage: string | null;
@@ -23,17 +23,17 @@ export default function ImageComparison({
 
   useEffect(() => {
     // Ensure window is defined (runs only on client-side)
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       const observer = new MutationObserver(() => {
-        setIsDark(document.documentElement.classList.contains('dark'));
+        setIsDark(document.documentElement.classList.contains("dark"));
       });
 
       // Initial check
-      setIsDark(document.documentElement.classList.contains('dark'));
+      setIsDark(document.documentElement.classList.contains("dark"));
 
       observer.observe(document.documentElement, {
         attributes: true,
-        attributeFilter: ['class'],
+        attributeFilter: ["class"],
       });
 
       return () => {
@@ -52,14 +52,48 @@ export default function ImageComparison({
     );
   }
   return (
-    <div className="w-full h-[500px] rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 relative bg-background shadow-lg flex items-center justify-center">
-      {/* Etiquetas flotantes para las imágenes */}
-      <span className="absolute left-6 top-4 z-20 bg-white/90 dark:bg-green-900/90 text-green-900 dark:text-green-100 font-bold px-4 py-1 rounded-full shadow text-base tracking-tight border border-green-200 dark:border-green-800 select-none pointer-events-none">
-        Original
-      </span>
-      <span className="absolute right-6 bottom-20 z-20 bg-green-600 text-white font-bold px-4 py-1 rounded-full shadow text-base tracking-tight border border-green-700 select-none pointer-events-none">
-        Sin fondo
-      </span>
+    <div className="w-full h-[500px] rounded-lg overflow-hidden relative flex items-center justify-center backdrop-blur-md bg-white/20 dark:bg-[var(--secondary)]/30">
+      {/* Etiquetas flotantes para las imágenes con diseño neumórfico */}
+      <div className="absolute left-8 top-1/2 -translate-y-1/2 z-30 px-4 py-2 rounded-2xl font-semibold text-base tracking-wide select-none pointer-events-none flex items-center gap-2 border shadow-lg"
+        style={{
+          background: isDark
+            ? "rgba(30,34,54,0.96)"
+            : "rgba(255,255,255,0.98)",
+          color: isDark ? "#fff" : "#1a1d2d",
+          borderColor: isDark ? "#3b4252" : "#cbd5e1",
+          textShadow: isDark
+            ? "0 2px 8px rgba(0,0,0,0.32)"
+            : "0 1px 4px rgba(0,0,0,0.10)",
+          boxShadow:
+            "0 6px 32px 0 rgba(0,0,0,0.13), 0 1.5px 8px 0 rgba(255,255,255,0.13)",
+        }}
+      >
+        <span className="w-3 h-3 rounded-full bg-gradient-to-br from-green-400/80 to-emerald-500/80 border border-white/60 shadow-inner"></span>
+        <span>Original</span>
+      </div>
+      <div className="absolute right-8 top-1/2 -translate-y-1/2 z-30 px-4 py-2 rounded-2xl font-semibold text-base tracking-wide select-none pointer-events-none flex items-center gap-2 border shadow-lg"
+        style={{
+          background: isDark
+            ? "rgba(30,34,54,0.96)"
+            : "rgba(255,255,255,0.98)",
+          color: isDark ? "#fff" : "#1e40af",
+          borderColor: isDark ? "#3b4252" : "#93c5fd",
+          textShadow: isDark
+            ? "0 2px 8px rgba(0,0,0,0.32)"
+            : "0 1px 4px rgba(0,0,0,0.10)",
+          boxShadow:
+            "0 6px 32px 0 rgba(0,0,0,0.13), 0 1.5px 8px 0 rgba(255,255,255,0.13)",
+        }}
+      >
+        <span>Sin fondo</span>
+        <span className="w-3 h-3 rounded-full bg-gradient-to-br from-blue-400/80 to-indigo-500/80 border border-white/60 shadow-inner"></span>
+      </div>
+      <div className="absolute right-4 top-4 z-30 px-3 py-1.5 bg-gradient-to-r from-[var(--primary)]/90 to-[var(--primary-hover)]/90 rounded-lg text-white font-semibold shadow-lg text-sm tracking-wide border border-white/20 select-none pointer-events-none backdrop-blur-sm">
+        <div className="flex items-center gap-2">
+          <span>Sin fondo</span>
+          <span className="size-2.5 rounded-full bg-white/70"></span>
+        </div>
+      </div>{" "}
       <ReactCompareSlider
         itemOne={
           <ReactCompareSliderImage
@@ -69,7 +103,12 @@ export default function ImageComparison({
               objectFit: "contain",
               width: "100%",
               height: "100%",
-              background: isDark ? "#1f2937" : "#f1f5f9", // Cambiado para tema oscuro/claro
+              backgroundImage: `linear-gradient(45deg, ${
+                isDark ? "#1a1d2d" : "#f1f8f4"
+              }, ${isDark ? "#162230" : "#f8f5f1"})`,
+              backgroundRepeat: "no-repeat",
+              backgroundPosition: "center",
+              backgroundSize: "cover",
             }}
           />
         }
@@ -81,7 +120,13 @@ export default function ImageComparison({
               objectFit: "contain",
               width: "100%",
               height: "100%",
-              background: isDark ? "#000000" : "#ffffff",
+              backgroundImage: isDark
+                ? "linear-gradient(to right, rgba(0,0,0,0.2) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.2) 1px, transparent 1px)"
+                : "linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px)",
+              backgroundColor: isDark ? "#111" : "#fff",
+              backgroundSize: "20px 20px",
+              backgroundRepeat: "repeat",
+              backgroundPosition: "center",
             }}
           />
         }
@@ -89,7 +134,9 @@ export default function ImageComparison({
           width: "100%",
           height: 400,
           borderRadius: 16,
-          boxShadow: "0 2px 12px 0 rgba(0,0,0,0.10)",
+          overflow: "hidden",
+          boxShadow:
+            "0 4px 24px 0 rgba(0,0,0,0.12), inset 0 0 0 1px rgba(255,255,255,0.1)",
         }}
         handle={
           <div
