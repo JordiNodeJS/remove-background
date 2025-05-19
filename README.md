@@ -1,5 +1,10 @@
 # 📝 Resumen del Proyecto
 
+## Demo
+
+Puedes ver una demostración del proyecto en funcionamiento en la siguiente URL:
+[http://ec2-63-35-184-124.eu-west-1.compute.amazonaws.com:3000/](http://ec2-63-35-184-124.eu-west-1.compute.amazonaws.com:3000/)
+
 **Remove Background** es una aplicación web que permite eliminar automáticamente el fondo de imágenes utilizando inteligencia artificial. El usuario puede subir una imagen, el sistema procesa la imagen en el backend y devuelve una versión sin fondo lista para descargar o comparar. El objetivo principal de este proyecto es servir como ejemplo educativo para aprender a estructurar y desplegar un monorepo moderno con Next.js y Express usando Bun como gestor de paquetes.
 
 ## 🚀 Tecnologías Utilizadas
@@ -11,6 +16,7 @@
 - **@imgly/background-removal-node** (Procesamiento de imágenes en backend)
 - **Tailwind CSS** (Estilos en el frontend)
 - **React Hot Toast** (Notificaciones)
+- **Clerk** (Autenticación: login, registro, recuperación de contraseña)
 
 ## 📚 Puntos Importantes Aprendidos
 
@@ -262,12 +268,14 @@ Este monorepo utiliza [PM2](https://pm2.keymetrics.io/) para gestionar los servi
 ### Pasos para producción
 
 1. **Instalar PM2 globalmente:**
+
    ```bash
    bun add -g pm2
    ```
 
 2. **Configurar el archivo `ecosystem.config.js`:**
    El archivo ya está preparado para lanzar ambos servicios con un solo comando. La configuración principal es:
+
    ```js
    module.exports = {
      apps: [
@@ -278,25 +286,27 @@ Este monorepo utiliza [PM2](https://pm2.keymetrics.io/) para gestionar los servi
          cwd: __dirname, // raíz del monorepo
          interpreter: "none",
          env: {
-           NODE_ENV: "production"
+           NODE_ENV: "production",
          },
          watch: false,
          autorestart: true,
          max_restarts: 5,
          error_file: "./logs/pm2-error.log",
          out_file: "./logs/pm2-out.log",
-         merge_logs: true
-       }
-     ]
+         merge_logs: true,
+       },
+     ],
    };
    ```
 
 3. **Levantar los servicios:**
+
    ```bash
    pm2 start ecosystem.config.js
    ```
 
 4. **Ver logs y estado:**
+
    ```bash
    pm2 logs
    pm2 status
@@ -309,6 +319,69 @@ Este monorepo utiliza [PM2](https://pm2.keymetrics.io/) para gestionar los servi
    ```
 
 ### Notas
+
 - PM2 se encargará de reiniciar los servicios en caso de fallo y de gestionar los logs.
 - Puedes personalizar variables de entorno y rutas de logs en el archivo `ecosystem.config.js`.
 - Para más detalles, revisa la sección "Guía de Despliegue en Producción" en `docs/08_guia-produccion.md`.
+
+---
+
+# Remove Background Monorepo
+
+## Arquitectura
+
+- **Frontend:** Next.js 15 (apps/frontend)
+- **Backend:** Express (apps/api)
+- **Gestor:** Bun
+- **Autenticación:** Clerk (login, registro, recuperación de contraseña)
+
+## Estructura de carpetas
+
+```
+mi-proyecto/
+├── apps/
+│   ├── frontend/     # Next.js 15 (interfaz de usuario)
+│   └── api/          # Express (servicios REST/GraphQL)
+├── packages/         # Paquetes compartidos (tipos, utilidades, UI)
+├── package.json      # Configuración raíz (workspaces)
+└── bun.lockb         # Lockfile de Bun
+```
+
+## Flujo de autenticación y rutas
+
+- **Landing page:** `/` (catch-all, implementada en `app/[[...rest]]/page.tsx`)
+- **Registro:** `/sign-up`
+- **Recuperación:** `/forgot-password`
+- **Dashboard protegido:** `/dashboard` (requiere login, muestra el componente de procesamiento de imágenes)
+
+### Clerk y Middleware
+
+- Clerk maneja login, registro y recuperación.
+- El middleware de Clerk solo protege rutas privadas (dashboard, procesamiento, etc). Las rutas públicas (`/`, `/sign-up`, `/forgot-password`) quedan abiertas.
+- El archivo `middleware.ts` contiene el matcher actualizado para excluir rutas públicas.
+
+## Troubleshooting
+
+- Si ves errores de health check, asegúrate de que el backend Express esté corriendo y accesible.
+- Elimina cualquier archivo `app/page.tsx` para evitar conflictos con la ruta catch-all.
+- Si Clerk muestra error de configuración, revisa que la ruta de login sea catch-all y el middleware permita acceso público a rutas de autenticación.
+
+## Scripts útiles
+
+- `bun run --filter=@remove-background/frontend dev` — Arranca el frontend
+- `bun run --filter=@remove-background/api dev` — Arranca el backend
+
+## Variables de entorno
+
+- `NEXT_PUBLIC_API_URL` — URL del backend para el frontend
+- `PORT` — Puerto del backend
+
+---
+
+## Cambios recientes
+
+- Migración a ruta catch-all para login Clerk.
+- Middleware ajustado para rutas públicas.
+- Dashboard protegido y funcional tras login.
+- Animaciones y estilos modernos en la landing.
+- Troubleshooting ampliado para health check y rutas protegidas.
