@@ -19,7 +19,7 @@ export default async function DashboardPage() {
 
       <header className="w-full max-w-2xl flex flex-col items-center mb-8 relative z-10">
         <div className="absolute top-0 right-4 mt-4">
-          <div className="p-1.5 rounded-full bg-white/70 dark:bg-[var(--secondary)]/70 backdrop-blur-md shadow-md border border-white/30 dark:border-[var(--border)]/30">
+          <div className="w-14 h-14 flex items-center justify-center p-1.5 rounded-full bg-white/70 dark:bg-[var(--secondary)]/70 backdrop-blur-md shadow-md border border-white/30 dark:border-[var(--border)]/30">
             <UserButton
               afterSignOutUrl="/"
               appearance={{

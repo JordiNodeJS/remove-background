@@ -4,7 +4,7 @@ import {
   ReactCompareSlider,
   ReactCompareSliderImage,
 } from "react-compare-slider";
-import { useState, useEffect } from "react"; // Import useState and useEffect
+import { useState, useEffect, useRef } from "react"; // Import useState, useEffect y useRef
 
 interface ImageComparisonProps {
   originalImage: string | null;
@@ -20,6 +20,27 @@ export default function ImageComparison({
   //   document.documentElement.classList.contains("dark");
 
   const [isDark, setIsDark] = useState(false);
+  const [sliderPosition, setSliderPosition] = useState(50);
+  const sliderRef = useRef(null);
+  // Animación suave del slider
+  const animateSlider = (target:number) => {
+    let start = sliderPosition;
+    let startTime: number | null = null;
+    const duration = 400;
+    function animate(time: number) {
+      if (!startTime) startTime = time;
+      const elapsed = time - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const newPos = start + (target - start) * progress;
+      setSliderPosition(newPos);
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        setSliderPosition(target);
+      }
+    }
+    requestAnimationFrame(animate);
+  };
 
   useEffect(() => {
     // Ensure window is defined (runs only on client-side)
@@ -54,7 +75,9 @@ export default function ImageComparison({
   return (
     <div className="w-full h-[500px] rounded-lg overflow-hidden relative flex items-center justify-center backdrop-blur-md bg-white/20 dark:bg-[var(--secondary)]/30">
       {/* Etiquetas flotantes para las imágenes con diseño neumórfico */}
-      <div className="absolute left-8 top-1/2 -translate-y-1/2 z-30 px-4 py-2 rounded-2xl font-semibold text-base tracking-wide select-none pointer-events-none flex items-center gap-2 border shadow-lg"
+      <button
+        type="button"
+        className="absolute left-8 top-1/3 -translate-y-1/2 z-30 px-4 py-2 rounded-2xl font-semibold text-base tracking-wide select-none flex items-center gap-2 border shadow-lg transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
         style={{
           background: isDark
             ? "rgba(30,34,54,0.96)"
@@ -66,12 +89,17 @@ export default function ImageComparison({
             : "0 1px 4px rgba(0,0,0,0.10)",
           boxShadow:
             "0 6px 32px 0 rgba(0,0,0,0.13), 0 1.5px 8px 0 rgba(255,255,255,0.13)",
+          cursor: "pointer"
         }}
+        onClick={() => animateSlider(100)}
+        aria-label="Mostrar solo original"
       >
         <span className="w-3 h-3 rounded-full bg-gradient-to-br from-green-400/80 to-emerald-500/80 border border-white/60 shadow-inner"></span>
         <span>Original</span>
-      </div>
-      <div className="absolute right-8 top-1/2 -translate-y-1/2 z-30 px-4 py-2 rounded-2xl font-semibold text-base tracking-wide select-none pointer-events-none flex items-center gap-2 border shadow-lg"
+      </button>
+      <button
+        type="button"
+        className="absolute right-8 top-2/3 -translate-y-1/2 z-30 px-4 py-2 rounded-2xl font-semibold text-base tracking-wide select-none flex items-center gap-2 border shadow-lg transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500"
         style={{
           background: isDark
             ? "rgba(30,34,54,0.96)"
@@ -83,17 +111,15 @@ export default function ImageComparison({
             : "0 1px 4px rgba(0,0,0,0.10)",
           boxShadow:
             "0 6px 32px 0 rgba(0,0,0,0.13), 0 1.5px 8px 0 rgba(255,255,255,0.13)",
+          cursor: "pointer"
         }}
+        onClick={() => animateSlider(0)}
+        aria-label="Mostrar solo sin fondo"
       >
         <span>Sin fondo</span>
         <span className="w-3 h-3 rounded-full bg-gradient-to-br from-blue-400/80 to-indigo-500/80 border border-white/60 shadow-inner"></span>
-      </div>
-      <div className="absolute right-4 top-4 z-30 px-3 py-1.5 bg-gradient-to-r from-[var(--primary)]/90 to-[var(--primary-hover)]/90 rounded-lg text-white font-semibold shadow-lg text-sm tracking-wide border border-white/20 select-none pointer-events-none backdrop-blur-sm">
-        <div className="flex items-center gap-2">
-          <span>Sin fondo</span>
-          <span className="size-2.5 rounded-full bg-white/70"></span>
-        </div>
-      </div>{" "}
+      </button>
+   
       <ReactCompareSlider
         itemOne={
           <ReactCompareSliderImage
@@ -167,7 +193,8 @@ export default function ImageComparison({
             </svg>
           </div>
         }
-        position={50}
+        position={sliderPosition}
+        onPositionChange={setSliderPosition}
         onlyHandleDraggable
         changePositionOnHover={false}
       />
