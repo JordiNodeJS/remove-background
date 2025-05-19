@@ -73,6 +73,35 @@
 
 ---
 
+## Memory Bank — Remove Background
+
+## Últimos cambios y decisiones
+
+- **Autenticación Clerk:**
+  - Login, registro y recuperación implementados con Clerk.
+  - Landing page ahora es catch-all (`[[...rest]]/page.tsx`).
+  - Middleware Clerk actualizado para excluir rutas públicas (`/`, `/sign-up`, `/forgot-password`).
+  - Eliminar `app/page.tsx` para evitar conflictos.
+- **Dashboard:**
+  - Protegido, solo accesible tras login.
+  - Muestra el componente de procesamiento de imágenes.
+- **Health check:**
+  - Si el frontend falla al arrancar, verificar que el backend esté corriendo y el endpoint `/api/health` responda.
+- **Estilos:**
+  - Animaciones y diseño moderno en login y registro.
+
+## Prioridades actuales
+
+- Mantener la separación de rutas públicas y privadas.
+- Documentar cualquier cambio en la estructura de rutas o autenticación.
+- Mejorar mensajes de error y troubleshooting para onboarding de nuevos devs.
+
+## Siguiente feature sugerida
+
+- Página de perfil de usuario (usando Clerk) y gestión de historial de imágenes procesadas.
+
+---
+
 ## Notas y Siguientes Pasos
 
 - Actualizar los checkpoints a medida que se completen tareas.
