@@ -1,6 +1,7 @@
 import { UserButton } from "@clerk/nextjs";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+import ImageProcessor from "@/components/ImageProcessor";
 
 export default async function DashboardPage() {
   // Proteger la ruta: si no hay usuario, redirigir al login
@@ -18,7 +19,9 @@ export default async function DashboardPage() {
           Ya puedes comenzar a eliminar fondos de imágenes.
         </p>
       </header>
-      {/* Aquí puedes agregar el componente principal de la app */}
+      <main className="w-full max-w-2xl flex flex-col items-center">
+        <ImageProcessor />
+      </main>
     </div>
   );
 }
