@@ -92,7 +92,7 @@ export default function ImageProcessor() {
   }, [isLoading]);
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
+    <div className="w-full flex flex-col items-center gap-8">
       <Toaster position="top-center" />
 
       <div className="mb-8">
@@ -156,36 +156,38 @@ export default function ImageProcessor() {
             </div>
           </div>
         ) : (
-          <div className="card">
-            {processedImage && processedImage !== "/placeholder-error.svg" ? (
-              <ImageComparison
-                originalImage={originalImage}
-                processedImage={processedImage}
-              />
-            ) : null}
-            {processingTime !== null &&
-              processedImage &&
-              processedImage !== "/placeholder-error.svg" &&
-              !serviceBusy && (
-                <div
-                  className="text-center mt-4 font-extralight text-lg"
-                  style={{
-                    color: "#059669",
-                    background: "#fff",
-                    borderRadius: 8,
-                    display: "inline-block",
-                    padding: "0.25em 1em",
-                    border: "2px solid #059669",
-                    boxShadow: "0 2px 12px 0 rgba(0,0,0,0.10)",
-                    textShadow:
-                      "0 1px 2px #fff, 0 0px 2px #059669, 0 0px 1px #000",
-                  }}
-                >
-                  ¡Procesamiento completado en{" "}
-                  {(processingTime / 1000).toFixed(1)} segundos!
-                </div>
-              )}
-          </div>
+          (originalImage || processedImage) && (
+            <div className="card w-full flex flex-col items-center">
+              {processedImage && processedImage !== "/placeholder-error.svg" ? (
+                <ImageComparison
+                  originalImage={originalImage}
+                  processedImage={processedImage}
+                />
+              ) : null}
+              {processingTime !== null &&
+                processedImage &&
+                processedImage !== "/placeholder-error.svg" &&
+                !serviceBusy && (
+                  <div
+                    className="text-center mt-4 font-extralight text-lg"
+                    style={{
+                      color: "#059669",
+                      background: "#fff",
+                      borderRadius: 8,
+                      display: "inline-block",
+                      padding: "0.25em 1em",
+                      border: "2px solid #059669",
+                      boxShadow: "0 2px 12px 0 rgba(0,0,0,0.10)",
+                      textShadow:
+                        "0 1px 2px #fff, 0 0px 2px #059669, 0 0px 1px #000",
+                    }}
+                  >
+                    ¡Procesamiento completado en{" "}
+                    {(processingTime / 1000).toFixed(1)} segundos!
+                  </div>
+                )}
+            </div>
+          )
         )}
       </div>
       <div className="card">
@@ -232,9 +234,9 @@ function ProcessingTimer() {
       >
         {`Tiempo transcurrido: ${(elapsed / 1000).toFixed(1)}s`}
       </div>
-      
+
       {/* Usamos el componente SnailIcon extraído */}
-      <SnailIcon 
+      <SnailIcon
         positionX={snailX}
         trailWidth={trailWidth}
         bg={bg}

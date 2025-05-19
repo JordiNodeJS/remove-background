@@ -34,8 +34,7 @@ export default function ThemeToggle() {
     setTheme(newTheme);
     // Actualiza la cookie para SSR
     document.cookie = `theme=${newTheme}; path=/; max-age=31536000`;
-    // Recarga la página para que SSR y Clerk lo detecten
-    window.location.reload();
+    // NO recargar la página, solo cambiar el tema en cliente
   };
 
   if (!mounted) return null;
