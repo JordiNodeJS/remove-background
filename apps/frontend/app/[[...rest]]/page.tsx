@@ -44,8 +44,7 @@ export default function Home() {
           }}
           routing="path"
           signUpUrl="/sign-up"
-          afterSignInUrl="/dashboard"
-          afterSignUpUrl="/dashboard"
+          fallbackRedirectUrl="/dashboard"
         />
       </main>
 
