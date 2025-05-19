@@ -14,7 +14,9 @@ export default function ImageComparison({
   originalImage,
   processedImage,
 }: ImageComparisonProps) {
-  const isDark = typeof window !== 'undefined' && document.documentElement.classList.contains('dark');
+  const isDark =
+    typeof window !== "undefined" &&
+    document.documentElement.classList.contains("dark");
 
   if (!originalImage || !processedImage) {
     return (
@@ -55,7 +57,7 @@ export default function ImageComparison({
               objectFit: "contain",
               width: "100%",
               height: "100%",
-              background: isDark ? '#000000' : '#ffffff',
+              background: isDark ? "#000000" : "#ffffff",
             }}
           />
         }
