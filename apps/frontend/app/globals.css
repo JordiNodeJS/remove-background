@@ -1,44 +1,64 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f8f5f1;
-  --foreground: #4b2e05;
-  --primary: #a05a2c;
-  --primary-hover: #7c3f10;
-  --secondary: #f3ede6;
-  --border: #e5d3c0;
-  --muted: #8d6e4a;
-  --accent: #e7d7c1;
-  --radius: 14px;
-  --button-gradient: linear-gradient(90deg, #ffb347 0%, #ffcc80 100%);
-  --button-gradient-hover: linear-gradient(90deg, #ff9800 0%, #ffb347 100%);
-  --download-gradient: linear-gradient(90deg, #a05a2c 0%, #7c3f10 100%);
-  --download-gradient-hover: linear-gradient(90deg, #7c3f10 0%, #a05a2c 100%);
+  --background: #f0f2f5;
+  --foreground: #333;
+  --primary: #6366f1; /* Indigo-500 */
+  --primary-hover: #4f46e5; /* Indigo-600 */
+  --secondary: #fff;
+  --border: #e2e8f0; /* Gray-200 */
+  --muted: #71717a; /* Gray-500 */
+  --accent: #f9fafb; /* Gray-50 */
+  --radius: 0.75rem; /* Rounded-lg */
+  --button-gradient: linear-gradient(
+    90deg,
+    #6366f1 0%,
+    #8b5cf6 100%
+  ); /* Indigo-500 to Violet-500 */
+  --button-gradient-hover: linear-gradient(
+    90deg,
+    #5a67d8 0%,
+    #9f7aea 100%
+  ); /* Indigo-500 to Violet-400 */
+  --download-gradient: linear-gradient(
+    90deg,
+    #0ea5e9 0%,
+    #3b82f6 100%
+  ); /* Sky-500 to Blue-500 */
+  --download-gradient-hover: linear-gradient(
+    90deg,
+    #0284c7 0%,
+    #2563eb 100%
+  ); /* Sky-600 to Blue-600 */
+}
+
+body {
+  background: linear-gradient(to bottom, #f0f2f5 0%, #fff 100%);
 }
 
 html.light {
   --background: #f8f5f1;
   --foreground: #4b2e05;
-  --primary: #a05a2c;
+  --primary: #ffb6c1;
   --primary-hover: #7c3f10;
   --secondary: #f3ede6;
   --border: #e5d3c0;
   --muted: #8d6e4a;
   --accent: #e7d7c1;
-  --button-gradient: linear-gradient(90deg, #ffb347 0%, #ffcc80 100%);
-  --button-gradient-hover: linear-gradient(90deg, #ff9800 0%, #ffb347 100%);
+  --button-gradient: linear-gradient(90deg, #ffb6c1 0%, #ffa07a 100%);
+  --button-gradient-hover: linear-gradient(90deg, #ffa07a 0%, #ffb6c1 100%);
   --download-gradient: linear-gradient(90deg, #a05a2c 0%, #7c3f10 100%);
   --download-gradient-hover: linear-gradient(90deg, #7c3f10 0%, #a05a2c 100%);
 }
 html.dark {
-  --background: #0d1b12;
-  --foreground: #e6f4ea;
-  --primary: #34d399;
-  --primary-hover: #059669;
-  --secondary: #1a3323;
-  --border: #14532d;
-  --muted: #7ecba7;
-  --accent: #193c2b;
+  --background: #070a0e;
+  --foreground: #b4d1fa;
+  --primary: #00493e;
+  --primary-hover: #83c0ef;
+  --secondary: #0c1219;
+  --border: #1a2c3f;
+  --muted: #7291b5;
+  --accent: #18283e;
   --button-gradient: linear-gradient(90deg, #166534 0%, #34d399 100%);
   --button-gradient-hover: linear-gradient(90deg, #059669 0%, #34d399 100%);
   --download-gradient: linear-gradient(90deg, #34d399 0%, #166534 100%);
@@ -55,7 +75,7 @@ html.dark {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  font-family: Inter, sans-serif;
   min-height: 100vh;
   transition: background 0.3s, color 0.3s;
 }
@@ -63,8 +83,9 @@ body {
 /* Modern card style */
 .card {
   background: var(--secondary);
-  border-radius: var(--radius);
-  box-shadow: 0 4px 24px 0 rgba(30, 41, 59, 0.08);
+  border-radius: 1.25rem; /* Rounded-2xl */
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
   border: 1px solid var(--border);
   padding: 2rem 1.5rem;
 }
@@ -72,21 +93,18 @@ body {
 /* Modern button style */
 .btn-primary {
   background: var(--button-gradient);
-  color: #4b2e05;
-  border-radius: calc(var(--radius) - 4px);
+  color: #fff;
+  border-radius: 0.75rem; /* Rounded-lg */
   padding: 0.75rem 1.5rem;
-  font-weight: 700;
+  font-weight: 600; /* Semi-bold */
   border: none;
-  box-shadow: 0 2px 8px 0 rgba(160, 90, 44, 0.1);
-  transition: background 0.2s, box-shadow 0.2s, filter 0.2s;
-  filter: brightness(1);
-  letter-spacing: 0.01em;
-  text-shadow: 0 1px 0 #fff8, 0 2px 8px #fff2;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s;
 }
 .btn-primary:hover {
   background: var(--button-gradient-hover);
-  box-shadow: 0 4px 16px 0 rgba(160, 90, 44, 0.18);
-  filter: brightness(1.05);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
 }
 
 html.dark .btn-primary {
@@ -99,17 +117,21 @@ html.dark .btn-primary:hover {
 }
 
 .btn-secondary {
-  background: var(--accent);
+  background: #fff;
   color: var(--primary);
-  border-radius: calc(var(--radius) - 4px);
+  border-radius: 0.75rem; /* Rounded-lg */
   padding: 0.75rem 1.5rem;
-  font-weight: 500;
-  border: none;
-  transition: background 0.2s;
+  font-weight: 600; /* Semi-bold */
+  border: 1px solid var(--primary);
+  transition: background-color 0.2s, color 0.2s, box-shadow 0.2s, transform 0.2s;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
 }
 .btn-secondary:hover {
   background: var(--primary);
   color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .btn-download {
