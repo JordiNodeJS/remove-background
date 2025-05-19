@@ -1,5 +1,10 @@
 # 📝 Resumen del Proyecto
 
+## Demo
+
+Puedes ver una demostración del proyecto en funcionamiento en la siguiente URL:
+[http://ec2-63-35-184-124.eu-west-1.compute.amazonaws.com:3000/](http://ec2-63-35-184-124.eu-west-1.compute.amazonaws.com:3000/)
+
 **Remove Background** es una aplicación web que permite eliminar automáticamente el fondo de imágenes utilizando inteligencia artificial. El usuario puede subir una imagen, el sistema procesa la imagen en el backend y devuelve una versión sin fondo lista para descargar o comparar. El objetivo principal de este proyecto es servir como ejemplo educativo para aprender a estructurar y desplegar un monorepo moderno con Next.js y Express usando Bun como gestor de paquetes.
 
 ## 🚀 Tecnologías Utilizadas
