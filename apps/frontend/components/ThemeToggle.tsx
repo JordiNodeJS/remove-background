@@ -14,19 +14,22 @@ export default function ThemeToggle() {
 
   useEffect(() => {
     // Sincroniza el tema real solo en el cliente
-    const userTheme = window.localStorage.getItem("theme") as
-      | "light"
-      | "dark"
-      | null;
-    if (userTheme) setTheme(userTheme);
-    else if (window.matchMedia("(prefers-color-scheme: dark)").matches)
+    const userTheme = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("theme="))
+      ?.split("=")[1] as "light" | "dark" | undefined;
+
+    if (userTheme) {
+      setTheme(userTheme);
+    } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
       setTheme("dark");
+    }
   }, []);
 
   useEffect(() => {
     document.documentElement.classList.remove("light", "dark");
     document.documentElement.classList.add(theme);
-    localStorage.setItem("theme", theme);
+    // Removed localStorage usage to rely solely on cookies
   }, [theme]);
 
   const toggleTheme = () => {
