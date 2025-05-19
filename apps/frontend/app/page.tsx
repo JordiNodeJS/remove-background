@@ -17,7 +17,8 @@ export default function Home() {
           Remove Background
         </h1>
         <p className="text-[var(--muted)] text-base text-center">
-          Inicia sesión para eliminar fondos de imágenes de forma segura y rápida
+          Inicia sesión para eliminar fondos de imágenes de forma segura y
+          rápida
         </p>
       </header>
 
