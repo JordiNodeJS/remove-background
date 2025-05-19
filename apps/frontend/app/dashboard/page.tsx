@@ -11,7 +11,10 @@ export default async function DashboardPage() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-[var(--background)] px-4">
       <header className="w-full max-w-md flex flex-col items-center mb-8">
-        <UserButton afterSignOutUrl="/" />
+        <UserButton
+          afterSignOutUrl="/"
+          appearance={{ elements: { rootBox: "mt-4 mb-2" } }}
+        />
         <h1 className="text-3xl font-bold text-[var(--primary)] mb-1 mt-4 tracking-tight">
           Bienvenido a tu Dashboard
         </h1>

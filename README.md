@@ -2,8 +2,11 @@
 
 ## Demo
 
-Puedes ver una demostración del proyecto en funcionamiento en la siguiente URL:
-[http://ec2-63-35-184-124.eu-west-1.compute.amazonaws.com:3000/](http://ec2-63-35-184-124.eu-west-1.compute.amazonaws.com:3000/)
+Puedes ver una demostración del proyecto en funcionamiento en las siguientes URLs:
+
+- **Demo en vivo:** [http://ec2-63-35-184-124.eu-west-1.compute.amazonaws.com:3000/](http://ec2-63-35-184-124.eu-west-1.compute.amazonaws.com:3000/)
+- **Video tutorial:** [https://www.youtube.com/watch?v=t9OjTltR6FY](https://www.youtube.com/watch?v=t9OjTltR6FY)
+- **Repositorio en GitHub:** [https://github.com/JordiNodeJS/remove-background](https://github.com/JordiNodeJS/remove-background)
 
 **Remove Background** es una aplicación web que permite eliminar automáticamente el fondo de imágenes utilizando inteligencia artificial. El usuario puede subir una imagen, el sistema procesa la imagen en el backend y devuelve una versión sin fondo lista para descargar o comparar. El objetivo principal de este proyecto es servir como ejemplo educativo para aprender a estructurar y desplegar un monorepo moderno con Next.js y Express usando Bun como gestor de paquetes.
 
@@ -42,7 +45,6 @@ Este proyecto se diseñó para aprender y practicar la creación de un monorepo 
 
 ## 💡 Mejoras Futuras
 
-- Autenticación de usuarios y gestión de cuentas
 - Historial de imágenes procesadas por usuario
 - Soporte para más formatos de imagen y mayor tamaño
 - Procesamiento en background y notificaciones por email
@@ -50,6 +52,10 @@ Este proyecto se diseñó para aprender y practicar la creación de un monorepo 
 - Integración con almacenamiento en la nube (S3, Azure Blob)
 - Pruebas automatizadas E2E y cobertura de tests
 - Despliegue automatizado (CI/CD) y monitorización avanzada
+
+### Mejoras completadas
+
+- Autenticación de usuarios y gestión de cuentas
 
 ---
 
@@ -385,3 +391,8 @@ mi-proyecto/
 - Dashboard protegido y funcional tras login.
 - Animaciones y estilos modernos en la landing.
 - Troubleshooting ampliado para health check y rutas protegidas.
+
+## Notas sobre el despliegue y rendimiento
+
+- El proyecto está desplegado en un VPS de AWS EC2.
+- El procesamiento de imágenes (eliminación de fondo) se realiza en una máquina de pocos recursos, demostrando que la solución es eficiente y puede funcionar en entornos con hardware limitado.

@@ -23,20 +23,23 @@ export default function Home() {
       </header>
 
       {/* Card de login Clerk con estilos personalizados */}
-      <main className="w-full max-w-md card animate-fade-in-up">
+      <main className="w-full max-w-md card animate-fade-in-up dark:bg-[#1a3323] dark:border-[#14532d]">
         {/* Clerk SignIn component: muestra el formulario de login */}
         <SignIn
           path="/"
           appearance={{
             elements: {
-              card: "shadow-none bg-transparent p-0",
+              card: "shadow-none bg-transparent p-0 dark:bg-[#1a3323]",
               formButtonPrimary: "btn-primary w-full",
-              headerTitle: "text-xl font-semibold text-[var(--primary)]",
-              headerSubtitle: "text-[var(--muted)]",
+              headerTitle:
+                "text-xl font-semibold text-[var(--primary)] dark:text-[var(--primary)]",
+              headerSubtitle: "text-[var(--muted)] dark:text-[var(--muted)]",
               socialButtonsBlockButton: "btn-secondary w-full",
               footerAction: "text-sm",
               footerActionLink:
                 "underline text-[var(--primary)] hover:text-[var(--primary-hover)]",
+              formFieldInput: "dark:bg-[#0d1b12] dark:text-[var(--foreground)]",
+              formFieldLabel: "dark:text-[var(--foreground)]",
             },
           }}
           routing="path"
