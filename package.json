@@ -29,6 +29,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@clerk/nextjs": "^6.19.4",
     "@imgly/background-removal-node": "^1.4.5",
     "@types/formidable": "^3.4.5",
     "@types/multer": "^1.4.12",
