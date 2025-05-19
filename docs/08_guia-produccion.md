@@ -211,33 +211,62 @@ Register-ScheduledTask -TaskName "CaddyService"
 
 ## 4. Implementación con PM2
 
-```bash
-# Instalar PM2 globalmente
-bun add -g pm2
+A partir de la versión actual, el monorepo utiliza [PM2](https://pm2.keymetrics.io/) para gestionar ambos servicios (frontend Next.js y backend Express) en producción, aprovechando la integración con Bun.
 
-# Archivo ecosystem.config.js
-module.exports = {
-  apps: [
-    {
-      name: 'frontend',
-      cwd: './apps/frontend',
-      script: 'bun run start',
-      env_production: {
-        NODE_ENV: 'production'
-      }
-    },
-    {
-      name: 'api',
-      cwd: './apps/api',
-      script: 'bun run start',
-      env_production: {
-        NODE_ENV: 'production',
-        PORT: 3001
-      }
-    }
-  ]
-};
-```
+### Pasos recomendados para producción
+
+1. **Instalar PM2 globalmente:**
+   ```bash
+   bun add -g pm2
+   ```
+
+2. **Configurar el archivo `ecosystem.config.js`:**
+   El archivo ya está preparado para lanzar ambos servicios con un solo comando. La configuración principal es:
+   ```js
+   module.exports = {
+     apps: [
+       {
+         name: "monorepo-bun-start",
+         script: "bun",
+         args: "start",
+         cwd: __dirname, // raíz del monorepo
+         interpreter: "none",
+         env: {
+           NODE_ENV: "production"
+         },
+         watch: false,
+         autorestart: true,
+         max_restarts: 5,
+         error_file: "./logs/pm2-error.log",
+         out_file: "./logs/pm2-out.log",
+         merge_logs: true
+       }
+     ]
+   };
+   ```
+
+3. **Levantar los servicios:**
+   ```bash
+   pm2 start ecosystem.config.js
+   ```
+
+4. **Ver logs y estado:**
+   ```bash
+   pm2 logs
+   pm2 status
+   ```
+
+5. **Reiniciar o detener:**
+   ```bash
+   pm2 restart monorepo-bun-start
+   pm2 stop monorepo-bun-start
+   ```
+
+### Notas importantes
+- PM2 reiniciará automáticamente los servicios en caso de fallo y gestionará los logs.
+- Puedes personalizar variables de entorno y rutas de logs en el archivo `ecosystem.config.js`.
+- Este flujo simplifica el despliegue y la gestión en producción, permitiendo mantener ambos servicios bajo un solo proceso supervisado.
+- Para más detalles y ejemplos, revisa también la sección correspondiente en el README del proyecto.
 
 ## 5. Health Checks y Monitoreo
 
@@ -435,7 +464,3 @@ Valores bajos (0-10) reducen el uso de swap, mientras que valores altos (100) lo
 - **Alternativas**: En algunos casos, se puede usar una partición dedicada para swap (recomendado para servidores críticos) .
 
 ---
-
-```
-
-```

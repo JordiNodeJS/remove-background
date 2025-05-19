@@ -1,7 +1,10 @@
 "use client";
 
-// import { useState, useEffect, useRef } from "react";
-import ReactCompareImage from "react-compare-image"; // Añadido
+import {
+  ReactCompareSlider,
+  ReactCompareSliderImage,
+} from "react-compare-slider";
+import { useState, useEffect } from 'react'; // Import useState and useEffect
 
 interface ImageComparisonProps {
   originalImage: string | null;
@@ -12,8 +15,32 @@ export default function ImageComparison({
   originalImage,
   processedImage,
 }: ImageComparisonProps) {
-  // const [sliderPosition, setSliderPosition] = useState(50); // Eliminado
-  // const containerRef = useRef<HTMLDivElement>(null); // Eliminado
+  // const isDark =
+  //   typeof window !== "undefined" &&
+  //   document.documentElement.classList.contains("dark");
+
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    // Ensure window is defined (runs only on client-side)
+    if (typeof window !== 'undefined') {
+      const observer = new MutationObserver(() => {
+        setIsDark(document.documentElement.classList.contains('dark'));
+      });
+
+      // Initial check
+      setIsDark(document.documentElement.classList.contains('dark'));
+
+      observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class'],
+      });
+
+      return () => {
+        observer.disconnect();
+      };
+    }
+  }, []);
 
   if (!originalImage || !processedImage) {
     return (
@@ -25,7 +52,7 @@ export default function ImageComparison({
     );
   }
   return (
-    <div className="w-full h-[500px] rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 relative bg-white dark:bg-[#18181b] shadow-lg flex items-center justify-center">
+    <div className="w-full h-[500px] rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 relative bg-background shadow-lg flex items-center justify-center">
       {/* Etiquetas flotantes para las imágenes */}
       <span className="absolute left-6 top-4 z-20 bg-white/90 dark:bg-green-900/90 text-green-900 dark:text-green-100 font-bold px-4 py-1 rounded-full shadow text-base tracking-tight border border-green-200 dark:border-green-800 select-none pointer-events-none">
         Original
@@ -33,22 +60,69 @@ export default function ImageComparison({
       <span className="absolute right-6 bottom-20 z-20 bg-green-600 text-white font-bold px-4 py-1 rounded-full shadow text-base tracking-tight border border-green-700 select-none pointer-events-none">
         Sin fondo
       </span>
-      <ReactCompareImage
-        leftImage={originalImage}
-        rightImage={processedImage}
-        sliderLineColor="#2563eb"
-        sliderLineWidth={4}
-        leftImageCss={{
-          height: "100%",
-          objectFit: "scale-down",
-          background: "#f1f5f9",
+      <ReactCompareSlider
+        itemOne={
+          <ReactCompareSliderImage
+            src={originalImage}
+            alt="Original"
+            style={{
+              objectFit: "contain",
+              width: "100%",
+              height: "100%",
+              background: isDark ? "#1f2937" : "#f1f5f9", // Cambiado para tema oscuro/claro
+            }}
+          />
+        }
+        itemTwo={
+          <ReactCompareSliderImage
+            src={processedImage}
+            alt="Sin fondo"
+            style={{
+              objectFit: "contain",
+              width: "100%",
+              height: "100%",
+              background: isDark ? "#000000" : "#ffffff",
+            }}
+          />
+        }
+        style={{
+          width: "100%",
+          height: 400,
+          borderRadius: 16,
+          boxShadow: "0 2px 12px 0 rgba(0,0,0,0.10)",
         }}
-        rightImageCss={{
-          height: "100%",
-          objectFit: "scale-down",
-          background: "#f1f5f9",
-        }}
-        vertical={true}
+        handle={
+          <div
+            style={{
+              width: 32,
+              height: 32,
+              background: "#2563eb",
+              borderRadius: "50%",
+              border: "3px solid #fff",
+              boxShadow: "0 2px 8px #0002",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "ew-resize",
+              zIndex: 50,
+            }}
+          >
+            <svg width="18" height="18" viewBox="0 0 18 18">
+              <circle
+                cx="9"
+                cy="9"
+                r="8"
+                fill="#2563eb"
+                stroke="#fff"
+                strokeWidth="2"
+              />
+              <rect x="8" y="4" width="2" height="10" rx="1" fill="#fff" />
+            </svg>
+          </div>
+        }
+        position={50}
+        onlyHandleDraggable
+        changePositionOnHover={false}
       />
       {processedImage && (
         <a

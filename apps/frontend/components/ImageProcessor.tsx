@@ -6,24 +6,36 @@ import confetti from "canvas-confetti";
 import UploadButton from "./UploadButton";
 import ImageComparison from "./ImageComparison";
 import ProcessingHistory from "./ProcessingHistory";
+import SnailIcon from "./SnailIcon";
 
 export default function ImageProcessor() {
   const [originalImage, setOriginalImage] = useState<string | null>(null);
   const [processedImage, setProcessedImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [processingTime, setProcessingTime] = useState<number | null>(null);
+  const [serviceBusy, setServiceBusy] = useState(false);
+  const [showBusyMessage, setShowBusyMessage] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const busyTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const startTimeRef = useRef<number | null>(null);
 
   const handleImageProcessed = (originalUrl: string, processedUrl: string) => {
-    console.log(
-      "ImageProcessor: handleImageProcessed -> Original:",
-      originalUrl,
-      "Procesada:",
-      processedUrl
-    );
+    const isBusy = processedUrl === "/placeholder-busy.svg";
+    setServiceBusy(isBusy);
     setOriginalImage(originalUrl);
     setProcessedImage(processedUrl);
+
+    if (isBusy) {
+      setShowBusyMessage(true);
+      if (busyTimeoutRef.current) clearTimeout(busyTimeoutRef.current);
+      busyTimeoutRef.current = setTimeout(() => {
+        setShowBusyMessage(false);
+        setServiceBusy(false);
+      }, 3500); // Muestra el mensaje por 3.5 segundos
+    } else {
+      setShowBusyMessage(false);
+      if (busyTimeoutRef.current) clearTimeout(busyTimeoutRef.current);
+    }
 
     // Detener el cronómetro
     if (startTimeRef.current) {
@@ -102,7 +114,40 @@ export default function ImageProcessor() {
             onLoading={setIsLoading}
           />
         </div>
-        {isLoading ? (
+        {showBusyMessage ? (
+          <div className="w-full h-[400px] flex items-center justify-center card bg-red-50 dark:bg-red-900/30">
+            <div className="flex flex-col items-center">
+              <svg
+                width="48"
+                height="48"
+                fill="none"
+                viewBox="0 0 24 24"
+                className="mb-4 text-red-500"
+              >
+                <path
+                  fill="currentColor"
+                  d="M20 14c0 5.5-5.8 8-13 8c-3.28 0-6.95-0.7-9.7-2.2l3.7-2.8H5c2.8 0 5-2.2 5-5v-1.2c0-2 1.6-3.6 3.6-3.6c1.5 0 2.8 0.9 3.3 2.2c3.3 0.6 5.8 2.8 5.8 4.6z"
+                />
+                <path
+                  fill="currentColor"
+                  d="M11 10c0 0.6-0.4 1-1 1s-1-0.4-1-1s0.4-1 1-1s1 0.4 1 1z"
+                />
+                <path
+                  fill="currentColor"
+                  d="M7 11.5c0 0.8-0.7 1.5-1.5 1.5S4 12.3 4 11.5S4.7 10 5.5 10S7 10.7 7 11.5z"
+                />
+                <path
+                  fill="#ffffff"
+                  d="M4 14c1.1 0 2-0.9 2-2s-0.9-2-2-2s-2 0.9-2 2s0.9 2 2 2z"
+                />
+              </svg>
+              <p className="text-red-700 dark:text-red-200 font-semibold text-lg text-center">
+                No se puede procesar la imagen porque el servicio está ocupado.
+                Por favor, inténtalo de nuevo en unos minutos.
+              </p>
+            </div>
+          </div>
+        ) : isLoading ? (
           <div className="w-full h-[400px] flex items-center justify-center card">
             <div className="flex flex-col items-center">
               <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
@@ -112,18 +157,21 @@ export default function ImageProcessor() {
           </div>
         ) : (
           <div className="card">
-            <ImageComparison
-              originalImage={originalImage}
-              processedImage={processedImage}
-            />
+            {processedImage && processedImage !== "/placeholder-error.svg" ? (
+              <ImageComparison
+                originalImage={originalImage}
+                processedImage={processedImage}
+              />
+            ) : null}
             {processingTime !== null &&
               processedImage &&
-              processedImage !== "/placeholder-error.svg" && (
+              processedImage !== "/placeholder-error.svg" &&
+              !serviceBusy && (
                 <div
                   className="text-center mt-4 font-extralight text-lg"
                   style={{
                     color: "#059669",
-                    background: "#fff", // fondo blanco sólido
+                    background: "#fff",
                     borderRadius: 8,
                     display: "inline-block",
                     padding: "0.25em 1em",
@@ -139,9 +187,9 @@ export default function ImageProcessor() {
               )}
           </div>
         )}
-        <div className="card">
-          <ProcessingHistory onSelectImage={handleImageProcessed} />
-        </div>
+      </div>
+      <div className="card">
+        <ProcessingHistory onSelectImage={handleImageProcessed} />
       </div>
     </div>
   );
@@ -180,57 +228,18 @@ function ProcessingTimer() {
           fontWeight: 600,
           border: `1.5px solid ${color}`,
           letterSpacing: "0.01em",
-          minWidth: 180,
-          textAlign: "center",
-          marginTop: 8,
         }}
       >
-        Tiempo transcurrido: {(elapsed / 1000).toFixed(1)}s
+        {`Tiempo transcurrido: ${(elapsed / 1000).toFixed(1)}s`}
       </div>
-      <svg
-        width={250}
-        height={48}
-        viewBox="0 0 250 48"
-        className="mt-2"
-        style={{ maxWidth: 250 }}
-      >
-        {/* Rastro */}
-        <rect
-          x="24"
-          y="32"
-          width={trailWidth}
-          height="6"
-          rx="3"
-          fill="#a3e635"
-          opacity="0.5"
-        />
-        {/* Caracol (simple, estilizado) */}
-        <g transform={`translate(${snailX}, 24)`}>
-          {/* Cuerpo */}
-          <ellipse cx="0" cy="8" rx="12" ry="8" fill="#a3e635" />
-          {/* Concha */}
-          <circle
-            cx="-6"
-            cy="4"
-            r="7"
-            fill="#fde68a"
-            stroke="#b45309"
-            strokeWidth="2"
-          />
-          {/* Espiral de la concha */}
-          <path
-            d="M-6 4 q2 2 0 4 q-2 2 0 4"
-            stroke="#b45309"
-            strokeWidth="1.2"
-            fill="none"
-          />
-          {/* Ojos */}
-          <ellipse cx="7" cy="0" rx="2" ry="4" fill="#a3e635" />
-          <ellipse cx="-7" cy="0" rx="2" ry="4" fill="#a3e635" />
-          <circle cx="7" cy="-2" r="1" fill="#222" />
-          <circle cx="-7" cy="-2" r="1" fill="#222" />
-        </g>
-      </svg>
+      
+      {/* Usamos el componente SnailIcon extraído */}
+      <SnailIcon 
+        positionX={snailX}
+        trailWidth={trailWidth}
+        bg={bg}
+        color={color}
+      />
     </div>
   );
 }

@@ -254,3 +254,61 @@ Si deseas contribuir a este proyecto, por favor:
 ## Licencia
 
 Este proyecto está licenciado bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para más detalles.
+
+## Despliegue y gestión en producción con PM2
+
+Este monorepo utiliza [PM2](https://pm2.keymetrics.io/) para gestionar los servicios de frontend (Next.js) y backend (Express) en producción, aprovechando la integración con Bun.
+
+### Pasos para producción
+
+1. **Instalar PM2 globalmente:**
+   ```bash
+   bun add -g pm2
+   ```
+
+2. **Configurar el archivo `ecosystem.config.js`:**
+   El archivo ya está preparado para lanzar ambos servicios con un solo comando. La configuración principal es:
+   ```js
+   module.exports = {
+     apps: [
+       {
+         name: "monorepo-bun-start",
+         script: "bun",
+         args: "start",
+         cwd: __dirname, // raíz del monorepo
+         interpreter: "none",
+         env: {
+           NODE_ENV: "production"
+         },
+         watch: false,
+         autorestart: true,
+         max_restarts: 5,
+         error_file: "./logs/pm2-error.log",
+         out_file: "./logs/pm2-out.log",
+         merge_logs: true
+       }
+     ]
+   };
+   ```
+
+3. **Levantar los servicios:**
+   ```bash
+   pm2 start ecosystem.config.js
+   ```
+
+4. **Ver logs y estado:**
+   ```bash
+   pm2 logs
+   pm2 status
+   ```
+
+5. **Reiniciar o detener:**
+   ```bash
+   pm2 restart monorepo-bun-start
+   pm2 stop monorepo-bun-start
+   ```
+
+### Notas
+- PM2 se encargará de reiniciar los servicios en caso de fallo y de gestionar los logs.
+- Puedes personalizar variables de entorno y rutas de logs en el archivo `ecosystem.config.js`.
+- Para más detalles, revisa la sección "Guía de Despliegue en Producción" en `docs/08_guia-produccion.md`.
