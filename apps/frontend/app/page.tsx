@@ -22,9 +22,14 @@ export default function Home() {
       </header>
       <section className="relative w-full max-w-4xl bg-[var(--secondary)] dark:bg-[var(--secondary)]/90 rounded-2xl shadow-xl flex flex-col md:flex-row items-center p-8 gap-8 transition-colors duration-300">
         <div className="flex-1 flex flex-col items-start justify-center z-10">
-          <span className="inline-block bg-[var(--accent)] text-pink-700 dark:text-pink-500 font-semibold px-4 py-1 rounded-full mb-4 text-sm shadow-sm transition-colors duration-300">
-            ¡Nuevo! 2025
-          </span>
+          <a
+            href="https://www.twitch.tv/midudev"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block bg-[var(--accent)] text-pink-700 dark:text-pink-500 font-semibold px-4 py-1 rounded-full mb-4 text-sm shadow-sm transition-colors duration-300 hover:scale-105"
+          >
+            ¡Hackatón Clerk! - 2025 🎉
+          </a>
           <h1 className="text-4xl md:text-5xl font-extrabold text-[var(--foreground)] mb-4 leading-tight transition-colors duration-300">
             Elimina el fondo de tus imágenes{" "}
             <span className="text-pink-600 dark:text-pink-500">
