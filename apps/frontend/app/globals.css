@@ -65,6 +65,12 @@ html.dark {
   --download-gradient-hover: linear-gradient(90deg, #059669 0%, #166534 100%);
 }
 
+/* Dark mode background effect for landing */
+html.dark .landing-bg {
+  background: radial-gradient(circle at 50% 50%, #111927 0%, #070a0e 100%);
+  background-size: 100% 100%;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -80,6 +86,42 @@ body {
   transition: background 0.3s, color 0.3s;
 }
 
+/* Landing specific background styles */
+.landing-bg {
+  position: relative;
+  overflow: hidden;
+}
+
+html.light .landing-bg::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 182, 193, 0.15) 0%,
+    rgba(255, 160, 122, 0.15) 100%
+  );
+  z-index: -1;
+}
+
+html.dark .landing-bg::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    rgba(22, 101, 52, 0.2) 0%,
+    rgba(52, 211, 153, 0.1) 100%
+  );
+  z-index: -1;
+}
+
 /* Modern card style */
 .card {
   background: var(--secondary);
@@ -88,6 +130,13 @@ body {
     0 4px 6px -2px rgba(0, 0, 0, 0.05);
   border: 1px solid var(--border);
   padding: 2rem 1.5rem;
+  transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+
+html.dark .card {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3),
+    0 4px 6px -2px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(8px);
 }
 
 /* Modern button style */
