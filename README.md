@@ -20,6 +20,10 @@ Puedes ver una demostración del proyecto en funcionamiento en las siguientes UR
 - **Tailwind CSS** (Estilos en el frontend)
 - **React Hot Toast** (Notificaciones)
 - **Clerk** (Autenticación: login, registro, recuperación de contraseña)
+  - Migración a ruta catch-all para login Clerk.
+  - Middleware ajustado para rutas públicas.
+  - Dashboard protegido y funcional tras login.
+  - Animaciones y estilos modernos en la landing.
 
 ## 📚 Puntos Importantes Aprendidos
 
@@ -81,6 +85,8 @@ remove-background/
 ```
 
 Para más detalles sobre la comunicación entre el frontend y el backend, consulta el documento [Comunicación con la API del Backend](./docs/api_communication.md).
+
+**Note:** The frontend currently uses `curl` via `child_process.execSync` to communicate with the backend. It is highly recommended to replace this with a Node.js HTTP client like `axios` or `node-fetch` for better error handling, performance, and security.
 
 ## Características Principales
 

@@ -77,8 +77,10 @@ Puedes encontrar más detalles en [Comunicación con la API del Backend](../../.
     image-upload.ts             # Utilidades para manejo de uploads
     mock-utils.ts               # Funciones para pruebas
     types.ts                    # Definiciones de tipos
-  page.tsx                      # Página principal
+  [[...rest]]/page.tsx          # Página principal (catch-all para Clerk)
 /public
   /images-input                 # Directorio para imágenes originales
   /images-output                # Directorio para imágenes procesadas
 ```
+
+**Note:** The frontend currently uses `curl` via `child_process.execSync` in `app/api/remove-background/route.ts` to communicate with the backend. It is highly recommended to replace this with a Node.js HTTP client like `axios` or `node-fetch` for better error handling, performance, and security.

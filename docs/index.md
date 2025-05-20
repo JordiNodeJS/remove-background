@@ -96,7 +96,7 @@ Bienvenido a la documentación del proyecto **Remove Background**. Aquí encontr
 
 ## Estructura recomendada
 
-Ver README.md para detalles de carpetas y scripts.
+Ver `README.md` para detalles de carpetas y scripts, y la recomendación de usar un cliente HTTP Node.js en lugar de `curl`.
 
 Cada documento contiene ejemplos prácticos, comandos y recomendaciones específicas para el entorno de desarrollo y producción.
 
