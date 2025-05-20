@@ -96,25 +96,61 @@ export default function ImageProcessor() {
       <Toaster position="top-center" />
 
       <div className="mb-8 w-full text-center">
-        <div className="inline-block px-6 py-2 mb-4 backdrop-blur-md">
-          <h1
-            className="text-3xl font-bold text-center text-[var(--primary)]"
-            style={{ letterSpacing: "-1px" }}
-          >
-            Eliminador de fondos
-          </h1>
+        <div className="relative mb-4 inline-flex items-center">
+          <div className="absolute inset-0 bg-gradient-to-r from-pink-400/10 via-pink-500/20 to-pink-400/10 rounded-xl blur-xl transform scale-110"></div>
+          <div className="px-4 py-3 backdrop-blur-lg bg-white/10 dark:bg-[var(--secondary)]/20 rounded-xl border-l-4 border-pink-500 shadow-lg relative z-10">
+            <h1
+              className="text-3xl font-bold text-center text-pink-600 dark:text-pink-500 relative"
+              style={{ letterSpacing: "-0.5px" }}
+            >
+              Eliminador de fondos
+            </h1>
+          </div>
+          <div className="absolute -bottom-3 -right-3 w-8 h-8 bg-pink-600 dark:bg-pink-500 rounded-full opacity-30 blur-lg"></div>
+          <div className="absolute -top-3 -left-3 w-6 h-6 bg-pink-400 dark:bg-pink-300 rounded-full opacity-20 blur-lg"></div>
         </div>
-        <p className="text-muted text-lg text-center font-medium max-w-2xl mx-auto px-6 py-3 rounded-xl bg-white/30 dark:bg-[var(--secondary)]/30 backdrop-blur-sm border border-white/20 dark:border-[var(--border)]/20">
-          Sube una imagen y automáticamente eliminaremos el fondo para ti. ¡Haz
-          magia con tus fotos en un solo clic!
-        </p>
+        <div className="relative flex justify-center w-full mb-2">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-pink-500/10 to-transparent rounded-lg blur-xl -z-10"></div>
+          <p className="text-lg text-[var(--foreground)]/80 font-medium max-w-2xl">
+            Sube una imagen y automáticamente eliminaremos el fondo para ti.{" "}
+            <span className="text-pink-600 dark:text-pink-400">
+              ¡Haz magia con tus fotos en un solo clic!
+            </span>
+          </p>
+        </div>
       </div>
       <div className="space-y-8 w-full">
-        <div className="rounded-2xl backdrop-blur-xl bg-white/70 dark:bg-[var(--secondary)]/70 shadow-xl border border-white/30 dark:border-[var(--border)]/30 p-8">
-          <UploadButton
-            onImageProcessed={handleImageProcessed}
-            onLoading={setIsLoading}
-          />
+        <div className="rounded-2xl backdrop-blur-xl bg-white/70 dark:bg-[var(--secondary)]/70 shadow-xl border border-white/30 dark:border-pink-900/30 p-8">
+          <div className="relative">
+            <div className="absolute -top-1 -left-1 w-32 h-32 bg-pink-300/20 dark:bg-pink-800/10 rounded-full blur-2xl -z-10"></div>
+            <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-pink-400/20 dark:bg-pink-700/10 rounded-full blur-2xl -z-10"></div>
+
+            <div className="flex flex-col md:flex-row items-center gap-6 mb-6">
+              <div className="flex-1">
+                <h2 className="text-2xl font-bold text-[var(--foreground)] mb-2">
+                  Sube una imagen
+                </h2>
+                <div className="flex items-start space-x-2 mb-2">
+                  <div className="h-5 w-1 bg-pink-500 rounded-full mt-1 flex-shrink-0"></div>
+                  <p className="text-[var(--foreground)]/70">
+                    Formato JPG o PNG hasta 10MB
+                  </p>
+                </div>
+                <div className="flex items-start space-x-2">
+                  <div className="h-5 w-1 bg-pink-500 rounded-full mt-1 flex-shrink-0"></div>
+                  <p className="text-[var(--foreground)]/70">
+                    Nuestra IA eliminará automáticamente el fondo
+                  </p>
+                </div>
+              </div>
+              <div className="flex-1">
+                <UploadButton
+                  onImageProcessed={handleImageProcessed}
+                  onLoading={setIsLoading}
+                />
+              </div>
+            </div>
+          </div>
         </div>
         {showBusyMessage ? (
           <div className="w-full h-[400px] flex items-center justify-center rounded-2xl backdrop-blur-xl bg-red-50/80 dark:bg-red-900/20 shadow-xl border border-red-200/50 dark:border-red-700/30 p-8">
@@ -152,11 +188,11 @@ export default function ImageProcessor() {
             </div>
           </div>
         ) : isLoading ? (
-          <div className="w-full h-[400px] flex items-center justify-center rounded-2xl backdrop-blur-xl bg-white/70 dark:bg-[var(--secondary)]/70 shadow-xl border border-white/30 dark:border-[var(--border)]/30 p-8">
-            <div className="flex flex-col items-center backdrop-blur-md bg-white/50 dark:bg-[var(--secondary)]/50 p-6 rounded-xl border border-white/30 dark:border-[var(--border)]/20 shadow-lg">
+          <div className="w-full h-[400px] flex items-center justify-center rounded-2xl backdrop-blur-xl bg-white/70 dark:bg-[var(--secondary)]/70 shadow-xl border border-white/30 dark:border-pink-900/30 p-8">
+            <div className="flex flex-col items-center backdrop-blur-md bg-white/50 dark:bg-[var(--secondary)]/50 p-6 rounded-xl border border-white/30 dark:border-pink-900/20 shadow-lg">
               <div className="w-16 h-16 flex items-center justify-center relative mb-4">
-                <div className="absolute inset-0 rounded-full bg-[var(--primary)]/10 animate-ping"></div>
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--primary)] relative z-10 drop-shadow-md"></div>
+                <div className="absolute inset-0 rounded-full bg-pink-500/10 animate-ping"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-pink-500 dark:border-pink-400 relative z-10 drop-shadow-md"></div>
               </div>
               <p className="text-[var(--foreground)]/80 font-medium mb-2">
                 Procesando imagen...
@@ -166,9 +202,9 @@ export default function ImageProcessor() {
           </div>
         ) : (
           (originalImage || processedImage) && (
-            <div className="rounded-3xl backdrop-blur-2xl bg-white/60 dark:bg-[var(--secondary)]/70 shadow-[0_8px_32px_0_rgba(0,0,0,0.12),_inset_0_1.5px_12px_rgba(255,255,255,0.13)] border border-white/40 dark:border-[var(--border)]/30 p-10 w-full flex flex-col items-center transition-all duration-300">
+            <div className="rounded-3xl backdrop-blur-2xl bg-white/60 dark:bg-[var(--secondary)]/70 shadow-[0_8px_32px_0_rgba(0,0,0,0.12),_inset_0_1.5px_12px_rgba(255,255,255,0.13)] border border-white/40 dark:border-pink-900/30 p-10 w-full flex flex-col items-center transition-all duration-300">
               {processedImage && processedImage !== "/placeholder-error.svg" ? (
-                <div className="rounded-lg overflow-hidden shadow-lg border border-white/50 dark:border-[var(--border)]/40">
+                <div className="rounded-lg overflow-hidden shadow-lg border border-white/50 dark:border-pink-900/40">
                   <ImageComparison
                     originalImage={originalImage}
                     processedImage={processedImage}
@@ -179,7 +215,7 @@ export default function ImageProcessor() {
                 processedImage &&
                 processedImage !== "/placeholder-error.svg" &&
                 !serviceBusy && (
-                  <div className="text-center mt-6 font-medium text-lg px-6 py-2 rounded-full bg-gradient-to-r from-green-500/80 to-emerald-500/80 text-white shadow-lg backdrop-blur-md border border-white/30 transition-all hover:scale-[1.02] cursor-default">
+                  <div className="text-center mt-6 font-medium text-lg px-6 py-2 rounded-full bg-gradient-to-r from-pink-500/80 to-pink-600/80 text-white shadow-lg backdrop-blur-md border border-white/30 transition-all hover:scale-[1.02] cursor-default">
                     ¡Procesamiento completado en{" "}
                     {(processingTime / 1000).toFixed(1)} segundos!
                   </div>
@@ -188,7 +224,9 @@ export default function ImageProcessor() {
           )
         )}
       </div>
-      <div className="rounded-2xl backdrop-blur-xl bg-white/70 dark:bg-[var(--secondary)]/70 shadow-xl border border-white/30 dark:border-[var(--border)]/30 p-8 w-full">
+      <div className="rounded-2xl backdrop-blur-xl bg-white/70 dark:bg-[var(--secondary)]/70 shadow-xl border border-white/30 dark:border-pink-900/30 p-8 w-full relative overflow-hidden">
+        <div className="absolute -bottom-16 -right-16 w-48 h-48 bg-pink-400/10 dark:bg-pink-800/10 rounded-full blur-3xl -z-10"></div>
+        <div className="absolute -top-8 -left-8 w-36 h-36 bg-pink-300/10 dark:bg-pink-700/10 rounded-full blur-2xl -z-10"></div>
         <ProcessingHistory onSelectImage={handleImageProcessed} />
       </div>
     </div>
@@ -209,8 +247,6 @@ function ProcessingTimer() {
   const isDark =
     typeof window !== "undefined" &&
     document.documentElement.classList.contains("dark");
-  const bg = isDark ? "rgba(30, 41, 59, 0.5)" : "rgba(241, 245, 249, 0.7)";
-  const color = isDark ? "#38bdf8" : "#2563eb";
 
   // Animación caracol SVG
   const progress = Math.min((elapsed % 30000) / 30000, 1); // 0 a 1 en 30s
@@ -222,25 +258,27 @@ function ProcessingTimer() {
       <div
         className="px-5 py-2.5 rounded-full font-mono text-base shadow-md backdrop-blur-md transition-all"
         style={{
-          background: bg,
-          color,
+          background: isDark
+            ? "rgba(12, 18, 25, 0.7)"
+            : "rgba(255, 255, 255, 0.8)",
+          color: isDark ? "#ec4899" : "#db2777",
           display: "inline-block",
           fontWeight: 600,
-          border: `1.5px solid ${color}40`,
+          border: `1.5px solid ${isDark ? "#ec489960" : "#db277760"}`,
           letterSpacing: "0.01em",
-          boxShadow: `0 4px 12px ${color}30`,
+          boxShadow: `0 4px 12px ${isDark ? "#ec489930" : "#db277730"}`,
         }}
       >
         {`Tiempo transcurrido: ${(elapsed / 1000).toFixed(1)}s`}
       </div>
 
-      <div className="mt-2 p-2 rounded-xl backdrop-blur-sm bg-white/30 dark:bg-black/5 border border-white/30 dark:border-[var(--border)]/20">
+      <div className="mt-2 p-2 rounded-xl backdrop-blur-sm bg-white/30 dark:bg-black/5 border border-white/30 dark:border-pink-900/20">
         {/* Usamos el componente SnailIcon extraído */}
         <SnailIcon
           positionX={snailX}
           trailWidth={trailWidth}
           bg={isDark ? "rgba(15, 23, 42, 0.3)" : "rgba(255, 255, 255, 0.5)"}
-          color={color}
+          color={isDark ? "#ec4899" : "#db2777"}
         />
       </div>
     </div>

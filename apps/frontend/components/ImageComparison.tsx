@@ -66,7 +66,7 @@ export default function ImageComparison({
 
   if (!originalImage || !processedImage) {
     return (
-      <div className="w-full h-[400px] flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded-lg">
+      <div className="w-full h-[400px] flex items-center justify-center bg-gray-100 dark:bg-[#0c1219] rounded-lg border border-gray-200 dark:border-pink-900/30">
         <p className="text-gray-500 dark:text-gray-400">
           Carga una imagen para ver la comparación
         </p>
@@ -74,15 +74,15 @@ export default function ImageComparison({
     );
   }
   return (
-    <div className="w-full h-[500px] rounded-lg overflow-hidden relative flex items-center justify-center backdrop-blur-md bg-white/20 dark:bg-[var(--secondary)]/30">
+    <div className="w-full h-[500px] rounded-lg overflow-hidden relative flex items-center justify-center backdrop-blur-md bg-white/20 dark:bg-[var(--secondary)]/30 border border-white/30 dark:border-pink-900/30">
       {/* Etiquetas flotantes para las imágenes con diseño neumórfico */}
       <button
         type="button"
-        className="absolute left-8 top-1/3 -translate-y-1/2 z-30 px-4 py-2 rounded-2xl font-semibold text-base tracking-wide select-none flex items-center gap-2 border shadow-lg transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
+        className="absolute left-8 top-1/3 -translate-y-1/2 z-30 px-4 py-2 rounded-2xl font-semibold text-base tracking-wide select-none flex items-center gap-2 border shadow-lg transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-pink-500"
         style={{
-          background: isDark ? "rgba(30,34,54,0.96)" : "rgba(255,255,255,0.98)",
+          background: isDark ? "rgba(12,18,25,0.96)" : "rgba(255,255,255,0.98)",
           color: isDark ? "#fff" : "#1a1d2d",
-          borderColor: isDark ? "#3b4252" : "#cbd5e1",
+          borderColor: isDark ? "#3b2a38" : "#cbd5e1",
           textShadow: isDark
             ? "0 2px 8px rgba(0,0,0,0.32)"
             : "0 1px 4px rgba(0,0,0,0.10)",
@@ -93,16 +93,16 @@ export default function ImageComparison({
         onClick={() => animateSlider(100)}
         aria-label="Mostrar solo original"
       >
-        <span className="w-3 h-3 rounded-full bg-gradient-to-br from-green-400/80 to-emerald-500/80 border border-white/60 shadow-inner"></span>
+        <span className="w-3 h-3 rounded-full bg-gradient-to-br from-pink-400/80 to-pink-600/80 border border-white/60 shadow-inner"></span>
         <span>Original</span>
-      </button>
+      </button>{" "}
       <button
         type="button"
-        className="absolute right-8 top-2/3 -translate-y-1/2 z-30 px-4 py-2 rounded-2xl font-semibold text-base tracking-wide select-none flex items-center gap-2 border shadow-lg transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="absolute right-8 top-2/3 -translate-y-1/2 z-30 px-4 py-2 rounded-2xl font-semibold text-base tracking-wide select-none flex items-center gap-2 border shadow-lg transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-pink-500"
         style={{
-          background: isDark ? "rgba(30,34,54,0.96)" : "rgba(255,255,255,0.98)",
-          color: isDark ? "#fff" : "#1e40af",
-          borderColor: isDark ? "#3b4252" : "#93c5fd",
+          background: isDark ? "rgba(12,18,25,0.96)" : "rgba(255,255,255,0.98)",
+          color: isDark ? "#fff" : "#db2777",
+          borderColor: isDark ? "#3b2a38" : "#fbcfe8",
           textShadow: isDark
             ? "0 2px 8px rgba(0,0,0,0.32)"
             : "0 1px 4px rgba(0,0,0,0.10)",
@@ -114,9 +114,8 @@ export default function ImageComparison({
         aria-label="Mostrar solo sin fondo"
       >
         <span>Sin fondo</span>
-        <span className="w-3 h-3 rounded-full bg-gradient-to-br from-blue-400/80 to-indigo-500/80 border border-white/60 shadow-inner"></span>
+        <span className="w-3 h-3 rounded-full bg-gradient-to-br from-pink-400/80 to-pink-600/80 border border-white/60 shadow-inner"></span>
       </button>
-
       <ReactCompareSlider
         itemOne={
           <ReactCompareSliderImage
