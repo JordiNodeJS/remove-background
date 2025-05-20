@@ -197,8 +197,8 @@ export default function UploadButton({
             : "hover:scale-[1.03]"
         }`}
         style={{
-          background: undefined,
-          color: isLoading || cooldown || backendBusy ? "#e5d3c0" : "#fff",
+          background: "var(--button-gradient)",
+          color: isLoading || cooldown || backendBusy ? "#e0e0e0" : "#fff",
         }}
       >
         <span className="absolute left-0 top-0 w-full h-full opacity-10 bg-[radial-gradient(circle_at_30%_30%,#fff_0%,transparent_70%)] pointer-events-none" />
@@ -210,22 +210,33 @@ export default function UploadButton({
           : backendBusy
           ? "Servidor ocupado procesando otra imagen..."
           : "Subir imagen para quitar fondo"}
-      </button>
+      </button>{" "}
       {cooldown && (
-        <div className="text-center text-yellow-700 dark:text-yellow-400 mt-2 text-base font-medium">
+        <div className="text-center text-amber-700 dark:text-pink-300 mt-2 text-base font-medium">
           El servidor está ocupado procesando otra imagen. Espera unos
           segundos...
         </div>
       )}
       {backendBusy && !isLoading && !cooldown && (
-        <div className="text-center text-yellow-700 dark:text-yellow-400 mt-2 text-base font-medium">
+        <div className="text-center text-amber-700 dark:text-pink-300 mt-2 text-base font-medium">
           El servidor está ocupado procesando otra imagen. Intenta de nuevo en
           unos segundos.
         </div>
-      )}
-      <p className="text-muted mt-3 text-center text-base">
-        Solo formatos JPG y PNG. Tamaño máximo: 10MB
-      </p>
+      )}{" "}
+      <div className="flex justify-center mt-3">
+        <div className="inline-flex items-center text-[var(--muted)] text-base px-4 py-1.5 rounded-full bg-white/20 dark:bg-[var(--secondary)]/40 backdrop-blur-sm">
+          <svg
+            className="w-4 h-4 mr-2 opacity-70"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          Solo formatos JPG y PNG. Tamaño máximo: 10MB
+        </div>
+      </div>
     </div>
   );
 }

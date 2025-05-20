@@ -91,20 +91,20 @@ export default function ProcessingHistory({
   }, [history, addToHistory]);
 
   if (history.length === 0) return null;
-
   return (
-    <div className="mt-8 border rounded-lg p-4 bg-white dark:bg-gray-800">
+    <div className="mt-8 border rounded-lg p-4 bg-white dark:bg-[#0c1219] border-white/20 dark:border-pink-900/30">
       <div
         className="flex items-center justify-between cursor-pointer select-none"
         onClick={() => setExpanded(!expanded)}
       >
+        {" "}
         <div className="flex items-center gap-2">
-          <FiClock className="text-blue-500" />
+          <FiClock className="text-pink-500 dark:text-pink-400" />
           <h3 className="font-semibold text-base text-gray-700 dark:text-gray-200 tracking-tight">
             Historial de imágenes ({history.length})
           </h3>
         </div>
-        <button className="text-sm font-semibold px-3 py-1 rounded-full bg-blue-50 hover:bg-blue-100 text-blue-600 dark:bg-gray-700 dark:text-blue-200 dark:hover:bg-gray-800 transition-colors">
+        <button className="text-sm font-semibold px-3 py-1 rounded-full bg-pink-50 hover:bg-pink-100 text-pink-600 dark:bg-[#18283e] dark:text-pink-300 dark:hover:bg-[#1a2c3f] transition-colors">
           {expanded ? "Ocultar" : "Mostrar"}
         </button>
       </div>
@@ -114,7 +114,7 @@ export default function ProcessingHistory({
           {history.map((item, index) => (
             <div
               key={index}
-              className="border rounded-xl overflow-hidden cursor-pointer hover:border-blue-500 transition-colors bg-gray-50 dark:bg-gray-900 shadow-sm group"
+              className="border rounded-xl overflow-hidden cursor-pointer hover:border-pink-500 transition-colors bg-gray-50 dark:bg-[#0c1219] shadow-sm group border-white/30 dark:border-pink-900/30"
               onClick={() => {
                 onSelectImage(item.originalUrl, item.processedUrl);
               }}

@@ -51,20 +51,20 @@ export default function ThemeToggle() {
       onClick={toggleTheme}
       className={`fixed top-4 right-4 z-50 w-12 h-12 rounded-full
         bg-[var(--background)] dark:bg-[var(--background)]
-        border-2 border-[var(--primary)] dark:border-[var(--primary)]
+        border-2 border-pink-600 dark:border-pink-500
         shadow-lg hover:scale-110 transition-transform duration-200 group flex items-center justify-center p-0`}
       style={{ outline: "none" }}
     >
-      <span className="sr-only">{label}</span>
+      <span className="sr-only">{label}</span>{" "}
       {theme === "light" ? (
         <FiMoon
           size={24}
-          className="text-[var(--primary)] group-hover:text-[var(--primary-hover)] transition-colors"
+          className="text-pink-600 group-hover:text-pink-700 transition-colors"
         />
       ) : (
         <FiSun
           size={24}
-          className="text-yellow-300 group-hover:text-yellow-400 transition-colors"
+          className="text-pink-400 group-hover:text-pink-300 transition-colors"
         />
       )}
     </button>
