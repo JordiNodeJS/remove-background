@@ -24,35 +24,57 @@ export const formidableParser = async (
 ): Promise<{ fields: Record<string, string>; files: Files }> => {
   return new Promise((resolve, reject) => {
     // Convert NextRequest to Node's IncomingMessage-like object
-    const reqProxy: any = {
+    // Convert NextRequest to Node's IncomingMessage-like object
+    // This is a simplified proxy and might not cover all edge cases
+    const reqProxy = {
       headers: Object.fromEntries(req.headers),
       method: req.method,
       url: req.url,
-    };
-
-    // Add necessary stream-like methods
-    if (req.body) {
-      reqProxy.pipe = (destination: any) => {
-        const reader = (req.body as ReadableStream).getReader();
-
-        const processChunk = ({ done, value }: { done: boolean; value?: Uint8Array }) => {
+      // formidable expects a stream, so we need to provide one.
+      // In Next.js 13+, req.body is a ReadableStream.
+      // We can pipe this stream to formidable.
+      pipe: (destination: any) => {
+        if (!req.body) {
+          destination.end();
+          return destination;
+        }
+        const reader = req.body.getReader();
+        const processChunk = ({
+          done,
+          value,
+        }: {
+          done: boolean;
+          value?: Uint8Array;
+        }) => {
           if (done) {
             destination.end();
             return;
           }
-
           destination.write(value);
           reader.read().then(processChunk);
         };
-
         reader.read().then(processChunk);
         return destination;
-      };
-    }
+      },
+      // Add other properties formidable might expect, like `on` for event listeners,
+      // although formidable's `parse` method primarily uses the stream.
+      on: (event: string, _listener: (...args: any[]) => void) => {
+        // Prefix listener with _ to indicate it's unused
+        // Basic implementation for 'close' event if needed by formidable
+        if (event === "close") {
+          // In a serverless environment, the request lifecycle is different.
+          // We might not have a traditional 'close' event.
+          // For now, we can potentially call this after parsing is complete,
+          // or rely on formidable's internal stream handling.
+        }
+      },
+    } as any; // Use 'any' for simplicity due to the proxy nature
 
     const form = formidable({
       multiples: true,
       keepExtensions: true,
+      // You might want to configure uploadDir if you need to save files to disk
+      // uploadDir: './temp_uploads', // Example: specify a temporary directory
     });
 
     form.parse(reqProxy, (err, fields, rawFiles) => {
@@ -68,14 +90,21 @@ export const formidableParser = async (
 
       // Convert formidable's files format to our Files format
       Object.entries(rawFiles || {}).forEach(([key, value]) => {
-        const fileArray = Array.isArray(value) ? value : (value ? [value] : []); // Ensure value is not undefined before creating array
+        // Ensure value is an array of formidable.File or undefined
+        const fileArray = Array.isArray(value) ? value : value ? [value] : [];
+
         const validFiles: formidable.File[] = fileArray.filter(
           (f): f is formidable.File => f !== undefined && f !== null // Type guard
         );
 
-        if (validFiles.length > 0) { // Process only if there are valid files
-          files[key] = validFiles.map((file: formidable.File) => ({ // Now file is guaranteed to be formidable.File
-            ...file,
+        if (validFiles.length > 0) {
+          // Process only if there are valid files
+          files[key] = validFiles.map((file: formidable.File) => ({
+            // Now file is guaranteed to be formidable.File
+            filepath: file.filepath,
+            originalFilename: file.originalFilename,
+            mimetype: file.mimetype,
+            size: file.size,
             newFilename:
               file.newFilename || file.filepath.split("/").pop() || "unknown",
             // Fix: asignar un valor concreto en lugar de una función

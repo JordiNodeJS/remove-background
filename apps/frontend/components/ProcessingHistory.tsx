@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import Image from "next/image"; // Import Next.js Image component
 import toast from "react-hot-toast";
 import { FiClock, FiImage } from "react-icons/fi";
 import "../lib/events"; // Importamos los tipos para el evento personalizado
@@ -34,30 +35,32 @@ export default function ProcessingHistory({
       toast.error("Error al cargar el historial");
     }
   }, []);
-  const addToHistory = (
-    originalUrl: string,
-    processedUrl: string,
-    hasError: boolean = false
-  ) => {
-    const newItem: HistoryItem = {
-      originalUrl,
-      processedUrl,
-      date: new Date().toLocaleString(),
-      hasError,
-    };
 
-    const updatedHistory = [newItem, ...history].slice(0, 10); // Limitamos a 10 elementos
-    setHistory(updatedHistory);
+  // Wrap addToHistory in useCallback to prevent it from changing on every render
+  const addToHistory = useCallback(
+    (originalUrl: string, processedUrl: string, hasError: boolean = false) => {
+      const newItem: HistoryItem = {
+        originalUrl,
+        processedUrl,
+        date: new Date().toLocaleString(),
+        hasError,
+      };
 
-    try {
-      localStorage.setItem(
-        "imageProcessingHistory",
-        JSON.stringify(updatedHistory)
-      );
-    } catch (error) {
-      console.error("Error saving history:", error);
-    }
-  }; // Exponer método para agregar al historial
+      const updatedHistory = [newItem, ...history].slice(0, 10); // Limitamos a 10 elementos
+      setHistory(updatedHistory);
+
+      try {
+        localStorage.setItem(
+          "imageProcessingHistory",
+          JSON.stringify(updatedHistory)
+        );
+      } catch (error) {
+        console.error("Error saving history:", error);
+      }
+    },
+    [history] // Add history as a dependency
+  );
+
   useEffect(() => {
     // Registrar un listener global para capturar nuevas imágenes procesadas
     const handleImageProcessed = (
@@ -121,16 +124,22 @@ export default function ProcessingHistory({
                   size={28}
                   className="text-blue-200 group-hover:text-blue-400 absolute z-10 left-2 top-2"
                 />
-                <img
+                {/* Use Next.js Image component for optimization */}
+                <Image
                   src={item.processedUrl}
                   alt={`Processed image ${index}`}
-                  className="absolute inset-0 w-full h-full object-cover rounded-t-xl"
+                  fill // Use fill to cover the parent div
+                  style={{ objectFit: "cover" }} // Use style prop for object-fit
+                  className="rounded-t-xl" // Apply border radius
                   onError={(e) => {
+                    // Handle error by hiding the image if it fails to load
                     e.currentTarget.style.display = "none";
                   }}
                 />
                 {item.hasError && (
-                  <div className="absolute bottom-0 right-0 bg-red-500 text-white text-xs px-2 py-1 rounded-tl-xl shadow">
+                  <div className="absolute bottom-0 right-0 bg-red-500 text-white text-xs px-2 py-1 rounded-tl-xl shadow z-20">
+                    {" "}
+                    {/* Add z-index to ensure it's above the image */}
                     Error
                   </div>
                 )}

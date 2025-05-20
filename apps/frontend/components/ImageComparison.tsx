@@ -4,7 +4,7 @@ import {
   ReactCompareSlider,
   ReactCompareSliderImage,
 } from "react-compare-slider";
-import { useState, useEffect, useRef } from "react"; // Import useState, useEffect y useRef
+import { useState, useEffect } from "react"; // Import useState, useEffect
 
 interface ImageComparisonProps {
   originalImage: string | null;
@@ -21,10 +21,11 @@ export default function ImageComparison({
 
   const [isDark, setIsDark] = useState(false);
   const [sliderPosition, setSliderPosition] = useState(50);
-  const sliderRef = useRef(null);
+  // Remove unused sliderRef
+  // const sliderRef = useRef(null);
   // Animación suave del slider
-  const animateSlider = (target:number) => {
-    let start = sliderPosition;
+  const animateSlider = (target: number) => {
+    const start = sliderPosition; // Use const as 'start' is not reassigned
     let startTime: number | null = null;
     const duration = 400;
     function animate(time: number) {
@@ -79,9 +80,7 @@ export default function ImageComparison({
         type="button"
         className="absolute left-8 top-1/3 -translate-y-1/2 z-30 px-4 py-2 rounded-2xl font-semibold text-base tracking-wide select-none flex items-center gap-2 border shadow-lg transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
         style={{
-          background: isDark
-            ? "rgba(30,34,54,0.96)"
-            : "rgba(255,255,255,0.98)",
+          background: isDark ? "rgba(30,34,54,0.96)" : "rgba(255,255,255,0.98)",
           color: isDark ? "#fff" : "#1a1d2d",
           borderColor: isDark ? "#3b4252" : "#cbd5e1",
           textShadow: isDark
@@ -89,7 +88,7 @@ export default function ImageComparison({
             : "0 1px 4px rgba(0,0,0,0.10)",
           boxShadow:
             "0 6px 32px 0 rgba(0,0,0,0.13), 0 1.5px 8px 0 rgba(255,255,255,0.13)",
-          cursor: "pointer"
+          cursor: "pointer",
         }}
         onClick={() => animateSlider(100)}
         aria-label="Mostrar solo original"
@@ -101,9 +100,7 @@ export default function ImageComparison({
         type="button"
         className="absolute right-8 top-2/3 -translate-y-1/2 z-30 px-4 py-2 rounded-2xl font-semibold text-base tracking-wide select-none flex items-center gap-2 border shadow-lg transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500"
         style={{
-          background: isDark
-            ? "rgba(30,34,54,0.96)"
-            : "rgba(255,255,255,0.98)",
+          background: isDark ? "rgba(30,34,54,0.96)" : "rgba(255,255,255,0.98)",
           color: isDark ? "#fff" : "#1e40af",
           borderColor: isDark ? "#3b4252" : "#93c5fd",
           textShadow: isDark
@@ -111,7 +108,7 @@ export default function ImageComparison({
             : "0 1px 4px rgba(0,0,0,0.10)",
           boxShadow:
             "0 6px 32px 0 rgba(0,0,0,0.13), 0 1.5px 8px 0 rgba(255,255,255,0.13)",
-          cursor: "pointer"
+          cursor: "pointer",
         }}
         onClick={() => animateSlider(0)}
         aria-label="Mostrar solo sin fondo"
@@ -119,7 +116,7 @@ export default function ImageComparison({
         <span>Sin fondo</span>
         <span className="w-3 h-3 rounded-full bg-gradient-to-br from-blue-400/80 to-indigo-500/80 border border-white/60 shadow-inner"></span>
       </button>
-   
+
       <ReactCompareSlider
         itemOne={
           <ReactCompareSliderImage

@@ -1,7 +1,9 @@
 "use client";
+"use client";
 import Image from "next/image";
 import dynamic from "next/dynamic";
-import { SignInButton, useUser, UserButton } from "@clerk/nextjs";
+import { useUser, UserButton } from "@clerk/nextjs"; // Remove SignInButton
+import Link from "next/link"; // Import Link
 
 export default function Home() {
   const { isSignedIn } = useUser();
@@ -10,11 +12,13 @@ export default function Home() {
       {/* Header con login */}
       <header className="w-full max-w-4xl flex justify-end items-center mb-4">
         {!isSignedIn ? (
-          <a href="/sign-in">
+          <Link href="/sign-in">
+            {" "}
+            {/* Use Link component */}
             <span className="btn-primary px-5 py-2 rounded-lg shadow-md hover:scale-105 transition-transform text-base">
               Iniciar sesión
             </span>
-          </a>
+          </Link>
         ) : (
           <UserButton afterSignOutUrl="/" />
         )}
@@ -34,11 +38,13 @@ export default function Home() {
           </p>
           <div className="flex gap-4 mb-6 items-center">
             {!isSignedIn ? (
-              <a href="/sign-in">
+              <Link href="/sign-in">
+                {" "}
+                {/* Use Link component */}
                 <span className="btn-primary text-lg px-6 py-3 rounded-lg shadow-lg hover:scale-105 transition-transform">
                   Probar gratis
                 </span>
-              </a>
+              </Link>
             ) : (
               <button
                 className="btn-primary text-lg px-6 py-3 rounded-lg shadow-lg hover:scale-105 transition-transform"
