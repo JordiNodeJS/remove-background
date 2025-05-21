@@ -21,7 +21,6 @@ export default function AppInit() {
         "[AppInit] Valor de process.env.NODE_ENV en cliente:",
         process.env.NODE_ENV
       );
-
       // Priorizar variable de entorno NEXT_PUBLIC_APP_BASE_URL
       if (process.env.NEXT_PUBLIC_APP_BASE_URL) {
         backendUrl = process.env.NEXT_PUBLIC_APP_BASE_URL;
@@ -36,9 +35,12 @@ export default function AppInit() {
       } else if (typeof window !== "undefined" && window.location.hostname) {
         const protocol = window.location.protocol;
         const hostname = window.location.hostname;
-        // Siempre usar el puerto 3001 para la API, tanto en local como en producción
+        // Siempre usar el puerto 3001 para la API
         const apiPort = 3001;
+
+        // Construir la URL dinámicamente con el puerto correcto para la API
         backendUrl = `${protocol}//${hostname}:${apiPort}`;
+
         console.log(
           `[AppInit] Fallback (sin NEXT_PUBLIC_API_URL, con window): URL del backend (construida dinámicamente): ${backendUrl}`
         );
@@ -49,11 +51,12 @@ export default function AppInit() {
           `[AppInit] Fallback (SSR/default sin NEXT_PUBLIC_API_URL): URL del backend: ${backendUrl}`
         );
       }
-
-      // El log original de envApiUrl se puede mantener o quitar si los nuevos logs son suficientes
-      // console.log("[AppInit] process.env.NEXT_PUBLIC_API_URL (valor original):", envApiUrl);
-
       console.log("Verificando conexión con el backend (desde el cliente)... ");
+
+      // Asegurarse de que la URL no termina con una barra para la ruta /health
+      if (backendUrl.endsWith("/")) {
+        backendUrl = backendUrl.slice(0, -1);
+      }
 
       const retries = 3;
       let lastError: Error | null = null;
