@@ -16,31 +16,38 @@ export default function AppInit() {
     const performHealthCheckWithRetries = async () => {
       // Determine backend URL
       let backendUrl: string;
-      
-      console.log('[AppInit] Valor de process.env.NODE_ENV en cliente:', process.env.NODE_ENV);
+
+      console.log(
+        "[AppInit] Valor de process.env.NODE_ENV en cliente:",
+        process.env.NODE_ENV
+      );
 
       // Priorizar variable de entorno NEXT_PUBLIC_APP_BASE_URL
       if (process.env.NEXT_PUBLIC_APP_BASE_URL) {
         backendUrl = process.env.NEXT_PUBLIC_APP_BASE_URL;
-        console.log(`[AppInit] Usando NEXT_PUBLIC_APP_BASE_URL para health check: ${backendUrl}`);
-      } else if (process.env.NODE_ENV === 'development') {
-        backendUrl = 'http://localhost:3001';
-        console.log(`[AppInit] Modo Desarrollo: Fallback a localhost: ${backendUrl}`);
+        console.log(
+          `[AppInit] Usando NEXT_PUBLIC_APP_BASE_URL para health check: ${backendUrl}`
+        );
+      } else if (process.env.NODE_ENV === "development") {
+        backendUrl = "http://localhost:3001";
+        console.log(
+          `[AppInit] Modo Desarrollo: Fallback a localhost: ${backendUrl}`
+        );
       } else if (typeof window !== "undefined" && window.location.hostname) {
         const protocol = window.location.protocol;
         const hostname = window.location.hostname;
-        const productionApiPort = 3001; 
-        const localApiPort = 3001;
-        const port =
-          hostname === "localhost" ? localApiPort : productionApiPort;
-        backendUrl = `${protocol}//${hostname}:${port}`;
+        // Siempre usar el puerto 3001 para la API, tanto en local como en producción
+        const apiPort = 3001;
+        backendUrl = `${protocol}//${hostname}:${apiPort}`;
         console.log(
           `[AppInit] Fallback (sin NEXT_PUBLIC_API_URL, con window): URL del backend (construida dinámicamente): ${backendUrl}`
         );
       } else {
         // Fallback para SSR o si window/hostname no está disponible y NEXT_PUBLIC_API_URL tampoco
         backendUrl = "http://localhost:3001"; // El fallback original, también útil para SSR en dev
-        console.log(`[AppInit] Fallback (SSR/default sin NEXT_PUBLIC_API_URL): URL del backend: ${backendUrl}`);
+        console.log(
+          `[AppInit] Fallback (SSR/default sin NEXT_PUBLIC_API_URL): URL del backend: ${backendUrl}`
+        );
       }
 
       // El log original de envApiUrl se puede mantener o quitar si los nuevos logs son suficientes
