@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 // y verifica la conectividad con el backend
 export default function AppInit() {
   // Estado para rastrear la conectividad del backend
-  // const [backendStatus, setBackendStatus] = useState<
+  // const [backendStatus, setBackendStatus<
   //   "unknown" | "online" | "offline"
   // >("unknown");
   // TODO: Consider using backendStatus to provide user feedback or alter UI
@@ -56,6 +56,14 @@ export default function AppInit() {
       // Asegurarse de que la URL no termina con una barra para la ruta /health
       if (backendUrl.endsWith("/")) {
         backendUrl = backendUrl.slice(0, -1);
+      }
+
+      // Asegurarse de que el puerto 3001 esté en la URL
+      if (!backendUrl.includes(":3001")) {
+        console.log("[AppInit] Añadiendo puerto 3001 a la URL");
+        backendUrl = backendUrl.includes("://")
+          ? `${backendUrl.split("://")[0]}://${backendUrl.split("://")[1].split("/")[0]}:3001`
+          : `${backendUrl}:3001`;
       }
 
       const retries = 3;
