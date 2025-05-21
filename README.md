@@ -4,7 +4,7 @@
 
 Puedes ver una demostración del proyecto en funcionamiento en las siguientes URLs:
 
-- **Demo en vivo:** [http://ec2-63-35-184-124.eu-west-1.compute.amazonaws.com:3000/](http://ec2-63-35-184-124.eu-west-1.compute.amazonaws.com:3000/)
+- **Demo en vivo:** [ec2-3-254-74-19.eu-west-1.compute.amazonaws.com:3000/](http://ec2-3-254-74-19.eu-west-1.compute.amazonaws.com:3000/)
 - **Video tutorial:** [https://www.youtube.com/watch?v=t9OjTltR6FY](https://www.youtube.com/watch?v=t9OjTltR6FY)
 - **Repositorio en GitHub:** [https://github.com/JordiNodeJS/remove-background](https://github.com/JordiNodeJS/remove-background)
 
