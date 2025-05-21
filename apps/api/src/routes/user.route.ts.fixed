@@ -10,10 +10,6 @@ import { Router } from "express";
 
 export const router = Router();
 
-/**
- * GET /user
- * Returns information about the currently authenticated user
- */
 // @ts-ignore - Ignoramos errores de tipos conocidos con Express 5 + TypeScript
 router.get("/", (_req, res) => {
   try {

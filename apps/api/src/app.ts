@@ -2,7 +2,7 @@ import express, { type Express } from "express";
 import removeBackgroundRouter from "./routes/remove-background.route";
 import { healthRouter } from "./routes/health.route";
 import processingStatusRouter from "./routes/processing-status.route";
-import userRouter from "./routes/user.route";
+import { router as userRouter } from "./routes/user.route";
 import path from "path";
 import cors from "cors";
 

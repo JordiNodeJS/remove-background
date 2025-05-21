@@ -5,7 +5,7 @@
  * @module AuthMiddleware
  */
 
-import { Request, Response, NextFunction } from "express";
+import type { Request, Response, NextFunction } from "express";
 
 /**
  * Middleware para verificar si un usuario está autenticado.

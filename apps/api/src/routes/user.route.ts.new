@@ -14,12 +14,11 @@ export const router = Router();
  * GET /user
  * Returns information about the currently authenticated user
  */
-// @ts-ignore - Ignoramos errores de tipos conocidos con Express 5 + TypeScript
-router.get("/", (_req, res) => {
+router.get("/", (req, res) => {
   try {
     // En un entorno real, aquí obtendrías el usuario desde la sesión o token JWT
     // Aquí simulamos una respuesta basada en la cabecera de autenticación
-    const authHeader = _req.headers.authorization;
+    const authHeader = req.headers.authorization;
 
     // Si no hay cabecera de autorización, el usuario no está autenticado
     if (!authHeader) {
