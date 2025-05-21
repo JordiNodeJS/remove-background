@@ -22,13 +22,28 @@ export default function ProcessingHistory({
 }: ProcessingHistoryProps) {
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [expanded, setExpanded] = useState(false);
-
-  useEffect(() => {
-    // Cargar historial desde localStorage al montar el componente
+  const [userId, setUserId] = useState<string | null>(null);
+  // Función para cargar el historial basado en el ID de usuario
+  const loadHistory = useCallback((id: string | null) => {
     try {
-      const savedHistory = localStorage.getItem("imageProcessingHistory");
+      // Construir la clave de almacenamiento basada en el ID de usuario
+      const storageKey = id
+        ? `imageProcessingHistory_${id}`
+        : "imageProcessingHistory";
+      const savedHistory = localStorage.getItem(storageKey);
+
       if (savedHistory) {
-        setHistory(JSON.parse(savedHistory));
+        const parsedHistory = JSON.parse(savedHistory);
+        setHistory(parsedHistory);
+        console.log(
+          `Historial cargado para ${id || "usuario anónimo"}: ${
+            parsedHistory.length
+          } items`
+        );
+      } else {
+        // Si no hay historial para este usuario, establecer un array vacío
+        setHistory([]);
+        console.log(`No hay historial para ${id || "usuario anónimo"}`);
       }
     } catch (error) {
       console.error("Error loading history:", error);
@@ -36,7 +51,70 @@ export default function ProcessingHistory({
     }
   }, []);
 
-  // Wrap addToHistory in useCallback to prevent it from changing on every render
+  // Obtener el ID del usuario cuando se monta el componente
+  useEffect(() => {
+    // Función para obtener el ID del usuario
+    const fetchUserId = async () => {
+      try {
+        // Intentar obtener el usuario desde la API de Next.js primero
+        let userData = null;
+
+        try {
+          const nextApiResponse = await fetch("/api/user");
+          if (nextApiResponse.ok) {
+            userData = await nextApiResponse.json();
+          }
+        } catch (nextApiError) {
+          console.log(
+            "Error al obtener usuario desde Next API, intentando API Express",
+            nextApiError
+          );
+        }
+
+        // Si Next API falló, intentar con la API Express
+        if (!userData?.id) {
+          try {
+            // Determinar la URL base de la API de Express
+            let apiBase =
+              process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+            if (apiBase.endsWith("/")) apiBase = apiBase.slice(0, -1);
+
+            const expressApiResponse = await fetch(`${apiBase}/user`, {
+              headers: {
+                // Enviar token de autenticación si está disponible
+                ...(localStorage.getItem("authToken") && {
+                  Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+                }),
+              },
+            });
+
+            if (expressApiResponse.ok) {
+              userData = await expressApiResponse.json();
+            }
+          } catch (expressApiError) {
+            console.error(
+              "Error al obtener usuario desde Express API",
+              expressApiError
+            );
+          }
+        }
+
+        if (userData?.id) {
+          setUserId(userData.id);
+          return userData.id;
+        }
+
+        return null;
+      } catch (error) {
+        console.error("Error fetching user ID:", error);
+        return null;
+      }
+    };
+
+    fetchUserId().then((id) => {
+      loadHistory(id);
+    });
+  }, [loadHistory]); // Wrap addToHistory in useCallback to prevent it from changing on every render
   const addToHistory = useCallback(
     (originalUrl: string, processedUrl: string, hasError: boolean = false) => {
       const newItem: HistoryItem = {
@@ -50,17 +128,22 @@ export default function ProcessingHistory({
       setHistory(updatedHistory);
 
       try {
-        localStorage.setItem(
-          "imageProcessingHistory",
-          JSON.stringify(updatedHistory)
+        // Guardar en localStorage con la clave específica del usuario si está disponible
+        const storageKey = userId
+          ? `imageProcessingHistory_${userId}`
+          : "imageProcessingHistory";
+        localStorage.setItem(storageKey, JSON.stringify(updatedHistory));
+        console.log(
+          `Historial guardado para ${userId || "usuario anónimo"}: ${
+            updatedHistory.length
+          } items`
         );
       } catch (error) {
         console.error("Error saving history:", error);
       }
     },
-    [history] // Add history as a dependency
+    [history, userId] // Add history and userId as dependencies
   );
-
   useEffect(() => {
     // Registrar un listener global para capturar nuevas imágenes procesadas
     const handleImageProcessed = (
@@ -77,9 +160,50 @@ export default function ProcessingHistory({
       );
     };
 
+    // Escucha el evento personalizado de imágenes procesadas
     window.addEventListener(
       "imageProcessed",
       handleImageProcessed as EventListener
+    );
+
+    // Escucha el evento de cambio de usuario
+    const handleUserChanged = (
+      event: CustomEvent<{
+        previousUserId?: string;
+        currentUserId?: string;
+      }>
+    ) => {
+      console.log(
+        "Evento userChanged detectado en ProcessingHistory:",
+        event.detail
+      );
+
+      // Actualizar el userId local
+      setUserId(event.detail.currentUserId || null);
+
+      // Cargar el historial para el nuevo usuario
+      loadHistory(event.detail.currentUserId || null);
+    };
+
+    // También manejar el evento historyUpdated desde UserHistoryManager
+    const handleHistoryUpdated = (
+      event: CustomEvent<{
+        userId?: string;
+      }>
+    ) => {
+      console.log(
+        "Evento historyUpdated detectado en ProcessingHistory:",
+        event.detail
+      );
+
+      // Cargar el historial para el usuario especificado
+      loadHistory(event.detail.userId || null);
+    };
+
+    window.addEventListener("userChanged", handleUserChanged as EventListener);
+    window.addEventListener(
+      "historyUpdated",
+      handleHistoryUpdated as EventListener
     );
 
     return () => {
@@ -87,8 +211,16 @@ export default function ProcessingHistory({
         "imageProcessed",
         handleImageProcessed as EventListener
       );
+      window.removeEventListener(
+        "userChanged",
+        handleUserChanged as EventListener
+      );
+      window.removeEventListener(
+        "historyUpdated",
+        handleHistoryUpdated as EventListener
+      );
     };
-  }, [history, addToHistory]);
+  }, [addToHistory, loadHistory]);
 
   if (history.length === 0) return null;
   return (

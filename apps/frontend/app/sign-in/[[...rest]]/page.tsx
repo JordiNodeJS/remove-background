@@ -10,7 +10,7 @@ export default function SignInPage() {
           alt="Logo"
           width={56}
           height={56}
-          className="mb-2 mt-2"
+          className="mb-2"
         />
         <h1 className="text-3xl font-bold text-[var(--primary)] mb-1 tracking-tight">
           Inicia sesión
@@ -23,8 +23,7 @@ export default function SignInPage() {
         <SignIn path="/sign-in" routing="path" afterSignInUrl="/dashboard" />
       </main>
       <footer className="mt-10 text-center text-xs text-[var(--muted)]">
-        &copy; {new Date().getFullYear()} Remove Background. Todos los derechos
-        reservados.
+        &copy; {new Date().getFullYear()} Remove Background. Todos los derechos reservados.
       </footer>
     </div>
   );

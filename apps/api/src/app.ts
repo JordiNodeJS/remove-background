@@ -2,6 +2,7 @@ import express, { type Express } from "express";
 import removeBackgroundRouter from "./routes/remove-background.route";
 import { healthRouter } from "./routes/health.route";
 import processingStatusRouter from "./routes/processing-status.route";
+import { router as userRouter } from "./routes/user.route";
 import path from "path";
 import cors from "cors";
 
@@ -31,9 +32,9 @@ export const createApp = (): Express => {
   // Configurar directorio de imágenes procesadas como estático
   const outputDir = path.resolve(__dirname, "../images-output");
   app.use("/images-output", express.static(outputDir));
-
   app.use("/health", healthRouter);
   app.use("/remove-background", removeBackgroundRouter);
   app.use("/processing-status", processingStatusRouter);
+  app.use("/user", userRouter);
   return app;
 };
