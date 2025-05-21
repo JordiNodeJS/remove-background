@@ -5,6 +5,7 @@ import InitWrapper from "./app-init";
 import ThemeToggle from "@/components/ThemeToggle";
 import { ClerkProvider } from "@clerk/nextjs";
 import { cookies } from "next/headers";
+import { ClientProviders } from "./client-components";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -42,7 +43,8 @@ export default async function RootLayout({
         >
           <ThemeToggle />
           <InitWrapper />
-          {children}
+          {/* Componente cliente que maneja los providers dinámicos */}
+          <ClientProviders>{children}</ClientProviders>
         </body>
       </html>
     </ClerkProvider>
