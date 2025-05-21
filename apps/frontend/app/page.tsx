@@ -2,6 +2,18 @@
 import { useUser, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 
+// Adding SVG icon for Twitch
+const TwitchIcon = () => (
+  <svg
+    className="w-4 h-4 inline-block mr-1"
+    fill="currentColor"
+    viewBox="0 0 24 24"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z" />
+  </svg>
+);
+
 export default function Home() {
   const { isSignedIn } = useUser();
   return (
@@ -22,9 +34,14 @@ export default function Home() {
       </header>
       <section className="relative w-full max-w-4xl bg-[var(--secondary)] dark:bg-[var(--secondary)]/90 rounded-2xl shadow-xl flex flex-col md:flex-row items-center p-8 gap-8 transition-colors duration-300">
         <div className="flex-1 flex flex-col items-start justify-center z-10">
-          <span className="inline-block bg-[var(--accent)] text-pink-700 dark:text-pink-500 font-semibold px-4 py-1 rounded-full mb-4 text-sm shadow-sm transition-colors duration-300">
-            ¡Nuevo! 2025
-          </span>
+          <a
+            href="https://www.twitch.tv/midudev"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block bg-[var(--accent)] text-pink-700 dark:text-pink-500 font-semibold px-4 py-1 rounded-full mb-4 text-sm shadow-sm transition-colors duration-300 hover:scale-105"
+          >
+            <TwitchIcon /> ¡Hackatón Clerk! - 2025 🎉
+          </a>
           <h1 className="text-4xl md:text-5xl font-extrabold text-[var(--foreground)] mb-4 leading-tight transition-colors duration-300">
             Elimina el fondo de tus imágenes{" "}
             <span className="text-pink-600 dark:text-pink-500">
