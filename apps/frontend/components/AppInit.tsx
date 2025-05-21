@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 // y verifica la conectividad con el backend
 export default function AppInit() {
   // Estado para rastrear la conectividad del backend
-  // const [backendStatus, setBackendStatus] = useState<
+  // const [backendStatus, setBackendStatus<
   //   "unknown" | "online" | "offline"
   // >("unknown");
   // TODO: Consider using backendStatus to provide user feedback or alter UI
@@ -16,37 +16,57 @@ export default function AppInit() {
     const performHealthCheckWithRetries = async () => {
       // Determine backend URL
       let backendUrl: string;
-      
-      console.log('[AppInit] Valor de process.env.NODE_ENV en cliente:', process.env.NODE_ENV);
 
+      console.log(
+        "[AppInit] Valor de process.env.NODE_ENV en cliente:",
+        process.env.NODE_ENV
+      );
       // Priorizar variable de entorno NEXT_PUBLIC_APP_BASE_URL
       if (process.env.NEXT_PUBLIC_APP_BASE_URL) {
         backendUrl = process.env.NEXT_PUBLIC_APP_BASE_URL;
-        console.log(`[AppInit] Usando NEXT_PUBLIC_APP_BASE_URL para health check: ${backendUrl}`);
-      } else if (process.env.NODE_ENV === 'development') {
-        backendUrl = 'http://localhost:3001';
-        console.log(`[AppInit] Modo Desarrollo: Fallback a localhost: ${backendUrl}`);
+        console.log(
+          `[AppInit] Usando NEXT_PUBLIC_APP_BASE_URL para health check: ${backendUrl}`
+        );
+      } else if (process.env.NODE_ENV === "development") {
+        backendUrl = "http://localhost:3001";
+        console.log(
+          `[AppInit] Modo Desarrollo: Fallback a localhost: ${backendUrl}`
+        );
       } else if (typeof window !== "undefined" && window.location.hostname) {
         const protocol = window.location.protocol;
         const hostname = window.location.hostname;
-        const productionApiPort = 3001; 
-        const localApiPort = 3001;
-        const port =
-          hostname === "localhost" ? localApiPort : productionApiPort;
-        backendUrl = `${protocol}//${hostname}:${port}`;
+        // Siempre usar el puerto 3001 para la API
+        const apiPort = 3001;
+
+        // Construir la URL dinámicamente con el puerto correcto para la API
+        backendUrl = `${protocol}//${hostname}:${apiPort}`;
+
         console.log(
           `[AppInit] Fallback (sin NEXT_PUBLIC_API_URL, con window): URL del backend (construida dinámicamente): ${backendUrl}`
         );
       } else {
         // Fallback para SSR o si window/hostname no está disponible y NEXT_PUBLIC_API_URL tampoco
         backendUrl = "http://localhost:3001"; // El fallback original, también útil para SSR en dev
-        console.log(`[AppInit] Fallback (SSR/default sin NEXT_PUBLIC_API_URL): URL del backend: ${backendUrl}`);
+        console.log(
+          `[AppInit] Fallback (SSR/default sin NEXT_PUBLIC_API_URL): URL del backend: ${backendUrl}`
+        );
+      }
+      console.log("Verificando conexión con el backend (desde el cliente)... ");
+
+      // Asegurarse de que la URL no termina con una barra para la ruta /health
+      if (backendUrl.endsWith("/")) {
+        backendUrl = backendUrl.slice(0, -1);
       }
 
-      // El log original de envApiUrl se puede mantener o quitar si los nuevos logs son suficientes
-      // console.log("[AppInit] process.env.NEXT_PUBLIC_API_URL (valor original):", envApiUrl);
-
-      console.log("Verificando conexión con el backend (desde el cliente)... ");
+      // Asegurarse de que el puerto 3001 esté en la URL
+      if (!backendUrl.includes(":3001")) {
+        console.log("[AppInit] Añadiendo puerto 3001 a la URL");
+        backendUrl = backendUrl.includes("://")
+          ? `${backendUrl.split("://")[0]}://${
+              backendUrl.split("://")[1].split("/")[0]
+            }:3001`
+          : `${backendUrl}:3001`;
+      }
 
       const retries = 3;
       let lastError: Error | null = null;
