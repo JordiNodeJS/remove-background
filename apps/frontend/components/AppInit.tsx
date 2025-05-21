@@ -62,7 +62,9 @@ export default function AppInit() {
       if (!backendUrl.includes(":3001")) {
         console.log("[AppInit] Añadiendo puerto 3001 a la URL");
         backendUrl = backendUrl.includes("://")
-          ? `${backendUrl.split("://")[0]}://${backendUrl.split("://")[1].split("/")[0]}:3001`
+          ? `${backendUrl.split("://")[0]}://${
+              backendUrl.split("://")[1].split("/")[0]
+            }:3001`
           : `${backendUrl}:3001`;
       }
 
